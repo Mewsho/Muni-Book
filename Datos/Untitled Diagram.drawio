@@ -118,23 +118,8 @@
             <mxPoint x="-38" y="40" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PINVsEhKmwiwCEHBj3Md-0" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="350" y="560" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="PINVsEhKmwiwCEHBj3Md-1" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="350" y="560" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="PINVsEhKmwiwCEHBj3Md-2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="294" y="680" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="PINVsEhKmwiwCEHBj3Md-3" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="130" y="620" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="PINVsEhKmwiwCEHBj3Md-4" value="" style="swimlane;startSize=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="310" y="490" width="200" height="200" as="geometry" />
-        </mxCell>
-        <mxCell id="PINVsEhKmwiwCEHBj3Md-5" value="" style="swimlane;startSize=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="550" y="520" width="200" height="200" as="geometry" />
+        <mxCell id="PINVsEhKmwiwCEHBj3Md-6" value="&lt;p style=&quot;text-align:justify&quot; class=&quot;MsoNormal&quot;&gt;&lt;span style=&quot;font-size:12.0pt;&lt;br/&gt;line-height:115%&quot;&gt;Documento(identificador, tipo, título, autor, editorial, año,&lt;br/&gt;edición, categoría, tipo medio)&lt;/span&gt;&lt;/p&gt;&lt;br/&gt;&lt;br/&gt;&lt;p style=&quot;text-align:justify&quot; class=&quot;MsoNormal&quot;&gt;&lt;span style=&quot;font-size:12.0pt;&lt;br/&gt;line-height:115%&quot;&gt;Ejemplar(idEjemplar, idDocumento, estado, ubicación)&lt;/span&gt;&lt;/p&gt;&lt;br/&gt;&lt;br/&gt;&lt;p style=&quot;text-align:justify&quot; class=&quot;MsoNormal&quot;&gt;&lt;span style=&quot;font-size:12.0pt;&lt;br/&gt;line-height:115%&quot;&gt;Prestamo(idPrestamo, tipo prestamo, idEjemplar, fecha&lt;br/&gt;prestamo, hora prestamo, fecha devolución, hora devolución, fecha devolución&lt;br/&gt;real, hora devolución real)&lt;/span&gt;&lt;/p&gt;&lt;br/&gt;&lt;br/&gt;&lt;p style=&quot;text-align:justify&quot; class=&quot;MsoNormal&quot;&gt;&lt;span style=&quot;font-size:12.0pt;&lt;br/&gt;line-height:115%&quot;&gt;Usuario(identificador, rut, nombres, apellidos, dirección,&lt;br/&gt;teléfono, activo) {se debe ver la forma de registro de huella y foto}&lt;/span&gt;&lt;/p&gt;&lt;br/&gt;&lt;br/&gt;&lt;p style=&quot;text-align:justify&quot; class=&quot;MsoNormal&quot;&gt;&lt;span style=&quot;font-size:12.0pt;&lt;br/&gt;line-height:115%&quot;&gt;SolicitudPréstamo(idSolicitud, idUsuario, fecha solicitud,&lt;br/&gt;hora solicitud)&lt;/span&gt;&lt;/p&gt;&lt;br/&gt;&lt;br/&gt;&lt;p style=&quot;text-align:justify&quot; class=&quot;MsoNormal&quot;&gt;&lt;span style=&quot;font-size:12.0pt;&lt;br/&gt;line-height:115%&quot;&gt;DetalleSolicitudPrestamo(idSolicitud, idEjemplar)&lt;/span&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="870" width="890" height="570" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
