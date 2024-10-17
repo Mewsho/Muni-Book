@@ -4,8 +4,14 @@ const cors = require('cors');
 
 const {ApolloServer, gql} = require('apollo-server-express'); //Importar librerias externas
 
-//const Reclamo = require('./models/reclamo');
-//const Categoria = require('./models/categoria');
+const DetalleSolicitudPrestamo = require('./models/detalleSolicitudPrestamo.js');
+const Documento = require('./models/documento');
+const Ejemplar = require('./models/ejemplar');
+const Prestamo = require('./models/prestamo')
+const SolicitudPrestamo = require('./models/solicitudPrestamo')
+const Usuario = require('./models/usuario')
+
+mongoose.connect('mongodb+srv://FcoTorres:hEqGLg4XvhwgO9y5@cluster0.45avn.mongodb.net/BaseBiblioteca',{useNewUrlParser: true, useUnifiedTopology:true});
 
 const typeDefs = gql`
 
@@ -22,7 +28,6 @@ const typeDefs = gql`
     }
 
     input UsuarioInput{
-        rut: Number!
         rut: Number!
         nombres: String!
         apellidos: String!
@@ -113,9 +118,12 @@ const typeDefs = gql`
     type Alert{
         message: String
     }
-    
+
     type Response{
-        message: String
+        statusCode: String
+        body: String
+        errorCode: String
+        descriptionError: String
     }
 
     type Query{
