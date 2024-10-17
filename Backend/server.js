@@ -17,22 +17,26 @@ const typeDefs = gql`
         direccion: String!
         telefono: Number!
         activo: Number!
+        correo: String!
+        password: String!
     }
 
     input UsuarioInput{
         rut: Number!
-        nombre: String!
+        rut: Number!
         nombres: String!
         apellidos: String!
         direccion: String!
         telefono: Number!
         activo: Number!
+        correo: String!
+        password: String!
     }
 
     type Prestamo{
         id: ID!
         tipoPrestamo: String!
-        ejemplares: [Ejemplar]!
+        ejemplar: [Ejemplar]!
         fechaPrestamo: String!
         fechaDevolucion: Date!
         fechaDevolucionReal: Date!
@@ -41,7 +45,7 @@ const typeDefs = gql`
 
     input PrestamoInput{
         tipoPrestamo: String!
-        ejemplares: [Ejemplar]!
+        ejemplar: [Ejemplar]!
         fechaPrestamo: String!
         fechaDevolucion: Date!
         fechaDevolucionReal: Date!
@@ -56,9 +60,32 @@ const typeDefs = gql`
     }
 
     input EjemplarInput{
-            documento: Documento
-            estado: Number!
-            ubicacion: String!
+        documento: Documento
+        estado: Number!
+        ubicacion: String!
+        }
+
+    type Documento{
+        id: ID!
+        tipo: String!
+        titulo: String!
+        autor: String!
+        editorial: String!
+        anio: Number!
+        edicion: Number!
+        categoria: String!
+        tipoMedio: String!
+    }
+
+    input DocumentoInput{
+        tipo: String!
+        titulo: String!
+        autor: String!
+        editorial: String!
+        anio: Number!
+        edicion: Number!
+        categoria: String!
+        tipoMedio: String!
         }
 
     type DetalleSolicitudPrestamo{
