@@ -10,7 +10,6 @@ const Ejemplar = require('./models/ejemplar');
 const Prestamo = require('./models/prestamo')
 const SolicitudPrestamo = require('./models/solicitudPrestamo')
 const Usuario = require('./models/usuario');
-const ejemplar = require('./models/ejemplar');
 
 mongoose.connect('mongodb+srv://FcoTorres:hEqGLg4XvhwgO9y5@cluster0.45avn.mongodb.net/BaseBiblioteca',{useNewUrlParser: true, useUnifiedTopology:true});
 
