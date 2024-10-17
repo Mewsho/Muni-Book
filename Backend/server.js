@@ -9,7 +9,7 @@ const Documento = require('./models/documento');
 const Ejemplar = require('./models/ejemplar');
 const Prestamo = require('./models/prestamo')
 const SolicitudPrestamo = require('./models/solicitudPrestamo')
-const Usuario = require('./models/usuario')
+const Usuario = require('./models/usuario');
 
 mongoose.connect('mongodb+srv://FcoTorres:hEqGLg4XvhwgO9y5@cluster0.45avn.mongodb.net/BaseBiblioteca',{useNewUrlParser: true, useUnifiedTopology:true});
 
@@ -96,23 +96,28 @@ const typeDefs = gql`
     type DetalleSolicitudPrestamo{
         id: ID!
         ejemplares: [Ejemplar]
-        solicitud: Solicitud
+        solicitudPrestamo: SolicitudPrestamo
     }
 
     input DetalleSolicitudPrestamoInput{
         ejemplares: [Ejemplar]
-        solicitud: Solicitud
+        solicitudPrestamo: SolicitudPrestamo
     }
 
     type SolicitudPrestamo{
         id: ID!
-        usuario: [Usuario]
-        fechaSolicitud: String!
+        usuario: Usuario
+        fechaSolicitud: Date!
+        prestamos: [Prestamo]
+        esReserva: Boolean
+
     }
 
     input SolicitudPrestamoInput{
-        usuario: [Usuario]
-        fechaSolicitud: String!
+        usuario: Usuario
+        fechaSolicitud: Date!
+        prestamos: [Prestamo]
+        esReserva: Boolean
     }
 
     type Alert{
@@ -127,96 +132,213 @@ const typeDefs = gql`
     }
 
     type Query{
-        getReclamos: [Reclamo]
-        getReclamosCategoria(id: ID!): Reclamo
-        getReclamosById(id: ID!): Reclamo
-        getCategorias: [Categoria]
-        getCategoriasById(id: ID!): Categoria
-
+        getDocumentos: [Documento]
+        getDocumentoById(id: ID!) : Documento
+        getEjemplares: [Ejemplar]
+        getEjemplaresDocumento: [Ejemplar]
+        getEjemplarById(id: ID!): Ejemplar
+        getEjemplarByIdDocumento(id: ID!): Ejemplar
+        getDetalleSolicitudPrestamos:[DetalleSolicitudPrestamo]
+        getDetalleSolicitudPrestamosEjemplares:[DetalleSolicitudPrestamo]
+        getDetalleSolicitudPrestamosSolicitudPrestamo: [DetalleSolicitudPrestamo]
+        getDetalleSolicitudPrestamosEjemplaresSolicitudPrestamo:[DetalleSolicitudPrestamo]
+        getDetalleSolicitudPrestamosById(id: ID!): DetalleSolicitudPrestamo
+        getDetalleSolicitudPrestamosByIdEjemplares(id: ID!): DetalleSolicitudPrestamo
+        getDetalleSolicitudPrestamosByIdSolicitudPrestamo(id: ID!): DetalleSolicitudPrestamo
+        getDetalleSolicitudPrestamosByIdEjemplaresSolicitudPrestamo(id: ID!):DetalleSolicitudPrestamo
     }
 
     type Mutation{
-        addReclamo(input: ReclamoInput): Reclamo
-        updReclamo(id: ID!, input: ReclamoInput): Reclamo
-        delReclamo(id: ID!): Alert
-        addCategoria(input: CategoriaInput): Categoria
-        updCategoria(id: ID!, input: CategoriaInput): Categoria
-        delCategoria(id: ID!): Alert
+        addDocumento(input: DocumentoInput): Response
+        updDocumento(id: ID!, input: DocumentoInput): Response
+        delDocumento(id: ID!): Response
+        addEjemplar(input: EjemplarInput): Response
+        updEjemplar(id: ID!, input: EjemplarInput): Response
+        delEjemplar(id: ID!): Response
+        addDetalleSolicitudPrestamo(input: DetalleSolicitudPrestamoInput): Response
+        updDetalleSolicitudPrestamo(id: ID!, input: DetalleSolicitudPrestamoInput): Response
+        delDetalleSolicitudPrestamo(id: ID!): Response
     }
-
 `;
 
 const resolvers = {
 
     Query: {
-        async getReclamos(obj){
-            const reclamos = await Reclamo.find();
-            return reclamos
+        async getDocumentos(obj){
+            let documentos = await Documento.find();
+            return documentos;
+        },
+        async getDocumentoById(obj, {id}){
+            let documento = await Documento.findById(id);
+            return documento;
         },
 
-        async getReclamosById(obj, {id}){
-            const reclamo = await Reclamo.findById(id);
-            return reclamo;
+        async getEjemplares(obj){
+            let ejemplares = await Ejemplar.find();
+            return ejemplares;
+        },
+        async getEjemplaresDocumento(obj){
+            let ejemplares = await Ejemplar.find().populate('documento');
+            return ejemplares;
+        },
+        async getEjemplarById(obj, {id}) {
+            let ejemplar = await Ejemplar.findById(id);
+            return ejemplar;
+        },
+        async getEjemplarByIdDocumento(obj, {id}) {
+            let ejemplar = await Ejemplar.findById(id).populate('documento');
+            return ejemplar;
         },
 
-        async getCategorias(obj){
-            const categorias = await Categoria.find();
-            return categorias
+        async getDetalleSolicitudPrestamos(obj){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find();
+            return detalleSolicitudPrestamos;
         },
-
-        async getCategoriasById(obj, {id}){
-            const categoria = await Categoria.findById(id);
-            return categoria;
+        async getDetalleSolicitudPrestamosEjemplares(obj){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find().populate('ejemplares');
+            return detalleSolicitudPrestamos;
         },
-
-        async getReclamosCategoria() {
-            const reclamos = await Reclamo.find().populate("Categoria");
-            return reclamos;
+        async getDetalleSolicitudPrestamosEjemplaresSolicitudPrestamo(obj){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find().populate('solicitudPrestamo');
+            return detalleSolicitudPrestamos;
+        },
+        async getDetalleSolicitudPrestamosEjemplaresSolicitudPrestamo(obj){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find().populate('ejemplares').populate('solicitudPrestamo');
+            return detalleSolicitudPrestamos;
+        },
+        async getDetalleSolicitudPrestamosById(obj, {id}){
+            let detalleSolicitudPrestamo = await DetalleSolicitudPrestamo.findById(id);
+            return detalleSolicitudPrestamo;
+        },
+        async getDetalleSolicitudPrestamosByIdEjemplares(obj, {id}){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.findById(id).populate('ejemplares');
+            return detalleSolicitudPrestamos;
+        },
+        async getDetalleSolicitudPrestamosByIdSolicitudPrestamo(obj, {id}){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.findById(id).populate('solicitudPrestamo');
+            return detalleSolicitudPrestamos;
+        },
+        async getDetalleSolicitudPrestamosByIdEjemplaresSolicitudPrestamo(obj, {id}){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.findById(id).populate('ejemplares').populate('solicitudPrestamo');
+            return detalleSolicitudPrestamos;
         }
-          
     },
     
     Mutation: {
 
-        async addReclamo(obj, {input}){
-            const reclamo = new Reclamo(input);
-            await reclamo.save();
-            return reclamo;
-        },
-
-        async updReclamo(obj, {id, input}){
-            const reclamo = await Reclamo.findByIdAndUpdate(id, input);
-            return reclamo;
-        },
-
-        async delReclamo(obj, {id}){
-            await Reclamo.deleteOne({_id: id});
+        async addDocumento(obj, {input}){
+            let documento = new Documento(input);
+            await documento.save();
             return {
-                message: "Reclamo Eliminado"
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            }
+        },
+        async updDocumento(obj, {id, input}){
+            let documento = await Documento.findByIdAndUpdate(id, input);
+            return {
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            }
+        },
+        async delDocumento(obj, {id}){
+            await Documento.deleteOne({_id: id});
+            return {
+                statusCode: "200",
+                body: "Documento Eliminado",
+                errorCode: "0",
+                descriptionError: ""
             }
         },
 
-        async addCategoria(obj, {input}){
-            const categoria = new Categoria(input);
-            await categoria.save();
-            return categoria;
-        },
-
-        async updCategoria(obj, {id, input}){
-            const categoria = await Categoria.findByIdAndUpdate(id, input);
-            return categoria;
-        },
-
-        async delCategoria(obj, {id}){
-            await Categoria.deleteOne({_id: id});
+        async addEjemplar(obj, {input}){
+            let documentoBus = await Documento.findById(input.documento)
+            let ejemplar = new Ejemplar({documento: documentoBus._id, estado: input.estado, ubicacion: input.ubicacion});
+            await ejemplar.save();
             return {
-                message: "Categoria Eliminada"
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            }
+        },
+        async updEjemplar(obj, {id, input}){
+            let documentoBus = await Documento.findById(input.documento)
+            let ejemplar = await Ejemplar.findByIdAndUpdate(id, {
+                documento: documentoBus._id, estado: input.estado, ubicacion: input.ubicacion
+            })
+            return {
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            }
+        },
+        async delEjemplar(obj, {id}){
+            await Documento.deleteOne({_id: id});
+            return {
+                statusCode: "200",
+                body: "Ejemplar Eliminado",
+                errorCode: "0",
+                descriptionError: ""
+            }
+        },
+
+        async addDetalleSolicitudPrestamo(obj, {input}){
+            
+            let inputEjemplarList = []
+            let ejemplarList = input.ejemplares
+            for (ejemplarObjectId in ejemplarList){
+                let ejemplar = await Ejemplar.findById(ejemplarObjectId);
+                inputEjemplarList.push(ejemplar._id)
+            }
+            let solicitudPrestamoBus = await SolicitudPrestamo.findById(input.solicitudPrestamo);
+            let detalleSolicitudPrestamo = new DetalleSolicitudPrestamo({
+                ejemplares: inputEjemplarList, solicitudPrestamo: solicitudPrestamoBus._id
+            })
+            await detalleSolicitudPrestamo.save();
+            return {
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+        async updDetalleSolicitudPrestamo(obj, {id, input}){
+            let ejemplarIdFinalList = []
+            let inputEjemplarList = input.ejemplares
+            for (ejemplarObjectId in inputEjemplarList){
+                let ejemplar = await Ejemplar.findById(ejemplarObjectId);
+                ejemplarIdFinalList.push(ejemplar._id)
+            }
+            let solicitudPrestamoBus = await SolicitudPrestamo.findById(input.solicitudPrestamo);
+            let detalleSolicitudPrestamo = await DetalleSolicitudPrestamo.findByIdAndUpdate(id,{
+                ejemplares: ejemplarIdFinalList, solicitudPrestamo: solicitudPrestamoBus._id
+            })
+            return {
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+        async delDetalleSolicitudPrestamo(obj, {id}){
+            await DetalleSolicitudPrestamo.deleteOne({_id: id});
+            return {
+                statusCode: "200",
+                body: "DetalleSolicitudPrestamo Eliminado",
+                errorCode: "0",
+                descriptionError: ""
             }
         }
 
     }
-
 }
+
 
 let apolloServer = null;
 
