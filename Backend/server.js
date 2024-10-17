@@ -36,7 +36,7 @@ const typeDefs = gql`
     type Prestamo{
         id: ID!
         tipoPrestamo: String!
-        ejemplar: [Ejemplar]!
+        ejemplar: Ejemplar!
         fechaPrestamo: String!
         fechaDevolucion: Date!
         fechaDevolucionReal: Date!
@@ -45,7 +45,7 @@ const typeDefs = gql`
 
     input PrestamoInput{
         tipoPrestamo: String!
-        ejemplar: [Ejemplar]!
+        ejemplar: Ejemplar!
         fechaPrestamo: String!
         fechaDevolucion: Date!
         fechaDevolucionReal: Date!
