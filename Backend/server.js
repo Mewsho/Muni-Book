@@ -29,7 +29,6 @@ const typeDefs = gql`
 
     input UsuarioInput{
         rut: Number!
-        rut: Number!
         nombres: String!
         apellidos: String!
         direccion: String!
@@ -119,9 +118,12 @@ const typeDefs = gql`
     type Alert{
         message: String
     }
-    
+
     type Response{
-        message: String
+        statusCode: String
+        body: String
+        errorCode: String
+        descriptionError: String
     }
 
     type Query{
