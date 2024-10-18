@@ -10,6 +10,7 @@ const Ejemplar = require('./models/ejemplar');
 const Prestamo = require('./models/prestamo')
 const SolicitudPrestamo = require('./models/solicitudPrestamo')
 const Usuario = require('./models/usuario');
+const Usuario = require('./models/usuario');
 
 mongoose.connect('mongodb+srv://FcoTorres:hEqGLg4XvhwgO9y5@cluster0.45avn.mongodb.net/BaseBiblioteca',{useNewUrlParser: true, useUnifiedTopology:true});
 
@@ -96,12 +97,12 @@ const typeDefs = gql`
     type DetalleSolicitudPrestamo{
         id: ID!
         ejemplares: [Ejemplar]
-        solicitud: SolicitudPrestamo
+        solicitudPrestamo: SolicitudPrestamo
     }
 
     input DetalleSolicitudPrestamoInput{
         ejemplares: [Ejemplar]
-        solicitud: SolicitudPrestamo
+        solicitudPrestamo: SolicitudPrestamo
     }
 
     type SolicitudPrestamo{
@@ -147,6 +148,20 @@ const typeDefs = gql`
         getSolicitudPrestamoByIdPrestamos: SolicitudPrestamos
         getSolicitudPrestamosUsuarioPrestamos: [SolicitudPrestamos]
         getSolicitudPrestamoByIdUsuarioPrestamos: SolicitudPrestamos
+        getDocumentos: [Documento]
+        getDocumentoById(id: ID!) : Documento
+        getEjemplares: [Ejemplar]
+        getEjemplaresDocumento: [Ejemplar]
+        getEjemplarById(id: ID!): Ejemplar
+        getEjemplarByIdDocumento(id: ID!): Ejemplar
+        getDetalleSolicitudPrestamos:[DetalleSolicitudPrestamo]
+        getDetalleSolicitudPrestamosEjemplares:[DetalleSolicitudPrestamo]
+        getDetalleSolicitudPrestamosSolicitudPrestamo: [DetalleSolicitudPrestamo]
+        getDetalleSolicitudPrestamosEjemplaresSolicitudPrestamo:[DetalleSolicitudPrestamo]
+        getDetalleSolicitudPrestamosById(id: ID!): DetalleSolicitudPrestamo
+        getDetalleSolicitudPrestamosByIdEjemplares(id: ID!): DetalleSolicitudPrestamo
+        getDetalleSolicitudPrestamosByIdSolicitudPrestamo(id: ID!): DetalleSolicitudPrestamo
+        getDetalleSolicitudPrestamosByIdEjemplaresSolicitudPrestamo(id: ID!):DetalleSolicitudPrestamo
     }
 
     type Mutation{
@@ -159,8 +174,16 @@ const typeDefs = gql`
         addSolicitudPrestamo(id: ID!): Response
         updSolicitudPrestamo(id: ID!, input: SolicitudPrestamoInput): Response
         delSolicitudPrestamo(id: ID!): Response
+        addDocumento(input: DocumentoInput): Response
+        updDocumento(id: ID!, input: DocumentoInput): Response
+        delDocumento(id: ID!): Response
+        addEjemplar(input: EjemplarInput): Response
+        updEjemplar(id: ID!, input: EjemplarInput): Response
+        delEjemplar(id: ID!): Response
+        addDetalleSolicitudPrestamo(input: DetalleSolicitudPrestamoInput): Response
+        updDetalleSolicitudPrestamo(id: ID!, input: DetalleSolicitudPrestamoInput): Response
+        delDetalleSolicitudPrestamo(id: ID!): Response
     }
-
 `;
 
 const resolvers = {
@@ -240,6 +263,64 @@ const resolvers = {
             let solicitudPrestamo = await SolicitudPrestamo.findById(id).populate('usuario').populate('prestamos');
             return solicitudPrestamo;
         },
+        async getDocumentos(obj){
+            let documentos = await Documento.find();
+            return documentos;
+        },
+        async getDocumentoById(obj, {id}){
+            let documento = await Documento.findById(id);
+            return documento;
+        },
+
+        async getEjemplares(obj){
+            let ejemplares = await Ejemplar.find();
+            return ejemplares;
+        },
+        async getEjemplaresDocumento(obj){
+            let ejemplares = await Ejemplar.find().populate('documento');
+            return ejemplares;
+        },
+        async getEjemplarById(obj, {id}) {
+            let ejemplar = await Ejemplar.findById(id);
+            return ejemplar;
+        },
+        async getEjemplarByIdDocumento(obj, {id}) {
+            let ejemplar = await Ejemplar.findById(id).populate('documento');
+            return ejemplar;
+        },
+
+        async getDetalleSolicitudPrestamos(obj){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find();
+            return detalleSolicitudPrestamos;
+        },
+        async getDetalleSolicitudPrestamosEjemplares(obj){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find().populate('ejemplares');
+            return detalleSolicitudPrestamos;
+        },
+        async getDetalleSolicitudPrestamosEjemplaresSolicitudPrestamo(obj){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find().populate('solicitudPrestamo');
+            return detalleSolicitudPrestamos;
+        },
+        async getDetalleSolicitudPrestamosEjemplaresSolicitudPrestamo(obj){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find().populate('ejemplares').populate('solicitudPrestamo');
+            return detalleSolicitudPrestamos;
+        },
+        async getDetalleSolicitudPrestamosById(obj, {id}){
+            let detalleSolicitudPrestamo = await DetalleSolicitudPrestamo.findById(id);
+            return detalleSolicitudPrestamo;
+        },
+        async getDetalleSolicitudPrestamosByIdEjemplares(obj, {id}){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.findById(id).populate('ejemplares');
+            return detalleSolicitudPrestamos;
+        },
+        async getDetalleSolicitudPrestamosByIdSolicitudPrestamo(obj, {id}){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.findById(id).populate('solicitudPrestamo');
+            return detalleSolicitudPrestamos;
+        },
+        async getDetalleSolicitudPrestamosByIdEjemplaresSolicitudPrestamo(obj, {id}){
+            let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.findById(id).populate('ejemplares').populate('solicitudPrestamo');
+            return detalleSolicitudPrestamos;
+        }
     },
     
     Mutation: {
@@ -247,12 +328,6 @@ const resolvers = {
         async addUsuario(obj, {input}){
             const usuario = new Usuario(input);
             await usuario.save();
-            return {
-                statusCode: "200",
-                body: null,
-                errorCode: "0",
-                descriptionError: ""
-            };
         },
 
         async updUsuario(obj, {id, input}){
@@ -275,13 +350,14 @@ const resolvers = {
             };
         },
 
+
         async addPrestamo(obj, {input}){
             let ejemplarBus = await Ejemplar.findById(input.ejemplar);
             let prestamo = new Prestamo({tipoPrestamo: input.tipoPrestamo, ejemplar: ejemplarBus._id, fechaPrestamo: input.fechaPrestamo, fechaDevolucion: input.fechaDevolucion, fechaDevolucionReal: input.fechaDevolucionReal});
             await prestamo.save();
             return {
                 statusCode: "200",
-                body: null,
+                body: prestamo,
                 errorCode: "0",
                 descriptionError: ""
             };
@@ -308,6 +384,124 @@ const resolvers = {
             };
         },
 
+
+        async addDocumento(obj, {input}){
+            let documento = new Documento(input);
+            await documento.save();
+            return {
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+
+        async updDocumento(obj, {id, input}){
+            let documento = await Documento.findByIdAndUpdate(id, input);
+            return {
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            }
+        },
+        async delDocumento(obj, {id}){
+            await Documento.deleteOne({_id: id});
+            return {
+                statusCode: "200",
+                body: "Documento Eliminado",
+                errorCode: "0",
+                descriptionError: ""
+            }
+        },
+
+
+        async addEjemplar(obj, {input}){
+            let documentoBus = await Documento.findById(input.documento)
+            let ejemplar = new Ejemplar({documento: documentoBus._id, estado: input.estado, ubicacion: input.ubicacion});
+            await ejemplar.save();
+            return {
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            }
+        },
+
+        async updEjemplar(obj, {id, input}){
+            let documentoBus = await Documento.findById(input.documento)
+            let ejemplar = await Ejemplar.findByIdAndUpdate(id, {
+                documento: documentoBus._id, estado: input.estado, ubicacion: input.ubicacion
+            })
+            return {
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            }
+        },
+
+        async delEjemplar(obj, {id}){
+            await Documento.deleteOne({_id: id});
+            return {
+                statusCode: "200",
+                body: "Ejemplar Eliminado",
+                errorCode: "0",
+                descriptionError: ""
+            }
+        },
+
+
+        async addDetalleSolicitudPrestamo(obj, {input}){
+            let inputEjemplarList = []
+            let ejemplarList = input.ejemplares
+            for (ejemplarObjectId in ejemplarList){
+                let ejemplar = await Ejemplar.findById(ejemplarObjectId);
+                inputEjemplarList.push(ejemplar._id)
+            }
+            let solicitudPrestamoBus = await SolicitudPrestamo.findById(input.solicitudPrestamo);
+            let detalleSolicitudPrestamo = new DetalleSolicitudPrestamo({
+                ejemplares: inputEjemplarList, solicitudPrestamo: solicitudPrestamoBus._id
+            })
+            await detalleSolicitudPrestamo.save();
+            return {
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+
+        async updDetalleSolicitudPrestamo(obj, {id, input}){
+            let ejemplarIdFinalList = []
+            let inputEjemplarList = input.ejemplares
+            for (ejemplarObjectId in inputEjemplarList){
+                let ejemplar = await Ejemplar.findById(ejemplarObjectId);
+                ejemplarIdFinalList.push(ejemplar._id)
+            }
+            let solicitudPrestamoBus = await SolicitudPrestamo.findById(input.solicitudPrestamo);
+            let detalleSolicitudPrestamo = await DetalleSolicitudPrestamo.findByIdAndUpdate(id,{
+                ejemplares: ejemplarIdFinalList, solicitudPrestamo: solicitudPrestamoBus._id
+            })
+            return {
+                statusCode: "200",
+                body: null,
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+
+        async delDetalleSolicitudPrestamo(obj, {id}){
+            await DetalleSolicitudPrestamo.deleteOne({_id: id});
+            return {
+                statusCode: "200",
+                body: "DetalleSolicitudPrestamo Eliminado",
+                errorCode: "0",
+                descriptionError: ""
+            }  
+        },
+
+
         async addSolicitudPrestamo(obj, {input}){
             let ListaFinalPrestamos = []
             let ListaPrestamos = input.prestamos
@@ -315,7 +509,6 @@ const resolvers = {
                 let prestamo = await Prestamo.findById(PrestamosObjectId);
                 ListaFinalPrestamos.push(prestamo._id)
             }
-
             let usuarioBus = await Usuario.findById(input.usuario);
             let solicitudPrestamo = new SolicitudPrestamo({usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, prestamos: ListaFinalPrestamos});
             await solicitudPrestamo.save();
@@ -326,16 +519,14 @@ const resolvers = {
                 descriptionError: ""
             };
         },
-
+        
         async updSolicitudPrestamo(obj, {input}){
-
             let ListaFinalPrestamos = []
             let ListaPrestamos = input.prestamos
             for (PrestamosObjectId in ListaPrestamos){
                 let prestamo = await Prestamo.findById(PrestamosObjectId);
                 ListaFinalPrestamos.push(prestamo._id)
             }
-
             let usuarioBus = await Usuario.findById(input.usuario);
             let solicitudPrestamo = await SolicitudPrestamo.findByIdAndUpdate({usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, prestamos: ListaFinalPrestamos});
             return {
@@ -355,10 +546,10 @@ const resolvers = {
                 descriptionError: ""
             };
         },
-
+    
     }
-
 }
+
 
 let apolloServer = null;
 
