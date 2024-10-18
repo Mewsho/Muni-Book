@@ -1,26 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Muni Book - Buscar Libros</title>
+    <!-- Bootstrap 5 CDN -->
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
     />
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-
-    <title>MuniBook</title>
-    
-<!-- Styles como los del css pero no-->
-
     <style>
-      
+      h1 {
+        font-family: "Times New Roman", Times, serif;
+        font-size: 300%;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        flex-grow: 1; /* Se expande para ocupar el espacio disponible */
+      }
+
+      .hero-title {
+        margin-top: 30px;
+        text-align: center;
+      }
+
+      .hero-subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+      }
+
+      .search-bar {
+        max-width: 600px;
+        margin: 0 auto 30px auto;
+      }
+
+      .filter-buttons {
+        margin-bottom: 30px;
+      }
+
+      .filter-buttons .btn {
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .book-card {
+        text-align: center;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+      }
+
+      .book-card img {
+        width: 100px;
+        height: 100px;
+        background-color: #ccc;
+        margin-bottom: 10px;
+      }
+
+      footer {
+        background-color: #000;
+        color: #fff;
+        padding: 20px 0;
+      }
+
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
@@ -38,16 +93,13 @@
         align-content: center;
         text-align: end;
       }
-
     </style>
   </head>
-  
-  <!-- El cuelpo del diablo -->
-  
   <body>
+    <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="index.html">
           <svg
             width="30"
             height="30"
@@ -71,7 +123,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
-
+            <li class="nav-item">
+              <a class="nav-link" href="#products">Productos</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="#solutions">Soluciones</a>
             </li>
@@ -87,146 +141,107 @@
       </div>
     </nav>
 
-    <section class="hero-section">
-      <div class="container text-center">
-        <h1 class="display-4">Muni Book</h1>
-        <p class="lead">Librería municipal de Lorem ipsum</p>
-        <div class="mt-4">
-          <a href="login.html" class="btn btn-light">Acceder</a>
-        </div>
+    <!-- Main Title and Subtitle -->
+    <div class="container">
+      <h1 class="hero-title">Muni Book</h1>
+      <p class="hero-subtitle">Libreria municipal de los Chicos del Barrio</p>
+    </div>
+
+    <!-- Search Bar Section -->
+    <div class="container search-bar">
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Busca tu libro"
+          aria-label="Busca tu libro"
+        />
+        <button class="btn btn-outline-secondary" type="button">🔍</button>
       </div>
-    </section>
+    </div>
 
-    <section class="container my-5">
-      <div class="row">
-        <div class="col-md-6">
-          <img
-            src="/Assets/Images/Libreria1.jpg"
-            alt="Interior de la librería"
-            class="img-fluid rounded w-100 mb-2"
-          />
+    <!-- Filter Buttons -->
+    <div class="container filter-buttons text-center">
+      <button type="button" class="btn btn-outline-secondary">Editorial</button>
+      <button type="button" class="btn btn-outline-secondary">
+        Tipo contenido
+      </button>
+      <button type="button" class="btn btn-outline-secondary">Autor</button>
+      <button type="button" class="btn btn-outline-secondary">Año</button>
+      <button type="button" class="btn btn-outline-secondary">Edicion</button>
+    </div>
+
+    <!-- Book Grid Section -->
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        <div class="col">
+          <div class="book-card">
+            <img src="placeholder.png" alt="Book Image" />
+            <h3 class="h6">Title</h3>
+            <p class="text-muted">Updated yesterday</p>
+          </div>
         </div>
-        <div class="col-md-6">
-          <img
-            src="/Assets/Images/Libreria2.jpg"
-            alt="Estanterías de libros"
-            class="img-fluid rounded w-100 mb-2"
-          />
+        <div class="col">
+          <div class="book-card">
+            <img src="placeholder.png" alt="Book Image" />
+            <h3 class="h6">Title</h3>
+            <p class="text-muted">Updated yesterday</p>
+          </div>
         </div>
+        <div class="col">
+          <div class="book-card">
+            <img src="placeholder.png" alt="Book Image" />
+            <h3 class="h6">Title</h3>
+            <p class="text-muted">Updated yesterday</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="book-card">
+            <img src="placeholder.png" alt="Book Image" />
+            <h3 class="h6">Title</h3>
+            <p class="text-muted">Updated yesterday</p>
+          </div>
+        </div>
+        <!-- Add more book-card divs as needed -->
       </div>
-    </section>
+    </div>
 
-    <section class="features-section bg-light">
-      <div class="container">
-        <h2 class="text-center mb-5">Servicios</h2>
-        <div class="row">
-          <div class="col-md-4 mb-4">
-            <div class="d-flex align-items-center mb-3">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="black"
-                  stroke-width="2"
-                />
-                <path d="M12 6V12L16 16" stroke="black" stroke-width="2" />
-              </svg>
-              <h5 class="ms-2 mb-0">Servicios</h5>
-            </div>
-            <p>Solicita libros</p>
-          </div>
-          <div class="col-md-4 mb-4">
-            <div class="d-flex align-items-center mb-3">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="black"
-                  stroke-width="2"
-                />
-                <path d="M12 6V12L16 16" stroke="black" stroke-width="2" />
-              </svg>
-              <h5 class="ms-2 mb-0">Title</h5>
-            </div>
-            <p>
-              Enter the content of your text here. It can be a short phrase,
-              sentence, or a whole paragraph.
-            </p>
-          </div>
-          <div class="col-md-4 mb-4">
-            <div class="d-flex align-items-center mb-3">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="black"
-                  stroke-width="2"
-                />
-                <path d="M12 6V12L16 16" stroke="black" stroke-width="2" />
-              </svg>
-              <h5 class="ms-2 mb-0">Title</h5>
-            </div>
-            <p>
-              Enter the content of your text here. It can be a short phrase,
-              sentence, or a whole paragraph.
-            </p>
-          </div>
-
-
-
-           
-    </section>
-
-<!-- Footer begins here remember to keep your house tidy an you too-->
-
+    <!-- Footer -->
     <footer class="bg-dark text-light py-4">
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
-            <h5>Casos de uso</h5>
+            <h5>Use cases</h5>
             <ul class="list-unstyled">
+              <li>UI design</li>
+              <li>UX design</li>
+              <li>Prototyping</li>
               <li>UI development</li>
               <li>Illustration</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Explorar</h5>
+            <h5>Explore</h5>
             <ul class="list-unstyled">
               <li>Design systems</li>
               <li>Features</li>
+              <li>Customers</li>
+              <li>Figma for enterprise</li>
+              <li>Design communities</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Recursos</h5>
+            <h5>Resources</h5>
             <ul class="list-unstyled">
-              <li>Sobre nosotros</li>
+              <li>Blog</li>
               <li>Best practices</li>
-              <li>Contactanos</li>
+              <li>Support</li>
+              <li>Developers</li>
+              <li>Learn design</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Siguenos</h5>
+            <h5>Connect</h5>
             <div class="d-flex">
               <a href="#" class="text-light me-2">
                 <svg
@@ -290,7 +305,10 @@
                   />
                 </svg>
               </a>
-              <a href="#" class="text-light">
+              <a
+                href="https://www.youtube.com/watch?v=Tf4pSSN_P3w"
+                class="text-light"
+              >
                 <svg
                   width="24"
                   height="24"
