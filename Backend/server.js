@@ -10,31 +10,33 @@ const Ejemplar = require('./models/ejemplar');
 const Prestamo = require('./models/prestamo')
 const SolicitudPrestamo = require('./models/solicitudPrestamo')
 const Usuario = require('./models/usuario');
-const Usuario = require('./models/usuario');
+
 
 mongoose.connect('mongodb+srv://FcoTorres:hEqGLg4XvhwgO9y5@cluster0.45avn.mongodb.net/BaseBiblioteca',{useNewUrlParser: true, useUnifiedTopology:true});
 
 const typeDefs = gql`
 
+    scalar Date
+
     type Usuario{
         id: ID!
-        rut: Number!
+        rut: Int!
         nombres: String!
         apellidos: String!
         direccion: String!
-        telefono: Number!
-        activo: Number!
+        telefono: Int!
+        activo: Int!
         correo: String!
         password: String!
     }
 
     input UsuarioInput{
-        rut: Number!
+        rut: Int!
         nombres: String!
         apellidos: String!
         direccion: String!
-        telefono: Number!
-        activo: Number!
+        telefono: Int!
+        activo: Int!
         correo: String!
         password: String!
     }
@@ -51,23 +53,23 @@ const typeDefs = gql`
 
     input PrestamoInput{
         tipoPrestamo: String!
-        ejemplar: Ejemplar!
+        ejemplar: String
         fechaPrestamo: String!
         fechaDevolucion: Date!
         fechaDevolucionReal: Date!
-        solicitudPrestamo: SolicitudPrestamo
+        solicitudPrestamo: String
     }
 
     type Ejemplar{
         id: ID!
         documento: Documento
-        estado: Number!
+        estado: Int!
         ubicacion: String!
     }
 
     input EjemplarInput{
-        documento: Documento
-        estado: Number!
+        documento: String
+        estado: Int!
         ubicacion: String!
         }
 
@@ -77,8 +79,8 @@ const typeDefs = gql`
         titulo: String!
         autor: String!
         editorial: String!
-        anio: Number!
-        edicion: Number!
+        anio: Int!
+        edicion: Int!
         categoria: String!
         tipoMedio: String!
     }
@@ -88,8 +90,8 @@ const typeDefs = gql`
         titulo: String!
         autor: String!
         editorial: String!
-        anio: Number!
-        edicion: Number!
+        anio: Int!
+        edicion: Int!
         categoria: String!
         tipoMedio: String!
         }
@@ -101,8 +103,8 @@ const typeDefs = gql`
     }
 
     input DetalleSolicitudPrestamoInput{
-        ejemplares: [Ejemplar]
-        solicitudPrestamo: SolicitudPrestamo
+        ejemplares: [String]
+        solicitudPrestamo: String
     }
 
     type SolicitudPrestamo{
@@ -115,9 +117,9 @@ const typeDefs = gql`
     }
 
     input SolicitudPrestamoInput{
-        usuario: Usuario
+        usuario: String
         fechaSolicitud: Date!
-        prestamos: [Prestamo]
+        prestamos: [String]
         esReserva: Boolean
     }
 
@@ -133,21 +135,21 @@ const typeDefs = gql`
     }
 
     type Query{
-        getUsuarios: [Usuarios]
+        getUsuarios: [Usuario]
         getUsuarioById(id: ID!): Usuario
-        getUsuarioByRut(rut: Number!): Usuario
+        getUsuarioByRut(rut: Int!): Usuario
         getPrestamos: [Prestamo]
         getPrestamosEjemplar: [Prestamo]
         getPrestamoById(id: ID!): Prestamo
         getPrestamoByIdEjemplar(id: ID!): Prestamo
-        getSolicitudPrestamos: [SolicitudPrestamos]
-        getSolicitudPrestamosUsuario: [SolicitudPrestamos]
-        getSolicitudPrestamoById(id: ID!): SolicitudPrestamos
-        getSolicitudPrestamoByIdUsuario(id: ID!): SolicitudPrestamos
-        getSolicitudPrestamosPrestamos: [SolicitudPrestamos]
-        getSolicitudPrestamoByIdPrestamos: SolicitudPrestamos
-        getSolicitudPrestamosUsuarioPrestamos: [SolicitudPrestamos]
-        getSolicitudPrestamoByIdUsuarioPrestamos: SolicitudPrestamos
+        getSolicitudPrestamos: [SolicitudPrestamo]
+        getSolicitudPrestamosUsuario: [SolicitudPrestamo]
+        getSolicitudPrestamoById(id: ID!): SolicitudPrestamo
+        getSolicitudPrestamoByIdUsuario(id: ID!): SolicitudPrestamo
+        getSolicitudPrestamosPrestamos: [SolicitudPrestamo]
+        getSolicitudPrestamoByIdPrestamos: SolicitudPrestamo
+        getSolicitudPrestamosUsuarioPrestamos: [SolicitudPrestamo]
+        getSolicitudPrestamoByIdUsuarioPrestamos: SolicitudPrestamo
         getDocumentos: [Documento]
         getDocumentoById(id: ID!) : Documento
         getEjemplares: [Ejemplar]
@@ -166,7 +168,7 @@ const typeDefs = gql`
 
     type Mutation{
         addUsuario(input: UsuarioInput): Response
-        updUsuario(id: ID!, input: Usuarioinput): Response
+        updUsuario(id: ID!, input: UsuarioInput): Response
         delUsuario(id: ID!): Response
         addPrestamo(input: PrestamoInput): Response
         updPrestamo(id: ID!, input: PrestamoInput): Response
@@ -194,12 +196,12 @@ const resolvers = {
             return usuarios
         },
 
-        async getUsuariosById(obj, {id}){
+        async getUsuarioById(obj, {id}){
             const usuario = await Usuario.findById(id);
             return usuario;
         },
 
-        async getUsuariosByRut(obj, {rut}){
+        async getUsuarioByRut(obj, {rut}){
             const usuario = await Usuario.find({rut: rut}).exec();
             return usuario;
         },
@@ -249,7 +251,7 @@ const resolvers = {
             return solicitudPrestamo;
         },
 
-        async getSolicitudPrestamoByIdPrestamo(obj, {id}){
+        async getSolicitudPrestamoByIdPrestamos(obj, {id}){
             let solicitudPrestamo = await SolicitudPrestamo.findById(id).populate('prestamos');
             return solicitudPrestamo;
         },
