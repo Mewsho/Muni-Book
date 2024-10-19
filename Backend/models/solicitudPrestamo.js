@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+const moment = require('moment-timezone');
+const dateSantiago = moment.tz(Date.now(), "America/Santiago");
+
 const solicitudPrestamoSchema = mongoose.Schema({
     usuario : { type: mongoose.Schema.Types.ObjectId, ref : 'Usuario'},
     fechaSolicitud : { type: Date , default: Date.now },

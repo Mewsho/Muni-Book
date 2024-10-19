@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const {ApolloServer, gql} = require('apollo-server-express'); //Importar librerias externas
+const { GraphQLDateTime } = require('graphql-iso-date')
+
 
 const DetalleSolicitudPrestamo = require('./models/detalleSolicitudPrestamo.js');
 const Documento = require('./models/documento');
@@ -16,7 +18,7 @@ mongoose.connect('mongodb+srv://FcoTorres:hEqGLg4XvhwgO9y5@cluster0.45avn.mongod
 
 const typeDefs = gql`
 
-    scalar Date
+    scalar GraphQLDateTime
 
     type Usuario{
         id: ID!
@@ -25,7 +27,7 @@ const typeDefs = gql`
         apellidos: String!
         direccion: String!
         telefono: Int!
-        activo: Int!
+        activo: Boolean!
         correo: String!
         password: String!
     }
@@ -36,7 +38,7 @@ const typeDefs = gql`
         apellidos: String!
         direccion: String!
         telefono: Int!
-        activo: Int!
+        activo: Boolean!
         correo: String!
         password: String!
     }
@@ -45,31 +47,29 @@ const typeDefs = gql`
         id: ID!
         tipoPrestamo: String!
         ejemplar: Ejemplar!
-        fechaPrestamo: String!
-        fechaDevolucion: Date!
-        fechaDevolucionReal: Date!
-        solicitudPrestamo: SolicitudPrestamo
+        fechaPrestamo: GraphQLDateTime
+        fechaDevolucion: GraphQLDateTime
+        fechaDevolucionReal: GraphQLDateTime
     }
 
     input PrestamoInput{
         tipoPrestamo: String!
         ejemplar: String
-        fechaPrestamo: String!
-        fechaDevolucion: Date!
-        fechaDevolucionReal: Date!
-        solicitudPrestamo: String
+        fechaPrestamo: GraphQLDateTime
+        fechaDevolucion: GraphQLDateTime
+        fechaDevolucionReal: GraphQLDateTime
     }
 
     type Ejemplar{
         id: ID!
         documento: Documento
-        estado: Int!
+        estado: Boolean!
         ubicacion: String!
     }
 
     input EjemplarInput{
         documento: String
-        estado: Int!
+        estado: Boolean!
         ubicacion: String!
         }
 
@@ -110,7 +110,7 @@ const typeDefs = gql`
     type SolicitudPrestamo{
         id: ID!
         usuario: Usuario
-        fechaSolicitud: Date!
+        fechaSolicitud: GraphQLDateTime!
         prestamos: [Prestamo]
         esReserva: Boolean
 
@@ -118,7 +118,7 @@ const typeDefs = gql`
 
     input SolicitudPrestamoInput{
         usuario: String
-        fechaSolicitud: Date!
+        fechaSolicitud: GraphQLDateTime!
         prestamos: [String]
         esReserva: Boolean
     }
@@ -336,7 +336,7 @@ const resolvers = {
             const usuario = await Usuario.findByIdAndUpdate(id, input);
             return {
                 statusCode: "200",
-                body: usuario,
+                body: null,
                 errorCode: "0",
                 descriptionError: ""
             };
@@ -359,18 +359,18 @@ const resolvers = {
             await prestamo.save();
             return {
                 statusCode: "200",
-                body: prestamo,
+                body: null,
                 errorCode: "0",
                 descriptionError: ""
             };
         },
 
         async updPrestamo(obj, {id, input}){
-            let ejemplarBus = await Ejemplar.findById(id);
-            let prestamo = await Prestamo.findByIdAndUpdate({tipoPrestamo: input.tipoPrestamo, ejemplar: ejemplarBus._id, fechaPrestamo: input.fechaPrestamo, fechaDevolucion: input.fechaDevolucion, fechaDevolucionReal: input.fechaDevolucionReal});
+            let ejemplarBus = await Ejemplar.findById(input.ejemplar);
+            let prestamo = await Prestamo.findByIdAndUpdate(id, {tipoPrestamo: input.tipoPrestamo, ejemplar: ejemplarBus._id, fechaPrestamo: input.fechaPrestamo, fechaDevolucion: input.fechaDevolucion, fechaDevolucionReal: input.fechaDevolucionReal});
             return {
                 statusCode: "200",
-                body: prestamo,
+                body: null,
                 errorCode: "0",
                 descriptionError: ""
             };
@@ -530,10 +530,10 @@ const resolvers = {
                 ListaFinalPrestamos.push(prestamo._id)
             }
             let usuarioBus = await Usuario.findById(input.usuario);
-            let solicitudPrestamo = await SolicitudPrestamo.findByIdAndUpdate({usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, prestamos: ListaFinalPrestamos});
+            let solicitudPrestamo = await SolicitudPrestamo.findByIdAndUpdate(id, {usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, prestamos: ListaFinalPrestamos});
             return {
-                statusCode: "200",
-                body: solicitudPrestamo,
+                sstatusCode: "200",
+                body: null,
                 errorCode: "0",
                 descriptionError: ""
             };
