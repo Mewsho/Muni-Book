@@ -30,6 +30,7 @@ const typeDefs = gql`
         activo: Boolean!
         correo: String!
         password: String!
+        tipoUsuario: Int!
     }
 
     input UsuarioInput{
@@ -63,15 +64,17 @@ const typeDefs = gql`
     type Ejemplar{
         id: ID!
         documento: Documento
-        estado: Boolean!
+        estado: Int!
+        estadoTexto: String!
         ubicacion: String!
     }
 
     input EjemplarInput{
-        documento: String
-        estado: Boolean!
+        documento: String,
+        estado: Int!
+        estadoTexto: String!
         ubicacion: String!
-        }
+    }
 
     type Documento{
         id: ID!
@@ -82,7 +85,7 @@ const typeDefs = gql`
         anio: Int!
         edicion: Int!
         categoria: String!
-        tipoMedio: String!
+        tipoFisico: String!
     }
 
     input DocumentoInput{
@@ -93,8 +96,8 @@ const typeDefs = gql`
         anio: Int!
         edicion: Int!
         categoria: String!
-        tipoMedio: String!
-        }
+        tipoFisico: String!
+    }
 
     type DetalleSolicitudPrestamo{
         id: ID!
@@ -187,6 +190,9 @@ const typeDefs = gql`
         delDetalleSolicitudPrestamo(id: ID!): Response
     }
 `;
+
+
+
 
 const resolvers = {
 
@@ -388,6 +394,15 @@ const resolvers = {
 
 
         async addDocumento(obj, {input}){
+            let result = await checkDocumentos(input);
+            if (!result[0]){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: `${result[1]} no valido`
+                };
+            };
             let documento = new Documento(input);
             await documento.save();
             return {
@@ -399,6 +414,15 @@ const resolvers = {
         },
 
         async updDocumento(obj, {id, input}){
+            let result = await checkDocumentos(input);
+            if (!result[0]){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: `${result[1]} no valido`
+                };
+            };
             let documento = await Documento.findByIdAndUpdate(id, input);
             return {
                 statusCode: "200",
@@ -407,7 +431,7 @@ const resolvers = {
                 descriptionError: ""
             }
         },
-        
+
         async delDocumento(obj, {id}){
             await Documento.deleteOne({_id: id});
             return {
@@ -421,6 +445,23 @@ const resolvers = {
 
         async addEjemplar(obj, {input}){
             let documentoBus = await Documento.findById(input.documento)
+            if (documentoBus == null){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: "Documento no encontrado"
+                }
+            }
+            let check = await checkEjemplares(input)
+            if (!check[0]){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: `${check[1]} no valido`
+                };
+            };
             let ejemplar = new Ejemplar({documento: documentoBus._id, estado: input.estado, ubicacion: input.ubicacion});
             await ejemplar.save();
             return {
@@ -433,6 +474,23 @@ const resolvers = {
 
         async updEjemplar(obj, {id, input}){
             let documentoBus = await Documento.findById(input.documento)
+            if (documentoBus == null){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: "Id Erroneo"
+                }
+            }
+            let check = await checkEjemplares(input)
+            if (!check[0]){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: `${check[1]} no valido`
+                }
+            }
             let ejemplar = await Ejemplar.findByIdAndUpdate(id, {
                 documento: documentoBus._id, estado: input.estado, ubicacion: input.ubicacion
             })
@@ -460,9 +518,25 @@ const resolvers = {
             let ejemplarList = input.ejemplares
             for (ejemplarObjectId in ejemplarList){
                 let ejemplar = await Ejemplar.findById(ejemplarObjectId);
+                if (ejemplar == null){
+                    return {
+                        statusCode: "400",
+                        body: null,
+                        errorCode: "0",
+                        descriptionError: "Ejemplar no encontrado"
+                    }
+                }
                 inputEjemplarList.push(ejemplar._id)
             }
             let solicitudPrestamoBus = await SolicitudPrestamo.findById(input.solicitudPrestamo);
+            if (solicitudPrestamoBus == null){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: "SolicitudPrestamo no encontrado"
+                }
+            }
             let detalleSolicitudPrestamo = new DetalleSolicitudPrestamo({
                 ejemplares: inputEjemplarList, solicitudPrestamo: solicitudPrestamoBus._id
             })
@@ -480,9 +554,25 @@ const resolvers = {
             let inputEjemplarList = input.ejemplares
             for (ejemplarObjectId in inputEjemplarList){
                 let ejemplar = await Ejemplar.findById(ejemplarObjectId);
+                if (ejemplar == null){
+                    return {
+                        statusCode: "400",
+                        body: null,
+                        errorCode: "0",
+                        descriptionError: "Ejemplar no encontrado"
+                    }
+                }
                 ejemplarIdFinalList.push(ejemplar._id)
             }
             let solicitudPrestamoBus = await SolicitudPrestamo.findById(input.solicitudPrestamo);
+            if (solicitudPrestamoBus == null){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: "SolicitudPrestamo no encontrado"
+                }
+            }
             let detalleSolicitudPrestamo = await DetalleSolicitudPrestamo.findByIdAndUpdate(id,{
                 ejemplares: ejemplarIdFinalList, solicitudPrestamo: solicitudPrestamoBus._id
             })
@@ -552,6 +642,38 @@ const resolvers = {
     
     }
 }
+
+async function checkDocumentos(input){
+    let ListTipos = ["Libro","Multimedia"];
+    if (input.anio >= 2100 || input.anio <= -100){
+        return [false,"Anio"];
+    };
+    if (input.edicion < 0){
+        return [false, "Edicion"]
+    };
+    if (!ListTipos.includes(input.tipo)){
+        return [false, "Tipo"]
+    };
+    if (input.titulo.length < 100){
+        return [false, "Titulo"]
+    };
+    if (input.autor.length < 100){
+        return [false, "Autor"]
+    }
+    return [true,""]
+}
+
+async function checkEjemplares(input) {
+    let ListEstados = ["Disponible","En sala", "No Disponible"];
+    if (input.estado > 0 || input.estado > 5){
+        return [false, "Estado"];
+    };
+    if (!ListEstados.includes(input.estadoTexto)){
+        return [false, "EstadoTexto"]
+    };
+    return [true,""]
+}
+
 
 
 let apolloServer = null;
