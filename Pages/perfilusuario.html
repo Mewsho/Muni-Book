@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Muni Book - Perfil de Usuario</title>
+    <!-- Bootstrap 5 CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        flex-grow: 1;
+      }
+
+      .profile-section {
+        margin-top: 30px;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+      }
+
+      .profile-img {
+        width: 100%;
+        max-width: 150px;
+        height: auto;
+        object-fit: cover;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin-bottom: 15px;
+      }
+
+      .btn-edit {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header Section -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="24" height="24" fill="white" />
+            <path d="M4 4H20V20H4V4Z" stroke="black" stroke-width="2" />
+            <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
+          </svg>
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#products">Productos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#solutions">Soluciones</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#community">Comunidad</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- User Profile Section -->
+    <div class="container profile-section">
+      <h2 class="text-center">Perfil de Usuario</h2>
+      <div
+        class="d-flex justify-content-center align-items-center flex-column text-center"
+      >
+        <img
+          src="placeholder-profile.png"
+          alt="Foto de perfil"
+          class="profile-img"
+          id="profileImage"
+        />
+        <input
+          type="file"
+          class="form-control"
+          style="display: none"
+          id="uploadImage"
+          onchange="updateProfileImage(event)"
+        />
+        <button
+          class="btn btn-outline-primary btn-edit"
+          onclick="document.getElementById('uploadImage').click()"
+        >
+          Cambiar Foto
+        </button>
+      </div>
+      <form class="row g-3 mt-3">
+        <div class="col-md-6">
+          <label for="rut" class="form-label">RUT</label>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="rut"
+              value="12345678-9"
+              readonly
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="enableEditing('rut')"
+            >
+              Editar
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="nombre" class="form-label">Nombre</label>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="nombre"
+              value="Juan"
+              readonly
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="enableEditing('nombre')"
+            >
+              Editar
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="apellido" class="form-label">Apellido</label>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="apellido"
+              value="Pérez"
+              readonly
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="enableEditing('apellido')"
+            >
+              Editar
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="direccion" class="form-label">Dirección</label>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="direccion"
+              value="Av. Siempre Viva 123"
+              readonly
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="enableEditing('direccion')"
+            >
+              Editar
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="telefono"
+              value="+56 9 8765 4321"
+              readonly
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="enableEditing('telefono')"
+            >
+              Editar
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="correo" class="form-label">Correo Electrónico</label>
+          <div class="input-group">
+            <input
+              type="email"
+              class="form-control"
+              id="correo"
+              value="juan.perez@example.com"
+              readonly
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="enableEditing('correo')"
+            >
+              Editar
+            </button>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <label for="huella" class="form-label">Huella Digital</label>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="huella"
+              value="Huella registrada"
+              readonly
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="enableEditing('huella')"
+            >
+              Editar
+            </button>
+          </div>
+          <button type="submit" class="btn btn-success mt-4">
+            Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      function enableEditing(fieldId) {
+        const field = document.getElementById(fieldId);
+        field.removeAttribute("readonly");
+        field.focus();
+        field.addEventListener("blur", () => {
+          field.setAttribute("readonly", true);
+        });
+      }
+
+      function updateProfileImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          const img = document.getElementById("profileImage");
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      }
+    </script>
+  </body>
+</html>
