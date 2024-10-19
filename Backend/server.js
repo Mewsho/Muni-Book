@@ -407,6 +407,7 @@ const resolvers = {
                 descriptionError: ""
             }
         },
+        
         async delDocumento(obj, {id}){
             await Documento.deleteOne({_id: id});
             return {
