@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const ejemplarSchema = mongoose.Schema({
     estado: Number,
-    estadoTexto: String,
     ubicacion: String,
-    documento : { type: mongoose.Schema.Types.ObjectId, ref : 'Documento'}
+    documento : { type: mongoose.Schema.Types.ObjectId, ref : 'Documento'},
+    estadoTexto: String
 });
 
 module.exports = mongoose.model('Ejemplar', ejemplarSchema); 

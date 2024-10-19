@@ -61,10 +61,11 @@ const typeDefs = gql`
         fechaDevolucionReal: GraphQLDateTime
     }
 
+    # Hay tres estados Disponible, En sala y No disponible (2,1,0)
     type Ejemplar{
         id: ID!
         documento: Documento
-        estado: Int!
+        estado: Int! 
         estadoTexto: String!
         ubicacion: String!
     }
@@ -138,6 +139,7 @@ const typeDefs = gql`
     }
 
     type Query{
+        # Query basicos de cada cosa
         getUsuarios: [Usuario]
         getUsuarioById(id: ID!): Usuario
         getUsuarioByRut(rut: Int!): Usuario
@@ -167,6 +169,8 @@ const typeDefs = gql`
         getDetalleSolicitudPrestamosByIdEjemplares(id: ID!): DetalleSolicitudPrestamo
         getDetalleSolicitudPrestamosByIdSolicitudPrestamo(id: ID!): DetalleSolicitudPrestamo
         getDetalleSolicitudPrestamosByIdEjemplaresSolicitudPrestamo(id: ID!):DetalleSolicitudPrestamo
+        # Query especiales
+        getEjemplaresByDocumentoAndEstado(documentoId: ID!, estado: Int): [Ejemplar]
     }
 
     type Mutation{
@@ -328,7 +332,19 @@ const resolvers = {
         async getDetalleSolicitudPrestamosByIdEjemplaresSolicitudPrestamo(obj, {id}){
             let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.findById(id).populate('ejemplares').populate('solicitudPrestamo');
             return detalleSolicitudPrestamos;
+        },
+
+        // Query especiales
+
+        async getEjemplaresByDocumentoAndEstado(obj, {documentoId, estado}){
+            let checkEstado = estado
+            let docId = documentoId
+            let ejemplares = await Ejemplar.find(
+                {documento: docId, estado: checkEstado}
+            )
+            return ejemplares
         }
+
     },
     
     Mutation: {
@@ -654,18 +670,18 @@ async function checkDocumentos(input){
     if (!ListTipos.includes(input.tipo)){
         return [false, "Tipo"]
     };
-    if (input.titulo.length < 100){
+    if (input.titulo.length > 100){
         return [false, "Titulo"]
     };
-    if (input.autor.length < 100){
+    if (input.autor.length > 100){
         return [false, "Autor"]
     }
     return [true,""]
 }
 
 async function checkEjemplares(input) {
-    let ListEstados = ["Disponible","En sala", "No Disponible"];
-    if (input.estado > 0 || input.estado > 5){
+    let ListEstados = ["Disponible","En sala", "No disponible"];
+    if (input.estado < 0 || input.estado > 5){
         return [false, "Estado"];
     };
     if (!ListEstados.includes(input.estadoTexto)){
