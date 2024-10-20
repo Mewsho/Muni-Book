@@ -8,7 +8,7 @@ const documentoSchema = mongoose.Schema({
     anio : Number,
     edicion : Number,
     categoria: String,
-    tipoMedio : String
+    tipoFisico : String
 });
 
 module.exports = mongoose.model('Documento', documentoSchema); 
