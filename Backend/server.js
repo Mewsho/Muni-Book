@@ -12,6 +12,8 @@ const Ejemplar = require('./models/ejemplar');
 const Prestamo = require('./models/prestamo')
 const SolicitudPrestamo = require('./models/solicitudPrestamo')
 const Usuario = require('./models/usuario');
+const TipoDocumento = require('./models/tipoDocumento');
+const CategoriaDocumento = require('./models/categoriaDocumento');
 
 
 mongoose.connect('mongodb+srv://FcoTorres:hEqGLg4XvhwgO9y5@cluster0.45avn.mongodb.net/BaseBiblioteca',{useNewUrlParser: true, useUnifiedTopology:true});
@@ -31,6 +33,7 @@ const typeDefs = gql`
         correo: String!
         password: String!
         tipoUsuario: Int!
+        fechaSancion: GraphQLDateTime
     }
 
     input UsuarioInput{
@@ -61,43 +64,60 @@ const typeDefs = gql`
         fechaDevolucionReal: GraphQLDateTime
     }
 
-    # Hay tres estados Disponible, En sala y No disponible (2,1,0)
+    # Hay cuatro estados Disponible, En sala, Reserva y  No disponible (3,2,1,0)
     type Ejemplar{
         id: ID!
-        documento: Documento
+        codigo: Int!
         estado: Int! 
         estadoTexto: String!
         ubicacion: String!
+        documento: Documento
     }
 
     input EjemplarInput{
-        documento: String,
+        codigo: Int!
         estado: Int!
         estadoTexto: String!
         ubicacion: String!
+        documento: String
     }
 
     type Documento{
         id: ID!
-        tipo: String!
         titulo: String!
         autor: String!
         editorial: String!
-        anio: Int!
+        anioSalida: Int!
         edicion: Int!
-        categoria: String!
-        tipoFisico: String!
+        codigo: String
+        tipoDocumento: TipoDocumento
+        categoriaDocumento: CategoriaDocumento
+    }
+    input DocumentoInput{
+        titulo: String!
+        autor: String!
+        editorial: String!
+        anioSalida: Int!
+        edicion: Int!
+        codigo: String
+        tipoDocumento: String
+        categoriaDocumento: String
     }
 
-    input DocumentoInput{
-        tipo: String!
-        titulo: String!
-        autor: String!
-        editorial: String!
-        anio: Int!
-        edicion: Int!
-        categoria: String!
-        tipoFisico: String!
+    type TipoDocumento{
+        id: ID!
+        tipo: String
+    }
+    input TipoDocumentoInput{
+        tipo: String
+    }
+
+    type CategoriaDocumento{
+        id: ID!
+        categoria: String
+    }
+    input CategoriaDocumentoInput{
+        categoria: String
     }
 
     type DetalleSolicitudPrestamo{
@@ -113,19 +133,20 @@ const typeDefs = gql`
 
     type SolicitudPrestamo{
         id: ID!
+        tipoSolicitud: Int # Sala, domicilio, reserva
+        estadoSolicitud: Int # Aprobado y no aprobado 
+        fechaSolicitud: GraphQLDateTime
         usuario: Usuario
-        fechaSolicitud: GraphQLDateTime!
         prestamos: [Prestamo]
-        esReserva: Boolean
-
     }
-
     input SolicitudPrestamoInput{
+        tipoSolicitud: Int
+        estadoSolicitud: Int
+        fechaSolicitud: GraphQLDateTime
         usuario: String
-        fechaSolicitud: GraphQLDateTime!
         prestamos: [String]
-        esReserva: Boolean
     }
+
 
     type Alert{
         message: String
@@ -156,7 +177,13 @@ const typeDefs = gql`
         getSolicitudPrestamosUsuarioPrestamos: [SolicitudPrestamo]
         getSolicitudPrestamoByIdUsuarioPrestamos: SolicitudPrestamo
         getDocumentos: [Documento]
+        getDocumentosTipo: [Documento]
+        getDocumentosCategoria: [Documento]
+        getDocumentosTipoCategoria: [Documento]
         getDocumentoById(id: ID!) : Documento
+        getDocumentosByIdTipo(id: ID!): Documento
+        getDocumentosByIdCategoria(id: ID!): Documento
+        getDocumentosByIdTipoCategoria(id: ID!): Documento
         getEjemplares: [Ejemplar]
         getEjemplaresDocumento: [Ejemplar]
         getEjemplarById(id: ID!): Ejemplar
@@ -169,8 +196,15 @@ const typeDefs = gql`
         getDetalleSolicitudPrestamosByIdEjemplares(id: ID!): DetalleSolicitudPrestamo
         getDetalleSolicitudPrestamosByIdSolicitudPrestamo(id: ID!): DetalleSolicitudPrestamo
         getDetalleSolicitudPrestamosByIdEjemplaresSolicitudPrestamo(id: ID!):DetalleSolicitudPrestamo
+        getTipoDocumentos: [TipoDocumento]
+        getTipoDocumentoById(id: ID!): TipoDocumento
+        getCategoriaDocumentos: [CategoriaDocumento]
+        getCategoriaDocumentosById(id: ID!): CategoriaDocumento
         # Query especiales
         getEjemplaresByDocumentoAndEstado(documentoId: ID!, estado: Int): [Ejemplar]
+        getCantEjemplaresByDocumentoAndEstado(documentoId: ID!, estado: Int): Int
+        getDocumentosByTituloAndAutorAndTipoAndCategoria(titulo: String, autor: String, tipoId: ID, categoriaId: ID): [Documento]
+        getNDocumentos(numero: Int): [Documentos]
     }
 
     type Mutation{
@@ -275,27 +309,62 @@ const resolvers = {
             let solicitudPrestamo = await SolicitudPrestamo.findById(id).populate('usuario').populate('prestamos');
             return solicitudPrestamo;
         },
+
         async getDocumentos(obj){
             let documentos = await Documento.find();
             return documentos;
         },
+
+        async getDocumentosTipo(obj){
+            let documentos = await Documento.find().populate('tipoDocumento');
+            return documentos;
+        },
+
+        async getDocumentosCategoria(obj){
+            let documentos = await Documento.find().populate('categoriaDocumento');
+            return documentos;
+        },
+
+        async getDocumentosTipoCategoria(obj){
+            let documentos = await Documento.find().populate('tipoDocumento').populate('categoriaDocumento');
+            return documentos;
+        },
+
         async getDocumentoById(obj, {id}){
             let documento = await Documento.findById(id);
             return documento;
+        },
+
+        async getDocumentosByIdTipo(obj, {id}){
+            let documentos = await Documento.findById(id).populate('tipoDocumento');
+            return documentos;
+        },
+
+        async getDocumentosByIdCategoria(obj, {id}){
+            let documentos = await Documento.findById(id).populate('categoriaDocumento');
+            return documentos;
+        },
+
+        async getDocumentosByIdTipoCategoria(obj, {id}){
+            let documentos = await Documento.findById(id).populate('tipoDocumento').populate('categoriaDocumento');
+            return documentos;
         },
 
         async getEjemplares(obj){
             let ejemplares = await Ejemplar.find();
             return ejemplares;
         },
+
         async getEjemplaresDocumento(obj){
             let ejemplares = await Ejemplar.find().populate('documento');
             return ejemplares;
         },
+
         async getEjemplarById(obj, {id}) {
             let ejemplar = await Ejemplar.findById(id);
             return ejemplar;
         },
+
         async getEjemplarByIdDocumento(obj, {id}) {
             let ejemplar = await Ejemplar.findById(id).populate('documento');
             return ejemplar;
@@ -305,33 +374,60 @@ const resolvers = {
             let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find();
             return detalleSolicitudPrestamos;
         },
+
         async getDetalleSolicitudPrestamosEjemplares(obj){
             let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find().populate('ejemplares');
             return detalleSolicitudPrestamos;
         },
+
         async getDetalleSolicitudPrestamosEjemplaresSolicitudPrestamo(obj){
             let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find().populate('solicitudPrestamo');
             return detalleSolicitudPrestamos;
         },
+
         async getDetalleSolicitudPrestamosEjemplaresSolicitudPrestamo(obj){
             let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.find().populate('ejemplares').populate('solicitudPrestamo');
             return detalleSolicitudPrestamos;
         },
+
         async getDetalleSolicitudPrestamosById(obj, {id}){
             let detalleSolicitudPrestamo = await DetalleSolicitudPrestamo.findById(id);
             return detalleSolicitudPrestamo;
         },
+
         async getDetalleSolicitudPrestamosByIdEjemplares(obj, {id}){
             let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.findById(id).populate('ejemplares');
             return detalleSolicitudPrestamos;
         },
+
         async getDetalleSolicitudPrestamosByIdSolicitudPrestamo(obj, {id}){
             let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.findById(id).populate('solicitudPrestamo');
             return detalleSolicitudPrestamos;
         },
+
         async getDetalleSolicitudPrestamosByIdEjemplaresSolicitudPrestamo(obj, {id}){
             let detalleSolicitudPrestamos = await DetalleSolicitudPrestamo.findById(id).populate('ejemplares').populate('solicitudPrestamo');
             return detalleSolicitudPrestamos;
+        },
+
+        async getTipoDocumentos(obj){
+            let tipoDocumentos = await TipoDocumento.find();
+            return tipoDocumentos;
+        },
+
+        async getTipoDocumentosById(obj, {id}){
+            let tipoDocumento = await TipoDocumento.findById(id);
+            return tipoDocumento;
+        },
+
+        async getCategoriaDocumentos(obj){
+            let categoriaDocumentos = await CategoriaDocumento.find();
+            return categoriaDocumentos;
+        },
+
+        async getCategoriaDocumentosById(obj, {id}){
+            let categoriaDocumento = await CategoriaDocumento.findById(id);
+            return categoriaDocumento;
         },
 
         // Query especiales
@@ -343,8 +439,48 @@ const resolvers = {
                 {documento: docId, estado: checkEstado}
             )
             return ejemplares
-        }
+        },
 
+        async getCantEjemplaresByDocumentoAndEstado(obj, {documentoId, estado}){
+            let checkEstado = estado
+            let docId = documentoId
+            let cantidadEjemplares = await Ejemplar.find(
+                {documento: docId, estado: checkEstado}
+            ).count()
+            return cantidadEjemplares
+        },
+
+            // Todo esto del regex es algo similar a hacer queries con un like en sql
+            // en especifico utiliza un sistema llamado regular expression que es mas brijido 
+            // lo que tengo puesto es una implementacion simple que talvez funciona xd
+        async getDocumentosByTituloAndAutorAndTipoAndCategoria(obj, {titulo, autor, tipo, categoria}){
+            let tipoId = tipo
+            let categoriaId = categoria
+            if (tipoId == null){
+                let documentos = await Documento.find({
+                    titulo: {'$regex': titulo, '$options': 'i'}, 
+                    autor: {'$regex': autor, '$options': 'i'}, categoria: categoriaId
+                })  
+                return documentos  
+            }
+            if (categoriaId == null){
+                let documentos = await Documento.find({
+                    titulo: {'$regex': titulo, '$options': 'i'}, 
+                    autor: {'$regex': autor, '$options': 'i'}, tipo: tipoId
+                })
+                return documentos
+            }
+            let documentos = await Documento.find({
+                titulo: {'$regex': titulo, '$options': 'i'}, 
+                autor: {'$regex': autor, '$options': 'i'}, tipo: tipoId, categoria: categoriaId
+            })
+            return documentos
+        },
+
+        async getNDocumentos(obj, {numero}){
+            let documentos = await Documento.find().populate('tipoDocumento').populate('categoriaDocumento').limit(numero)
+            return documentos
+        }
     },
     
     Mutation: {
@@ -419,7 +555,29 @@ const resolvers = {
                     descriptionError: `${result[1]} no valido`
                 };
             };
-            let documento = new Documento(input);
+            let tipoDocumentoBus = await TipoDocumento.findById(input.tipoDocumento);
+            if (tipoDocumentoBus == null){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: "Tipo no encontrado"
+                }
+            }
+            let categoriaDocumentoBus = await CategoriaDocumento.findById(input.categoriaDocumento);
+            if (categoriaDocumentoBus == null){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: "Categoreia no encontrada"
+                }
+            }
+            let documento = new Documento({
+                titulo: input.titulo, autor: input.autor, editorial: input.editorial,
+                anioSalida: input.anioSalida, edicion: input.edicion, codigo: input.codigo,
+                tipoDocumento: tipoDocumentoBus._id, categoriaDocumento: categoriaDocumentoBus._id
+            });
             await documento.save();
             return {
                 statusCode: "200",
@@ -439,7 +597,29 @@ const resolvers = {
                     descriptionError: `${result[1]} no valido`
                 };
             };
-            let documento = await Documento.findByIdAndUpdate(id, input);
+            let tipoDocumentoBus = await TipoDocumento.findById(input.tipoDocumento);
+            if (tipoDocumentoBus == null){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: "Tipo no encontrado"
+                }
+            }
+            let categoriaDocumentoBus = await CategoriaDocumento.findById(input.categoriaDocumento);
+            if (categoriaDocumentoBus == null){
+                return {
+                    statusCode: "400",
+                    body: null,
+                    errorCode: "0",
+                    descriptionError: "Categoreia no encontrada"
+                }
+            }
+            let documento = await Documento.findByIdAndUpdate(id, {
+                titulo: input.titulo, autor: input.autor, editorial: input.editorial,
+                anioSalida: input.anioSalida, edicion: input.edicion, codigo: input.codigo,
+                tipoDocumento: tipoDocumentoBus._id, categoriaDocumento: categoriaDocumentoBus._id
+            });
             return {
                 statusCode: "200",
                 body: null,
@@ -655,20 +835,81 @@ const resolvers = {
                 descriptionError: ""
             };
         },
-    
+        
+
+        async addTipoDocumento(obj, {input}){
+            let tipoDocumento = new TipoDocumento(input)
+            await tipoDocumento.save()
+            return {
+                statusCode: "200",
+                body: "TipoDocumento Agregado",
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+
+        async updTipoDocumento(obj, {input}){
+            let tipoDocumento = await TipoDocumento.findByIdAndUpdate(id, input)
+            await tipoDocumento.save()
+            return {
+                statusCode: "200",
+                body: "TipoDocumento actualizado",
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+
+        async delTipoDocumento(obj, {input}){
+            await TipoDocumento.deleteOne({_id: id});
+            return {
+                statusCode: "200",
+                body: "CategoriaDocumento Eliminado",
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+
+        async addCategoriaDocumento(obj, {input}){
+            let categoriaDocumento = new CategoriaDocumento(input)
+            await categoriaDocumento.save()
+            return {
+                statusCode: "200",
+                body: "CategoriaDocumento Agregado",
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+
+        async updCategoriaDocumento(obj, {input}){
+            let categoriaDocumento = await CategoriaDocumento.findByIdAndUpdate(id, input)
+            return {
+                statusCode: "200",
+                body: "CategoriaDocumento Actualizado",
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+
+        async delCategoriaDocumento(obj, {id}){
+            await CategoriaDocumento.deleteOne({_id: id});
+            return {
+                statusCode: "200",
+                body: "CategoriaDocumento Eliminado",
+                errorCode: "0",
+                descriptionError: ""
+            };
+        },
+
     }
 }
 
 async function checkDocumentos(input){
     let ListTipos = ["Libro","Multimedia"];
-    if (input.anio >= 2100 || input.anio <= -100){
+    if (input.anioSalida >= 2100 || input.anioSalida <= -100){
         return [false,"Anio"];
     };
     if (input.edicion < 0){
         return [false, "Edicion"]
-    };
-    if (!ListTipos.includes(input.tipo)){
-        return [false, "Tipo"]
     };
     if (input.titulo.length > 100){
         return [false, "Titulo"]
@@ -680,7 +921,7 @@ async function checkDocumentos(input){
 }
 
 async function checkEjemplares(input) {
-    let ListEstados = ["Disponible","En sala", "No disponible"];
+    let ListEstados = ["Disponible","En sala", "Reserva", "No disponible"];
     if (input.estado < 0 || input.estado > 5){
         return [false, "Estado"];
     };
