@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
 const documentoSchema = mongoose.Schema({
-    tipo: String,
     titulo : String,
     autor: String,
     editorial: String,
-    anio : Number,
+    anioSalida : Number,
     edicion : Number,
-    categoria: String,
-    tipoFisico : String
+    codigo: String,
+    tipoDocumento : { type: mongoose.Schema.Types.ObjectId, ref : 'TipoDocumento'},
+    categoriaDocumento : { type: mongoose.Schema.Types.ObjectId, ref : 'CategoriaDocumento'}
 });
 
 module.exports = mongoose.model('Documento', documentoSchema); 

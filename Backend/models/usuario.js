@@ -9,7 +9,8 @@ const usuarioSchema = mongoose.Schema({
     activo : Boolean,
     correo: String,
     password : String,
-    tipoUsuario: Number
+    tipoUsuario: Number,
+    fechaSancion: Date
 });
 
 module.exports = mongoose.model('Usuario', usuarioSchema); 
