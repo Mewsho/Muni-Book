@@ -202,6 +202,29 @@
             <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
             <h3 class="h6">Don quijote de la mahncha</h3>
             <p class="text-muted">Editorial: Alosans</p>
+            <div class="dropdown">
+              <button
+                class="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton2"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                •••
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                <li><a class="dropdown-item" href="#">Modificar</a></li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    data-bs-toggle="modal"
+                    data-bs-target="#confirmDeleteModal"
+                    >Eliminar</a
+                  >
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
         <div class="col">
@@ -284,6 +307,13 @@
         <!-- Add more book-card divs as needed -->
       </div>
     </div>
+    <ul class="pagination justify-content-center">
+      <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item"><a class="page-link" href="#">Next</a></li>
+    </ul>
 
     <!-- Footer -->
     <footer class="bg-dark text-light py-4">

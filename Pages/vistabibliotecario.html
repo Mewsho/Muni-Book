@@ -48,27 +48,65 @@
         margin: 0 auto 30px auto;
       }
 
-      .filter-buttons {
-        margin-bottom: 30px;
+      .filters {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
       }
 
-      .filter-buttons .btn {
-        margin-right: 10px;
-        margin-bottom: 10px;
+      .filters button {
+        padding: 8px 16px;
+        background-color: #ddd;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
       }
 
-      .book-card {
-        text-align: center;
-        padding: 20px;
-        background-color: #f9f9f9;
+      .filters button:hover {
+        background-color: #bbb;
+      }
+
+      .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 10px;
+      }
+
+      .book-item {
+        background-color: #fff;
+        padding: 10px;
+        border: 1px solid #ddd;
         border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        position: relative;
       }
 
-      .book-card img {
-        width: 100px;
-        height: 100px;
-        background-color: #ccc;
+      .book-item img {
+        width: 80px;
+        height: 120px;
+        background-color: #e0e0e0;
         margin-bottom: 10px;
+      }
+
+      .book-item-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .book-item-updated {
+        font-size: 12px;
+        color: #888;
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
       }
 
       footer {
@@ -144,7 +182,7 @@
 
     <!-- Main Title and Subtitle -->
     <div class="container">
-      <h1 class="hero-title">Muni Book</h1>
+      <h1 class="hero-title">Lista de Libros</h1>
       <p class="hero-subtitle">Libreria municipal de los Chicos del Barrio</p>
     </div>
 
@@ -162,49 +200,72 @@
     </div>
 
     <!-- Filter Buttons -->
-    <div class="container filter-buttons text-center">
-      <button type="button" class="btn btn-outline-secondary">Editorial</button>
-      <button type="button" class="btn btn-outline-secondary">
-        Tipo contenido
+    <div class="filters">
+      <button
+        class="btn btn-secondary dropdown-toggle"
+        type="button"
+        id="dropdownFilterMenuButton"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        Filtro
       </button>
-      <button type="button" class="btn btn-outline-secondary">Autor</button>
-      <button type="button" class="btn btn-outline-secondary">Año</button>
-      <button type="button" class="btn btn-outline-secondary">Edicion</button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownFilterMenuButton">
+        <li><a class="dropdown-item" href="#">Editorial</a></li>
+        <li><a class="dropdown-item" href="#">Tipo contenido</a></li>
+        <li><a class="dropdown-item" href="#">Autor</a></li>
+        <li><a class="dropdown-item" href="#">Año</a></li>
+        <li><a class="dropdown-item" href="#">Edición</a></li>
+      </ul>
     </div>
 
-    <!-- Book Grid Section -->
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <!-- Add more book-card divs as needed -->
+    <!-- Books -->
+    <div class="book-grid">
+      <!-- Book Items -->
+      <div class="book-item">
+        <img src="https://via.placeholder.com/80x120" alt="Book cover" />
+        <div class="book-item-title">Título 1</div>
+        <div class="book-item-updated">Información del libro</div>
       </div>
+
+      <div class="book-item">
+        <img src="https://via.placeholder.com/80x120" alt="Book cover" />
+        <div class="book-item-title">Titulo2</div>
+        <div class="book-item-updated">Inf libro</div>
+      </div>
+
+      <!-- Add more book items as needed... -->
+
+      <div class="book-item">
+        <img src="https://via.placeholder.com/80x120" alt="Book cover" />
+        <div class="book-item-title">Titulo3</div>
+        <div class="book-item-updated">Inf libro</div>
+      </div>
+
+      <div class="book-item">
+        <img src="https://via.placeholder.com/80x120" alt="Book cover" />
+        <div class="book-item-title">Titulo4</div>
+        <div class="book-item-updated">Inf libro</div>
+      </div>
+
+      <div class="book-item">
+        <img src="https://via.placeholder.com/80x120" alt="Book cover" />
+        <div class="book-item-title">Titulo5</div>
+        <div class="book-item-updated">Inf libro</div>
+      </div>
+
+      <div class="book-item">
+        <img src="https://via.placeholder.com/80x120" alt="Book cover" />
+        <div class="book-item-title">Titulo6</div>
+        <div class="book-item-updated">Inf libro</div>
+      </div>
+
+      <div class="book-item">
+        <img src="https://via.placeholder.com/80x120" alt="Book cover" />
+        <div class="book-item-title">Titulo7</div>
+        <div class="book-item-updated">Inf libro</div>
+      </div>
+      <!-- Similar structure for other book items... -->
     </div>
 
     <!-- Footer -->
