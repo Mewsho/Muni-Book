@@ -1,73 +1,57 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muni Book - Solicitudes de Préstamo</title>
-    <!-- Bootstrap 5 CDN -->
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
     />
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
+
+    <title>MuniBook</title>
+
+    <!-- Styles como los del css pero no-->
+
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
+      .hero-section {
         background-color: #f8f9fa;
+        padding: 4rem 0;
       }
-      h1 {
+      .features-section {
+        padding: 4rem 0;
+      }
+      .display-4 {
+        font-size: 1000%;
         font-family: "Times New Roman", Times, serif;
-        font-size: 2.5rem;
-        margin-top: 30px;
-        text-align: center;
       }
-      .container {
-        flex-grow: 1;
-      }
-      .hero-title {
-        margin-top: 20px;
-        text-align: center;
-      }
-      footer {
-        background-color: #000;
-        color: #fff;
-        padding: 20px 0;
-      }
-      .btn-action {
-        margin-right: 5px;
+      .nav-link {
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        align-content: center;
+        text-align: end;
+        margin-top: 2%;
       }
     </style>
-    <script>
-      function handleLoanRequest(action, button) {
-        // Oculta los botones de acción después de hacer clic en uno de ellos
-        const row = button.closest("tr");
-        const acceptButton = row.querySelector(".btn-success");
-        const rejectButton = row.querySelector(".btn-danger");
-
-        // Cambia el estado de la solicitud
-        const statusCell = row.querySelector("td:nth-child(4)"); // Columna de estado
-        statusCell.textContent =
-          action === "aceptada" ? "Aceptada" : "Rechazada";
-
-        // Oculta los botones de acción
-        acceptButton.style.display = "none";
-        rejectButton.style.display = "none";
-
-        // Puedes agregar aquí lógica adicional para manejar la acción de aceptar o rechazar
-        alert(`Solicitud ${action} con éxito!`);
-      }
-    </script>
   </head>
+
+  <!-- El cuelpo del diablo -->
+
   <body>
-    <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
         <a class="navbar-brand" href="#">
@@ -83,6 +67,7 @@
             <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
           </svg>
         </a>
+        <!-- Botones del navbar-->
         <button
           class="navbar-toggler"
           type="button"
@@ -94,17 +79,12 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="vistabibliotecario.html">Volver</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#products">Productos</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#solutions">Soluciones</a>
+              <a class="nav-link" href="#servicios">Servicios</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#community">Comunidad</a>
             </li>
+
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
@@ -113,149 +93,71 @@
       </div>
     </nav>
 
-    <!-- Main Title -->
-    <div class="container">
-      <h1 class="hero-title">Vista del Bibliotecario</h1>
-      <p class="text-center">
-        Aquí puedes ver las solicitudes de préstamo y buscar documentos en
-        estantería.
-      </p>
-    </div>
+    <!-- Texto central de landing -->
 
-    <!-- Loan Requests Section -->
-    <div class="container my-5">
-      <h2 class="text-center">Solicitudes de Préstamo</h2>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">Nombre del Solicitante</th>
-            <th scope="col">Título del Libro</th>
-            <th scope="col">Fecha de Solicitud</th>
-            <th scope="col">Estado</th>
-            <th scope="col">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Juan Pérez</td>
-            <td>Título del Libro 1</td>
-            <td>22/10/2024</td>
-            <td>Pendiente</td>
-            <td>
-              <button
-                class="btn btn-success btn-action"
-                onclick="handleLoanRequest('aceptada', this)"
-              >
-                Aceptar
-              </button>
-              <button
-                class="btn btn-danger btn-action"
-                onclick="handleLoanRequest('rechazada', this)"
-              >
-                Rechazar
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>María López</td>
-            <td>Título del Libro 2</td>
-            <td>21/10/2024</td>
-            <td>Pendiente</td>
-            <td>
-              <button
-                class="btn btn-success btn-action"
-                onclick="handleLoanRequest('aceptada', this)"
-              >
-                Aceptar
-              </button>
-              <button
-                class="btn btn-danger btn-action"
-                onclick="handleLoanRequest('rechazada', this)"
-              >
-                Rechazar
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>Carmen Díaz</td>
-            <td>Título del Libro 3</td>
-            <td>20/10/2024</td>
-            <td>Pendiente</td>
-            <td>
-              <button
-                class="btn btn-success btn-action"
-                onclick="handleLoanRequest('aceptada', this)"
-              >
-                Aceptar
-              </button>
-              <button
-                class="btn btn-danger btn-action"
-                onclick="handleLoanRequest('rechazada', this)"
-              >
-                Rechazar
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>Pedro González</td>
-            <td>Título del Libro 4</td>
-            <td>19/10/2024</td>
-            <td>Pendiente</td>
-            <td>
-              <button
-                class="btn btn-success btn-action"
-                onclick="handleLoanRequest('aceptada', this)"
-              >
-                Aceptar
-              </button>
-              <button
-                class="btn btn-danger btn-action"
-                onclick="handleLoanRequest('rechazada', this)"
-              >
-                Rechazar
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <section class="hero-section">
+      <div class="container text-center">
+        <h1 class="display-4">Muni Book</h1>
 
-    <!-- Footer Section -->
+        <p class="lead">Librería municipal de Lorem ipsum</p>
+        <div class="mt-4">
+          <a href="login.html" class="btn btn-light">Acceder</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Imagenes del landing page-->
+
+    <section class="container my-5">
+      <div class="row">
+        <div class="col-md-6">
+          <img
+            src="/Assets/Images/Libreria1.jpg"
+            alt="Interior de la librería"
+            class="img-fluid rounded w-100 mb-2"
+          />
+        </div>
+        <div class="col-md-6">
+          <img
+            src="/Assets/Images/Libreria2.jpg"
+            alt="Estanterías de libros"
+            class="img-fluid rounded w-100 mb-2"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Seccion de servicios una vaina loca que ....-->
+
+    <!-- Footer begins here remember to keep your house tidy an you too-->
+
     <footer class="bg-dark text-light py-4">
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
-            <h5>Use cases</h5>
+            <h5>Casos de uso</h5>
             <ul class="list-unstyled">
-              <li>UI design</li>
-              <li>UX design</li>
-              <li>Prototyping</li>
               <li>UI development</li>
               <li>Illustration</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Explore</h5>
+            <h5>Explorar</h5>
             <ul class="list-unstyled">
               <li>Design systems</li>
               <li>Features</li>
-              <li>Customers</li>
-              <li>Figma for enterprise</li>
-              <li>Design communities</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Resources</h5>
+            <h5>Recursos</h5>
             <ul class="list-unstyled">
-              <li>Blog</li>
+              <li>Sobre nosotros</li>
               <li>Best practices</li>
-              <li>Support</li>
-              <li>Developers</li>
-              <li>Learn design</li>
+              <li>Contactanos</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Connect</h5>
+            <h5>Siguenos</h5>
             <div class="d-flex">
               <a href="#" class="text-light me-2">
                 <svg
@@ -319,10 +221,7 @@
                   />
                 </svg>
               </a>
-              <a
-                href="https://www.youtube.com/watch?v=Tf4pSSN_P3w"
-                class="text-light"
-              >
+              <a href="#" class="text-light">
                 <svg
                   width="24"
                   height="24"
