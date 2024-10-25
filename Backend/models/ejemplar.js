@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
 const ejemplarSchema = mongoose.Schema({
-    estado: Boolean,
+    codigo: Number,
+    estado: Number, 
+    estadoTexto: String,
     ubicacion: String,
     documento : { type: mongoose.Schema.Types.ObjectId, ref : 'Documento'}
 });
