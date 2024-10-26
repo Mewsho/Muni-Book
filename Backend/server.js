@@ -163,6 +163,7 @@ const typeDefs = gql`
         # Query basicos de cada cosa
         getUsuarios: [Usuario]
         getUsuarioById(id: ID!): Usuario
+        getUsuarioByCorreo(correo: String!): Usuario
         getUsuarioByRut(rut: Int!): Usuario
         getPrestamos: [Prestamo]
         getPrestamosEjemplar: [Prestamo]
@@ -200,11 +201,13 @@ const typeDefs = gql`
         getTipoDocumentoById(id: ID!): TipoDocumento
         getCategoriaDocumentos: [CategoriaDocumento]
         getCategoriaDocumentosById(id: ID!): CategoriaDocumento
+        getCategoriaDocumentosByIdTipoDocumento(id: ID!): CategoriaDocumento
         # Query especiales
         getEjemplaresByDocumentoAndEstado(documentoId: ID!, estado: Int): [Ejemplar]
         getCantEjemplaresByDocumentoAndEstado(documentoId: ID!, estado: Int): Int
         getDocumentosByTituloAndAutorAndTipoAndCategoria(titulo: String, autor: String, tipoId: ID, categoriaId: ID): [Documento]
         getNDocumentos(numero: Int): [Documentos]
+        getUsuarioByCorreoAndCheckPassword(correo: String!, password: String!): Int
     }
 
     type Mutation{
@@ -247,6 +250,11 @@ const resolvers = {
 
         async getUsuarioByRut(obj, {rut}){
             const usuario = await Usuario.find({rut: rut}).exec();
+            return usuario;
+        },
+
+        async getUsuarioByCorreo(obj, {correo}){
+            const usuario = await Usuario.find({correo: correo}).exec();
             return usuario;
         },
 
@@ -430,6 +438,11 @@ const resolvers = {
             return categoriaDocumento;
         },
 
+        async getCategoriaDocumentosByIdTipoDocumento(obj, {id}){
+            let ejemplar = await Ejemplar.findById(id).populate('tipoDocumento');
+            return ejemplar;
+        },
+
         // Query especiales
 
         async getEjemplaresByDocumentoAndEstado(obj, {documentoId, estado}){
@@ -480,6 +493,21 @@ const resolvers = {
         async getNDocumentos(obj, {numero}){
             let documentos = await Documento.find().populate('tipoDocumento').populate('categoriaDocumento').limit(numero)
             return documentos
+        },
+
+        async getUsuarioByCorreoAndCheckPassword(obj, {correo, password}){
+            let usuario = await Usuario.find({correo: correo})
+
+            if (usuario.password != password){
+                return 1
+            }
+
+            if (usuario.password = password){
+                return 2
+            }
+
+            return 0
+
         }
     },
     
