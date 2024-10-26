@@ -3,98 +3,60 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muni Book - Buscar Libros</title>
-    <!-- Bootstrap 5 CDN -->
+    <title>Muni Book - Estado de los Préstamos</title>
+    <!-- Bootstrap 5 CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Bootstrap 5 JS bundle -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <style>
-      h1 {
-        font-family: "Times New Roman", Times, serif;
-        font-size: 300%;
-      }
-
       body {
         font-family: Arial, sans-serif;
-        min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
+        background-color: #f8f9fa;
         display: flex;
         flex-direction: column;
+        min-height: 100vh;
       }
-
-      .container {
-        flex-grow: 1; /* Se expande para ocupar el espacio disponible */
-      }
-
-      .hero-title {
+      h1 {
+        font-family: "Times New Roman", Times, serif;
+        font-size: 2.5rem;
         margin-top: 30px;
         text-align: center;
       }
-
-      .hero-subtitle {
-        text-align: center;
-        color: #666;
-        margin-bottom: 30px;
+      .btn-action {
+        margin-right: 5px;
       }
-
-      .search-bar {
-        max-width: 600px;
-        margin: 0 auto 30px auto;
+      .container {
+        margin-top: 30px;
+        flex-grow: 1;
       }
-
-      .filter-buttons {
-        margin-bottom: 30px;
-      }
-
-      .filter-buttons .btn {
-        margin-right: 10px;
-        margin-bottom: 10px;
-      }
-
-      .book-card {
-        text-align: center;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-      }
-
-      .book-card img {
-        width: 100px;
-        height: 100px;
-        background-color: #ccc;
-        margin-bottom: 10px;
-      }
-
       footer {
         background-color: #000;
         color: #fff;
         padding: 20px 0;
-      }
-
-      .hero-section {
-        background-color: #f8f9fa;
-        padding: 4rem 0;
-      }
-      .features-section {
-        padding: 4rem 0;
-      }
-      .display-4 {
-        font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
-      }
-      .nav-link {
-        align-items: center;
-        font-family: "Times New Roman", Times, serif;
-        align-content: center;
-        text-align: end;
+        text-align: center;
+        margin-top: auto;
       }
     </style>
+    <script>
+      // Función para enviar notificación y desactivar el botón
+      function enviarNotificacion(button) {
+        // Desactivar el botón y cambiar el texto
+        button.disabled = true;
+        button.textContent = "Notificación Enviada";
+        button.classList.remove("btn-danger");
+        button.classList.add("btn-secondary");
+
+        // Mostrar un mensaje de éxito
+        alert("Notificación enviada con éxito a " + button.dataset.usuario);
+      }
+    </script>
   </head>
   <body>
     <!-- Header Section -->
@@ -113,7 +75,6 @@
             <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
           </svg>
         </a>
-
         <button
           class="navbar-toggler"
           type="button"
@@ -136,88 +97,199 @@
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="solicitudes.html">Solicitudes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="estadolibros.html">Estado Libros</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="devoluciones.html"
-                >Devolucion de documentos</a
-              >
-            </li>
           </ul>
         </div>
       </div>
     </nav>
 
-    <!-- Main Title and Subtitle -->
+    <!-- Main Title -->
     <div class="container">
-      <h1 class="hero-title">Muni Book</h1>
-      <p class="hero-subtitle">Libreria municipal de los Chicos del Barrio</p>
-    </div>
+      <h1>Estado de los Préstamos</h1>
+      <p class="text-center">
+        Revisa los préstamos vencidos y envía recordatorios automáticos de
+        devolución.
+      </p>
 
-    <!-- Search Bar Section -->
-    <div class="container search-bar">
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Busca tu libro"
-          aria-label="Busca tu libro"
-        />
-        <button class="btn btn-outline-secondary" type="button">🔍</button>
+      <!-- Sala Section -->
+      <h2 class="text-center my-4">Préstamos en Sala Vencidos</h2>
+      <div class="text-center">
+        <button
+          class="btn btn-primary btn-action"
+          data-bs-toggle="modal"
+          data-bs-target="#modalSala"
+        >
+          Revisar Préstamos Vencidos
+        </button>
+      </div>
+
+      <!-- Domicilio Section -->
+      <h2 class="text-center my-4">Préstamos a Domicilio en Mora</h2>
+      <div class="text-center">
+        <button
+          class="btn btn-danger btn-action"
+          data-bs-toggle="modal"
+          data-bs-target="#modalDomicilio"
+        >
+          Enviar Recordatorio de Devolución
+        </button>
       </div>
     </div>
 
-    <!-- Filter Buttons -->
-    <div class="container filter-buttons text-center">
-      <button type="button" class="btn btn-outline-secondary">Editorial</button>
-      <button type="button" class="btn btn-outline-secondary">
-        Tipo contenido
-      </button>
-      <button type="button" class="btn btn-outline-secondary">Autor</button>
-      <button type="button" class="btn btn-outline-secondary">Año</button>
-      <button type="button" class="btn btn-outline-secondary">Edicion</button>
-    </div>
-
-    <!-- Book Grid Section -->
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
+    <!-- Modal Préstamos en Sala -->
+    <div
+      class="modal fade"
+      id="modalSala"
+      tabindex="-1"
+      aria-labelledby="modalSalaLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalSalaLabel">
+              Préstamos en Sala Vencidos
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Aquí puedes agregar una tabla o lista con los préstamos vencidos -->
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nombre del Usuario</th>
+                  <th>Título del Libro</th>
+                  <th>Fecha de Vencimiento</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Juan Pérez</td>
+                  <td>Libro 1</td>
+                  <td>20/10/2024</td>
+                  <td>
+                    <button
+                      class="btn btn-danger"
+                      data-usuario="Juan Pérez"
+                      onclick="enviarNotificacion(this)"
+                    >
+                      Enviar Notificación
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>María González</td>
+                  <td>Libro 2</td>
+                  <td>18/10/2024</td>
+                  <td>
+                    <button
+                      class="btn btn-danger"
+                      data-usuario="María González"
+                      onclick="enviarNotificacion(this)"
+                    >
+                      Enviar Notificación
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
           </div>
         </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <!-- Add more book-card divs as needed -->
       </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Modal Préstamos a Domicilio -->
+    <div
+      class="modal fade"
+      id="modalDomicilio"
+      tabindex="-1"
+      aria-labelledby="modalDomicilioLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalDomicilioLabel">
+              Préstamos a Domicilio en Mora
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Aquí puedes agregar una tabla o lista con los préstamos en mora -->
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nombre del Usuario</th>
+                  <th>Título del Libro</th>
+                  <th>Fecha de Vencimiento</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Pedro López</td>
+                  <td>Libro 3</td>
+                  <td>15/10/2024</td>
+                  <td>
+                    <button
+                      class="btn btn-danger"
+                      data-usuario="Pedro López"
+                      onclick="enviarNotificacion(this)"
+                    >
+                      Enviar Notificación
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Ana Martínez</td>
+                  <td>Libro 4</td>
+                  <td>12/10/2024</td>
+                  <td>
+                    <button
+                      class="btn btn-danger"
+                      data-usuario="Ana Martínez"
+                      onclick="enviarNotificacion(this)"
+                    >
+                      Enviar Notificación
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Section -->
     <footer class="bg-dark text-light py-4">
       <div class="container">
         <div class="row">

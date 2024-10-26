@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muni Book - Buscar Libros</title>
+    <title>Devoluciones - Muni Book</title>
     <!-- Bootstrap 5 CDN -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
@@ -14,90 +14,94 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <style>
-      h1 {
-        font-family: "Times New Roman", Times, serif;
-        font-size: 300%;
-      }
-
       body {
-        font-family: Arial, sans-serif;
-        min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
-        display: flex;
-        flex-direction: column;
-      }
-
-      .container {
-        flex-grow: 1; /* Se expande para ocupar el espacio disponible */
-      }
-
-      .hero-title {
-        margin-top: 30px;
-        text-align: center;
-      }
-
-      .hero-subtitle {
-        text-align: center;
-        color: #666;
-        margin-bottom: 30px;
-      }
-
-      .search-bar {
-        max-width: 600px;
-        margin: 0 auto 30px auto;
-      }
-
-      .filter-buttons {
-        margin-bottom: 30px;
-      }
-
-      .filter-buttons .btn {
-        margin-right: 10px;
-        margin-bottom: 10px;
-      }
-
-      .book-card {
-        text-align: center;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-      }
-
-      .book-card img {
-        width: 100px;
-        height: 100px;
-        background-color: #ccc;
-        margin-bottom: 10px;
-      }
-
-      footer {
-        background-color: #000;
-        color: #fff;
-        padding: 20px 0;
-      }
-
-      .hero-section {
         background-color: #f8f9fa;
-        padding: 4rem 0;
+        font-family: Arial, sans-serif;
+        padding-bottom: 100px; /* Para que el contenido no se superponga con el footer */
       }
-      .features-section {
-        padding: 4rem 0;
+
+      .container2 {
+        margin-top: 50px;
       }
-      .display-4 {
-        font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
+      .form-container {
+        background-color: #fff;
+        padding: 5%;
+        border-radius: 15px;
+        margin-top: 12%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 50%;
+        margin-left: 25%;
       }
-      .nav-link {
-        align-items: center;
-        font-family: "Times New Roman", Times, serif;
-        align-content: center;
-        text-align: end;
+      footer {
+        background-color: #343a40;
+        color: #ffffff;
+        padding: 20px 0;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .footer-links {
+        text-align: center;
+      }
+
+      .footer-links a {
+        color: #ffffff;
+        margin: 0 15px;
+        text-decoration: none;
+      }
+
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+
+      .social-icons a {
+        margin: 0 10px;
+        color: #ffffff;
+      }
+
+      .social-icons a:hover {
+        color: #007bff;
       }
     </style>
+    <script>
+      function marcarComoDevuelto() {
+        const codigoEjemplar = document.getElementById("codigoEjemplar").value;
+        if (codigoEjemplar === "") {
+          alert("Por favor, ingrese el código del ejemplar.");
+          return;
+        }
+        alert(
+          `El ejemplar con código ${codigoEjemplar} ha sido marcado como devuelto.`
+        );
+
+        // Simulación de 30 minutos después para marcar como disponible
+        setTimeout(() => {
+          alert(
+            `El ejemplar con código ${codigoEjemplar} ahora está disponible.`
+          );
+        }, 1800000); // 1800000ms = 30 minutos
+
+        // Si es devolución con atraso, calcular sanción
+        const fechaDevolucion = new Date(
+          document.getElementById("fechaDevolucion").value
+        );
+        const fechaActual = new Date();
+
+        if (fechaDevolucion < fechaActual) {
+          const diasAtraso = Math.ceil(
+            (fechaActual - fechaDevolucion) / (1000 * 60 * 60 * 24)
+          );
+          const sancionDias = diasAtraso * 2; // Por cada día de atraso, 2 días de sanción
+          alert(
+            `Devolución con ${diasAtraso} día(s) de atraso. Sanción: ${sancionDias} día(s) sin poder solicitar préstamos.`
+          );
+        }
+      }
+    </script>
   </head>
   <body>
-    <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
         <a class="navbar-brand" href="index.html">
@@ -113,111 +117,41 @@
             <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
           </svg>
         </a>
-
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#products">Productos</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#solutions">Soluciones</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#community">Comunidad</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#contact">Contacto</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="solicitudes.html">Solicitudes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="estadolibros.html">Estado Libros</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="devoluciones.html"
-                >Devolucion de documentos</a
-              >
-            </li>
-          </ul>
-        </div>
       </div>
     </nav>
 
-    <!-- Main Title and Subtitle -->
     <div class="container">
-      <h1 class="hero-title">Muni Book</h1>
-      <p class="hero-subtitle">Libreria municipal de los Chicos del Barrio</p>
-    </div>
-
-    <!-- Search Bar Section -->
-    <div class="container search-bar">
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Busca tu libro"
-          aria-label="Busca tu libro"
-        />
-        <button class="btn btn-outline-secondary" type="button">🔍</button>
+      <h1 class="text-center">Devolución de Documentos</h1>
+      <div class="form-container">
+        <form>
+          <div class="mb-3">
+            <label for="codigoEjemplar" class="form-label"
+              >Código del Ejemplar</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="codigoEjemplar"
+              placeholder="Ingrese el código del ejemplar"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="fechaDevolucion" class="form-label"
+              >Fecha de Devolución</label
+            >
+            <input type="date" class="form-control" id="fechaDevolucion" />
+          </div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="marcarComoDevuelto()"
+          >
+            Marcar como Devuelto
+          </button>
+        </form>
       </div>
     </div>
 
-    <!-- Filter Buttons -->
-    <div class="container filter-buttons text-center">
-      <button type="button" class="btn btn-outline-secondary">Editorial</button>
-      <button type="button" class="btn btn-outline-secondary">
-        Tipo contenido
-      </button>
-      <button type="button" class="btn btn-outline-secondary">Autor</button>
-      <button type="button" class="btn btn-outline-secondary">Año</button>
-      <button type="button" class="btn btn-outline-secondary">Edicion</button>
-    </div>
-
-    <!-- Book Grid Section -->
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <!-- Add more book-card divs as needed -->
-      </div>
-    </div>
-
-    <!-- Footer -->
     <footer class="bg-dark text-light py-4">
       <div class="container">
         <div class="row">

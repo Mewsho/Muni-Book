@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muni Book - Buscar Libros</title>
+    <title>Muni Book - Solicitudes de Préstamo</title>
     <!-- Bootstrap 5 CDN -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
@@ -16,91 +16,61 @@
     ></script>
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <style>
-      h1 {
-        font-family: "Times New Roman", Times, serif;
-        font-size: 300%;
-      }
-
       body {
         font-family: Arial, sans-serif;
-        min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
+        background-color: #f8f9fa;
       }
-
-      .container {
-        flex-grow: 1; /* Se expande para ocupar el espacio disponible */
-      }
-
-      .hero-title {
+      h1 {
+        font-family: "Times New Roman", Times, serif;
+        font-size: 2.5rem;
         margin-top: 30px;
         text-align: center;
       }
-
-      .hero-subtitle {
+      .container {
+        flex-grow: 1;
+      }
+      .hero-title {
+        margin-top: 20px;
         text-align: center;
-        color: #666;
-        margin-bottom: 30px;
       }
-
-      .search-bar {
-        max-width: 600px;
-        margin: 0 auto 30px auto;
-      }
-
-      .filter-buttons {
-        margin-bottom: 30px;
-      }
-
-      .filter-buttons .btn {
-        margin-right: 10px;
-        margin-bottom: 10px;
-      }
-
-      .book-card {
-        text-align: center;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-      }
-
-      .book-card img {
-        width: 100px;
-        height: 100px;
-        background-color: #ccc;
-        margin-bottom: 10px;
-      }
-
       footer {
         background-color: #000;
         color: #fff;
         padding: 20px 0;
       }
-
-      .hero-section {
-        background-color: #f8f9fa;
-        padding: 4rem 0;
-      }
-      .features-section {
-        padding: 4rem 0;
-      }
-      .display-4 {
-        font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
-      }
-      .nav-link {
-        align-items: center;
-        font-family: "Times New Roman", Times, serif;
-        align-content: center;
-        text-align: end;
+      .btn-action {
+        margin-right: 5px;
       }
     </style>
+    <script>
+      function handleLoanRequest(action, button) {
+        // Oculta los botones de acción después de hacer clic en uno de ellos
+        const row = button.closest("tr");
+        const acceptButton = row.querySelector(".btn-success");
+        const rejectButton = row.querySelector(".btn-danger");
+
+        // Cambia el estado de la solicitud
+        const statusCell = row.querySelector("td:nth-child(4)"); // Columna de estado
+        statusCell.textContent =
+          action === "aceptada" ? "Aceptada" : "Rechazada";
+
+        // Oculta los botones de acción
+        acceptButton.style.display = "none";
+        rejectButton.style.display = "none";
+
+        // Puedes agregar aquí lógica adicional para manejar la acción de aceptar o rechazar
+        alert(`Solicitud ${action} con éxito!`);
+      }
+    </script>
   </head>
   <body>
     <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="#">
           <svg
             width="30"
             height="30"
@@ -113,7 +83,6 @@
             <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
           </svg>
         </a>
-
         <button
           class="navbar-toggler"
           type="button"
@@ -124,6 +93,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="vistabibliotecario.html">Volver</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="#products">Productos</a>
             </li>
@@ -136,88 +108,119 @@
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="solicitudes.html">Solicitudes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="estadolibros.html">Estado Libros</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="devoluciones.html"
-                >Devolucion de documentos</a
-              >
-            </li>
           </ul>
         </div>
       </div>
     </nav>
 
-    <!-- Main Title and Subtitle -->
+    <!-- Main Title -->
     <div class="container">
-      <h1 class="hero-title">Muni Book</h1>
-      <p class="hero-subtitle">Libreria municipal de los Chicos del Barrio</p>
+      <h1 class="hero-title">Vista del Bibliotecario</h1>
+      <p class="text-center">
+        Aquí puedes ver las solicitudes de préstamo y buscar documentos en
+        estantería.
+      </p>
     </div>
 
-    <!-- Search Bar Section -->
-    <div class="container search-bar">
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Busca tu libro"
-          aria-label="Busca tu libro"
-        />
-        <button class="btn btn-outline-secondary" type="button">🔍</button>
-      </div>
+    <!-- Loan Requests Section -->
+    <div class="container my-5">
+      <h2 class="text-center">Solicitudes de Préstamo</h2>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Nombre del Solicitante</th>
+            <th scope="col">Título del Libro</th>
+            <th scope="col">Fecha de Solicitud</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Juan Pérez</td>
+            <td>Título del Libro 1</td>
+            <td>22/10/2024</td>
+            <td>Pendiente</td>
+            <td>
+              <button
+                class="btn btn-success btn-action"
+                onclick="handleLoanRequest('aceptada', this)"
+              >
+                Aceptar
+              </button>
+              <button
+                class="btn btn-danger btn-action"
+                onclick="handleLoanRequest('rechazada', this)"
+              >
+                Rechazar
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>María López</td>
+            <td>Título del Libro 2</td>
+            <td>21/10/2024</td>
+            <td>Pendiente</td>
+            <td>
+              <button
+                class="btn btn-success btn-action"
+                onclick="handleLoanRequest('aceptada', this)"
+              >
+                Aceptar
+              </button>
+              <button
+                class="btn btn-danger btn-action"
+                onclick="handleLoanRequest('rechazada', this)"
+              >
+                Rechazar
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>Carmen Díaz</td>
+            <td>Título del Libro 3</td>
+            <td>20/10/2024</td>
+            <td>Pendiente</td>
+            <td>
+              <button
+                class="btn btn-success btn-action"
+                onclick="handleLoanRequest('aceptada', this)"
+              >
+                Aceptar
+              </button>
+              <button
+                class="btn btn-danger btn-action"
+                onclick="handleLoanRequest('rechazada', this)"
+              >
+                Rechazar
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>Pedro González</td>
+            <td>Título del Libro 4</td>
+            <td>19/10/2024</td>
+            <td>Pendiente</td>
+            <td>
+              <button
+                class="btn btn-success btn-action"
+                onclick="handleLoanRequest('aceptada', this)"
+              >
+                Aceptar
+              </button>
+              <button
+                class="btn btn-danger btn-action"
+                onclick="handleLoanRequest('rechazada', this)"
+              >
+                Rechazar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- Filter Buttons -->
-    <div class="container filter-buttons text-center">
-      <button type="button" class="btn btn-outline-secondary">Editorial</button>
-      <button type="button" class="btn btn-outline-secondary">
-        Tipo contenido
-      </button>
-      <button type="button" class="btn btn-outline-secondary">Autor</button>
-      <button type="button" class="btn btn-outline-secondary">Año</button>
-      <button type="button" class="btn btn-outline-secondary">Edicion</button>
-    </div>
-
-    <!-- Book Grid Section -->
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <!-- Add more book-card divs as needed -->
-      </div>
-    </div>
-
-    <!-- Footer -->
+    <!-- Footer Section -->
     <footer class="bg-dark text-light py-4">
       <div class="container">
         <div class="row">
