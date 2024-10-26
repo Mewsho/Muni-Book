@@ -205,22 +205,43 @@
 
     <!-- Filter Buttons -->
     <div class="filters">
-      <button
-        class="btn btn-secondary dropdown-toggle"
-        type="button"
-        id="dropdownFilterMenuButton"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        Filtro
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownFilterMenuButton">
-        <li><a class="dropdown-item" href="#">Editorial</a></li>
-        <li><a class="dropdown-item" href="#">Tipo contenido</a></li>
-        <li><a class="dropdown-item" href="#">Autor</a></li>
-        <li><a class="dropdown-item" href="#">Año</a></li>
-        <li><a class="dropdown-item" href="#">Edición</a></li>
-      </ul>
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownFilterMenuButton"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Filtro
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownFilterMenuButton">
+          <li><a class="dropdown-item" href="#">Editorial</a></li>
+          <li><a class="dropdown-item" href="#">Tipo contenido</a></li>
+          <li><a class="dropdown-item" href="#">Autor</a></li>
+          <li><a class="dropdown-item" href="#">Año</a></li>
+          <li><a class="dropdown-item" href="#">Edición</a></li>
+        </ul>
+      </div>
+
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownCategoryMenuButton"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Categoría
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownCategoryMenuButton">
+          <li><a class="dropdown-item" href="#">Acción</a></li>
+          <li><a class="dropdown-item" href="#">Drama</a></li>
+          <li><a class="dropdown-item" href="#">Comedia</a></li>
+          <li><a class="dropdown-item" href="#">Terror</a></li>
+        </ul>
+      </div>
+
       <button
         class="btn btn-outline-primary btn-edit"
         data-bs-toggle="modal"
