@@ -182,46 +182,68 @@
     <!-- list Section -->
     <div class="container mt-5">
       <div class="list-container">
-        <h2 class="text-center mb-4">Lista de Solicitudes de Préstamos</h2>
+        <h2 class="text-center mb-4">Solicitudes de Préstamos</h2>
+
+        <!-- Lista de solicitudes en formato de tabla -->
         <table class="table table-bordered">
           <thead class="table-dark">
             <tr>
+              <th>Seleccionar</th>
               <th>ID Solicitud</th>
               <th>Nombre de Usuario</th>
-              <th>Título del Libro</th>
               <th>Fecha Solicitada</th>
               <th>Fecha de Entrega</th>
-              <th>Tipo de Préstamo</th>
-              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr>
+              <!-- Casilla de verificación individual -->
+              <td>
+                <input
+                  type="checkbox"
+                  class="form-check-input select-request"
+                />
+              </td>
               <td>1</td>
               <td>Juan Pérez</td>
-              <td>El Quijote</td>
               <td>2024-10-01</td>
-              <td>2024-10-15</td>
               <td>Sala</td>
-              <!-- Tipo de Préstamo -->
-              <td class="btn-actions">
-                <button class="btn btn-danger btn-sm">Enviar Correo</button>
-              </td>
             </tr>
             <tr>
+              <!-- Casilla de verificación individual -->
+              <td>
+                <input
+                  type="checkbox"
+                  class="form-check-input select-request"
+                />
+              </td>
               <td>2</td>
               <td>María López</td>
-              <td>Cien Años de Soledad</td>
               <td>2024-10-05</td>
-              <td>2024-10-19</td>
               <td>Domicilio</td>
-              <!-- Tipo de Préstamo -->
-              <td class="btn-actions">
-                <button class="btn btn-danger btn-sm">Enviar Correo</button>
-              </td>
             </tr>
           </tbody>
         </table>
+
+        <!-- Sección de botones de acción -->
+        <div class="d-flex justify-content-center mt-4">
+          <!-- Botón para seleccionar/deseleccionar todas las solicitudes -->
+          <div class="form-check me-3">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="selectAll"
+              onclick="toggleSelectAll()"
+            />
+            <label class="form-check-label" for="selectAll"
+              >Seleccionar Todo</label
+            >
+          </div>
+
+          <!-- Botones Confirmar y Rechazar -->
+          <button class="btn btn-success me-2">Confirmar</button>
+          <button class="btn btn-danger">Rechazar</button>
+        </div>
       </div>
     </div>
 
@@ -338,5 +360,16 @@
         </div>
       </div>
     </footer>
+
+    <!-- Script para seleccionar o deseleccionar todas las solicitudes -->
+    <script>
+      function toggleSelectAll() {
+        const selectAllCheckbox = document.getElementById("selectAll");
+        const requestCheckboxes = document.querySelectorAll(".select-request");
+        requestCheckboxes.forEach((checkbox) => {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+      }
+    </script>
   </body>
 </html>
