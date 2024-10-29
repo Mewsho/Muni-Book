@@ -93,7 +93,7 @@ const typeDefs = gql`
         edicion: Int!
         codigo: String
         tipoDocumento: TipoDocumento
-        categoriaDocumento: CategoriaDocumento
+        categoriaDocumento: [CategoriaDocumento]
     }
     input DocumentoInput{
         titulo: String!
@@ -976,7 +976,7 @@ async function checkEjemplares(input) {
 let apolloServer = null;
 
 const corsOptions = {
-    origin: "htpp://localhost:8092",
+    origin: "http://localhost:8092",
     credentials: false
 };
 
