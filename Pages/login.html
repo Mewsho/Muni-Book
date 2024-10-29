@@ -101,12 +101,25 @@
       }
     </style>
     <script>
-      function respuestaLogin(activo, tipo){
+
+      function crearCookie(tipo, id){
+        let ahora = new Date()
+        let tiempo = ahora.getTime()
+        let expireTime = tiempo + 900000 
+        ahora.setTime(expireTime)  
+        document.cookie = "tipo="+tipo+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
+        document.cookie = "id="+id+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
+      }
+
+      function respuestaLogin(activo, tipo, id){
         console.log(activo)
         if (!activo){
           alert("Usuario No Activado")
         }
         else {
+
+          crearCookie(tipo, id)
+
           if (tipo == 0){
             window.location.href = "vistausuario.html";
           }
@@ -154,14 +167,36 @@
           success: function(response){
             let tipo = response.data.getUsuarioByCorreoAndCheckPassword.tipoUsuario
             let activo = response.data.getUsuarioByCorreoAndCheckPassword.activo
-            respuestaLogin(activo,tipo)
-            
+            let id = response.data.getUsuarioByCorreoAndCheckPassword.id
+            respuestaLogin(activo,tipo, id)
+
           }
         })
       }
     </script>
   </head>
-  <body>
+
+  <script>
+    function checkCookieExistence(name){
+      if(
+        document.cookie.split(";").some((item) => item.trim().startsWith(`${name}=`))
+      ){
+        const cookieValue = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith(`${name}=`))
+        ?.split("=")[1];
+        console.log(document.cookie)
+        alert(cookieValue)
+      }
+      else{
+        alert("Cookie no encontrada")
+        document.cookie = "user=hola; path=/; Secure"
+      }
+    }
+  </script>
+
+
+  <body onload="checkCookieExistence('user')">
     <!-- Header Section -->
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
