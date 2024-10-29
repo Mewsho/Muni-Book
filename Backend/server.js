@@ -103,7 +103,7 @@ const typeDefs = gql`
         edicion: Int!
         codigo: String
         tipoDocumento: String
-        categoriaDocumento: String
+        categoriaDocumento: [String]
     }
 
     type TipoDocumento{
@@ -605,19 +605,25 @@ const resolvers = {
                     descriptionError: "Tipo no encontrado"
                 }
             }
-            let categoriaDocumentoBus = await CategoriaDocumento.findById(input.categoriaDocumento);
-            if (categoriaDocumentoBus == null){
-                return {
-                    statusCode: "400",
-                    body: null,
-                    errorCode: "0",
-                    descriptionError: "Categoreia no encontrada"
+
+            let inputCategoriarList = []
+            let categoriarList = input.categoriaDocumento
+            for (categoriaObjectId in categoriarList){
+                let categoria = await CategoriaDocumento.findById(categoriaObjectId);
+                if (categoria == null){
+                    return {
+                        statusCode: "400",
+                        body: null,
+                        errorCode: "0",
+                        descriptionError: "Ejemplar no encontrado"
+                    }
                 }
+                inputCategoriarList.push(categoria._id)
             }
             let documento = new Documento({
                 titulo: input.titulo, autor: input.autor, editorial: input.editorial,
                 anioSalida: input.anioSalida, edicion: input.edicion, codigo: input.codigo,
-                tipoDocumento: tipoDocumentoBus._id, categoriaDocumento: categoriaDocumentoBus._id
+                tipoDocumento: tipoDocumentoBus._id, categoriaDocumento: inputCategoriarList
             });
             await documento.save();
             return {
