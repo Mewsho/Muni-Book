@@ -193,6 +193,7 @@
               <th>Nombre de Usuario</th>
               <th>Fecha Solicitada</th>
               <th>Fecha de Entrega</th>
+              <th>inf</th>
             </tr>
           </thead>
           <tbody>
@@ -208,6 +209,17 @@
               <td>Juan Pérez</td>
               <td>2024-10-01</td>
               <td>Sala</td>
+              <!-- Botón Info para abrir el modal de más información -->
+              <td class="btn-actions">
+                <button
+                  type="button"
+                  class="btn btn-info"
+                  data-bs-toggle="modal"
+                  data-bs-target="#infoModal"
+                >
+                  Info
+                </button>
+              </td>
             </tr>
             <tr>
               <!-- Casilla de verificación individual -->
@@ -243,6 +255,66 @@
           <!-- Botones Confirmar y Rechazar -->
           <button class="btn btn-success me-2">Confirmar</button>
           <button class="btn btn-danger">Rechazar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de más información -->
+    <div
+      class="modal fade"
+      id="infoModal"
+      tabindex="-1"
+      aria-labelledby="infoModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="infoModalLabel">
+              Información de Préstamos
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Lista de libros -->
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nombre del Libro</th>
+                  <th>Fecha de Solicitud</th>
+                  <th>Tipo de Préstamo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Ejemplo de libros solicitados; puedes duplicar y actualizar según sea necesario -->
+                <tr>
+                  <td>El Quijote</td>
+                  <td>2024-10-01</td>
+                  <td>Sala</td>
+                </tr>
+                <tr>
+                  <td>Cien Años de Soledad</td>
+                  <td>2024-10-05</td>
+                  <td>Domicilio</td>
+                </tr>
+                <!-- Agrega más filas según la información de los libros -->
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
+          </div>
         </div>
       </div>
     </div>
