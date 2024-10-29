@@ -33,19 +33,14 @@
       }
 
       .hero-title {
-        margin-top: 30px;
+        margin-top: 150px;
         text-align: center;
       }
 
       .hero-subtitle {
         text-align: center;
         color: #666;
-        margin-bottom: 30px;
-      }
-
-      .search-bar {
-        max-width: 600px;
-        margin: 0 auto 30px auto;
+        margin-bottom: 3px;
       }
 
       .filter-buttons {
@@ -54,20 +49,6 @@
 
       .filter-buttons .btn {
         margin-right: 10px;
-        margin-bottom: 10px;
-      }
-
-      .book-card {
-        text-align: center;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-      }
-
-      .book-card img {
-        width: 100px;
-        height: 100px;
-        background-color: #ccc;
         margin-bottom: 10px;
       }
 
@@ -136,17 +117,7 @@
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="solicitudes.html">Solicitudes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="estadolibros.html">Estado Libros</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="devoluciones.html"
-                >Devolucion de documentos</a
-              >
-            </li>
+            <li class="nav-item"></li>
           </ul>
         </div>
       </div>
@@ -154,105 +125,67 @@
 
     <!-- Main Title and Subtitle -->
     <div class="container">
-      <h1 class="hero-title">Muni Book</h1>
-      <p class="hero-subtitle">Libreria municipal de los Chicos del Barrio</p>
+      <h1 class="hero-title">Panel Bibliotecario</h1>
+      <p class="hero-subtitle">Funciones Bibliotecario</p>
     </div>
 
     <!-- Search Bar Section -->
-    <div class="container search-bar">
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Busca tu libro"
-          aria-label="Busca tu libro"
-        />
-        <button class="btn btn-outline-secondary" type="button">🔍</button>
-      </div>
-    </div>
 
     <!-- Filter Buttons -->
-    <div class="container filter-buttons text-center">
-      <button type="button" class="btn btn-outline-secondary">Editorial</button>
-      <button type="button" class="btn btn-outline-secondary">
-        Tipo contenido
-      </button>
-      <button type="button" class="btn btn-outline-secondary">Autor</button>
-      <button type="button" class="btn btn-outline-secondary">Año</button>
-      <button type="button" class="btn btn-outline-secondary">Edicion</button>
+    <div class="container text-center">
+      <div class="mb-3">
+        <a
+          href="devoluciones.html"
+          class="btn btn-outline-secondary btn-lg w-100"
+        >
+          Ingresar Devolución
+        </a>
+      </div>
+      <div class="mb-3">
+        <a
+          href="solicitudes.html"
+          class="btn btn-outline-secondary btn-lg w-100"
+        >
+          Revisar solicitudes de préstamo
+        </a>
+      </div>
+      <div>
+        <a href="catalogo.html" class="btn btn-outline-secondary btn-lg w-100">
+          Catálogo / Administrar colección
+        </a>
+      </div>
     </div>
 
     <!-- Book Grid Section -->
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <!-- Add more book-card divs as needed -->
-      </div>
-    </div>
 
     <!-- Footer -->
     <footer class="bg-dark text-light py-4">
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
-            <h5>Use cases</h5>
+            <h5>Muni Book</h5>
             <ul class="list-unstyled">
-              <li>UI design</li>
-              <li>UX design</li>
-              <li>Prototyping</li>
-              <li>UI development</li>
-              <li>Illustration</li>
+              <li>Tu libreria de confianza</li>
+              <li>Siguenos en redes!</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Explore</h5>
+            <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li>Design systems</li>
-              <li>Features</li>
-              <li>Customers</li>
-              <li>Figma for enterprise</li>
-              <li>Design communities</li>
+              <li>Catalogo</li>
+              <li>Inicia Sesion</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Resources</h5>
+            <h5>Recursos</h5>
             <ul class="list-unstyled">
-              <li>Blog</li>
-              <li>Best practices</li>
-              <li>Support</li>
-              <li>Developers</li>
-              <li>Learn design</li>
+              <li>Sobre nosotros</li>
+              <li>Contactanos</li>
+              <li>Atencion al cliente</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Connect</h5>
+            <h5>Siguenos</h5>
             <div class="d-flex">
               <a href="#" class="text-light me-2">
                 <svg
@@ -316,10 +249,7 @@
                   />
                 </svg>
               </a>
-              <a
-                href="https://www.youtube.com/watch?v=Tf4pSSN_P3w"
-                class="text-light"
-              >
+              <a href="#" class="text-light">
                 <svg
                   width="24"
                   height="24"
