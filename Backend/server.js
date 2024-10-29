@@ -32,7 +32,7 @@ const typeDefs = gql`
         activo: Boolean!
         correo: String!
         password: String!
-        tipoUsuario: Int!
+        tipoUsuario: Int! # 0: usuario 1: bibliotecario 2: admin
         fechaSancion: GraphQLDateTime
     }
 
@@ -45,6 +45,8 @@ const typeDefs = gql`
         activo: Boolean!
         correo: String!
         password: String!
+        tipoUsuario: Int! 
+        fechaSancion: GraphQLDateTime
     }
 
     type Prestamo{
@@ -159,6 +161,11 @@ const typeDefs = gql`
         descriptionError: String
     }
 
+    type RespuestaLogin{
+        respuesta: Int
+        usuario: Usuario
+    }
+
     type Query{
         # Query basicos de cada cosa
         getUsuarios: [Usuario]
@@ -206,8 +213,8 @@ const typeDefs = gql`
         getEjemplaresByDocumentoAndEstado(documentoId: ID!, estado: Int): [Ejemplar]
         getCantEjemplaresByDocumentoAndEstado(documentoId: ID!, estado: Int): Int
         getDocumentosByTituloAndAutorAndTipoAndCategoria(titulo: String, autor: String, tipoId: ID, categoriaId: ID): [Documento]
-        getNDocumentos(numero: Int): [Documentos]
-        getUsuarioByCorreoAndCheckPassword(correo: String!, password: String!): Int
+        getNDocumentos(numero: Int): [Documento]
+        getUsuarioByCorreoAndCheckPassword(correo: String!, password: String!): Usuario
     }
 
     type Mutation{
@@ -229,6 +236,12 @@ const typeDefs = gql`
         addDetalleSolicitudPrestamo(input: DetalleSolicitudPrestamoInput): Response
         updDetalleSolicitudPrestamo(id: ID!, input: DetalleSolicitudPrestamoInput): Response
         delDetalleSolicitudPrestamo(id: ID!): Response
+        addTipoDocumento(input: TipoDocumentoInput): Response
+        updTipoDocumento(id: ID!, input: TipoDocumentoInput): Response
+        delTipoDocumento(id: ID!): Response
+        addCategoriaDocumento(input: CategoriaDocumentoInput): Response
+        updCategoriaDocumento(id: ID!, input: CategoriaDocumentoInput): Response
+        delCategoriaDocumento(id: ID!): Response
     }
 `;
 
@@ -423,7 +436,7 @@ const resolvers = {
             return tipoDocumentos;
         },
 
-        async getTipoDocumentosById(obj, {id}){
+        async getTipoDocumentoById(obj, {id}){
             let tipoDocumento = await TipoDocumento.findById(id);
             return tipoDocumento;
         },
@@ -496,18 +509,18 @@ const resolvers = {
         },
 
         async getUsuarioByCorreoAndCheckPassword(obj, {correo, password}){
-            let usuario = await Usuario.find({correo: correo})
-
-            if (usuario.password != password){
-                return 1
+            let usuario = await Usuario.findOne({correo: correo})
+            if (usuario == null){
+                return null
+            }
+            let contraUsuario = usuario.password
+            if (contraUsuario != password){
+                return null
             }
 
-            if (usuario.password = password){
-                return 2
+            if (contraUsuario == password){
+                return usuario
             }
-
-            return 0
-
         }
     },
     
@@ -932,7 +945,6 @@ const resolvers = {
 }
 
 async function checkDocumentos(input){
-    let ListTipos = ["Libro","Multimedia"];
     if (input.anioSalida >= 2100 || input.anioSalida <= -100){
         return [false,"Anio"];
     };

@@ -14,6 +14,7 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <title>Document</title>
     <style>
@@ -99,6 +100,66 @@
         border: 1px solid #ccc;
       }
     </style>
+    <script>
+      function respuestaLogin(activo, tipo){
+        console.log(activo)
+        if (!activo){
+          alert("Usuario No Activado")
+        }
+        else {
+          if (tipo == 0){
+            window.location.href = "vistausuario.html";
+          }
+          if (tipo == 1){
+            window.location.href = "vistabibliotecario.html";
+          }
+          if (tipo == 2){
+            window.location.href = "vistaadmin.html";
+          }
+        }
+      }
+
+      function login(){
+        let corr = document.getElementById('email').value
+        let pass = document.getElementById('password').value
+        let queryLogin = `
+          query GetUsuarioByCorreoAndCheckPassword($correo: String!, $password: String!) {
+            getUsuarioByCorreoAndCheckPassword(correo: $correo, password: $password) {
+              id
+              rut
+              nombres
+              apellidos
+              direccion
+              telefono
+              activo
+              correo
+              password
+              tipoUsuario
+              fechaSancion
+            }
+          }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryLogin,
+            variables: {
+              correo: corr,
+              password: pass
+            }
+          }),
+          success: function(response){
+            let tipo = response.data.getUsuarioByCorreoAndCheckPassword.tipoUsuario
+            let activo = response.data.getUsuarioByCorreoAndCheckPassword.activo
+            respuestaLogin(activo,tipo)
+            
+          }
+        })
+      }
+    </script>
   </head>
   <body>
     <!-- Header Section -->
@@ -163,12 +224,8 @@
           <label for="password">Contraseña</label>
           <input type="password" id="password" placeholder="Contraseña" />
         </div>
-        <a href="vistausuario.html" class="btn btn-success">Soy admin</a>
-        <a href="vistausuario.html" class="btn btn-success">Soy User</a>
-        <a href="vistabibliotecario.html" class="btn btn-success"
-          >Soy Bibliotecario</a>
-        <a href="admindpage.html" class="btn btn-success"
-        >Soy Master</a
+        <button type="button" class="btn btn-primary">Crear Cuenta</button>
+        <button type="button" class="btn btn-primary" onclick="login()">Login</button>
       </div>
     </main>
 
