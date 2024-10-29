@@ -945,7 +945,6 @@ const resolvers = {
 }
 
 async function checkDocumentos(input){
-    let ListTipos = ["Libro","Multimedia"];
     if (input.anioSalida >= 2100 || input.anioSalida <= -100){
         return [false,"Anio"];
     };
