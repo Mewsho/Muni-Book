@@ -8,7 +8,7 @@ const documentoSchema = mongoose.Schema({
     edicion : Number,
     codigo: String,
     tipoDocumento : { type: mongoose.Schema.Types.ObjectId, ref : 'TipoDocumento'},
-    categoriaDocumento : { type: mongoose.Schema.Types.ObjectId, ref : 'CategoriaDocumento'}
+    categoriaDocumento : [{ type: mongoose.Schema.Types.ObjectId, ref : 'CategoriaDocumento'}]
 });
 
 module.exports = mongoose.model('Documento', documentoSchema); 

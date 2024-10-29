@@ -93,7 +93,7 @@ const typeDefs = gql`
         edicion: Int!
         codigo: String
         tipoDocumento: TipoDocumento
-        categoriaDocumento: CategoriaDocumento
+        categoriaDocumento: [CategoriaDocumento]
     }
     input DocumentoInput{
         titulo: String!
