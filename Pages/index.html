@@ -16,7 +16,7 @@
     ></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg">
-
+    
     <title>MuniBook</title>
     
 <!-- Styles como los del css pero no-->
@@ -46,9 +46,80 @@
     </style>
   </head>
   
+  <script>
+    
+    console.log(document.cookie)
+
+    function aplicarVersionUsuario(){}
+
+    function aplicarVersionBibliotecario(){console.log()}
+
+    function aplicarVersionNotUsuario(){}
+    
+    function aplicarVersionAdministrador(){}
+
+    function loginButton(){
+      let tipoCookie = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith(`tipo=`))
+        ?.split("=")[1];
+      if (tipoCookie){
+        if (tipoCookie == 0){
+          window.location.href = "vistausuario.html";
+        }
+        if (tipoCookie == 1){
+          window.location.href = "vistabibliotecario.html";
+        }
+        if (tipoCookie == 2){
+          window.location.href = "vistaadmin.html";
+        }
+      }
+      else{
+        window.location.href = "login.html"
+      }
+    }
+
+    // Revisa la exitencia de la cookie, obteniendo el tipo y aplicando los cambios respectivos
+    function checkCookieExistence(name){
+      if(
+        document.cookie.split(";").some((item) => item.trim().startsWith(`${name}=`))
+      ){
+        let tipoCookie = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith(`tipo=`))
+        ?.split("=")[1];
+
+        switch (tipoCookie) {
+          case 0:
+            aplicarVersionUsuario()
+            console.log("Usuario")
+            break;
+          case 1:
+            aplicarVersionBibliotecario()
+            console.log("Bibliotecario")
+            break;
+          case 2:
+            aplicarVersionAdministrador()
+            console.log("Administrador")
+            break;
+          /*  
+          default:
+            aplicarVersionNotUsuario()
+            console.log(tipoCookie)
+            console.log("NotUsuario")
+            */
+        }
+      }
+      else{
+        aplicarVersionNotUsuario()
+        console.log("NotUsuario")
+      }
+    }
+  </script>
+
   <!-- El cuelpo del diablo -->
   
-  <body>
+  <body onload="checkCookieExistence('tipo')">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
         <a class="navbar-brand" href="#">
@@ -98,7 +169,7 @@
        
         <p class="lead">Librería municipal de Lorem ipsum</p>
         <div class="mt-4">
-          <a href="login.html" class="btn btn-light">Acceder</a>
+          <a onclick="loginButton()" class="btn btn-light">Acceder</a>
         </div>
       </div>
     </section>
