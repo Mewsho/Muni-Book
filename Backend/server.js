@@ -103,7 +103,7 @@ const typeDefs = gql`
         edicion: Int!
         codigo: String
         tipoDocumento: String
-        categoriaDocumento: String
+        categoriaDocumento: [String]
     }
 
     type TipoDocumento{
@@ -605,19 +605,27 @@ const resolvers = {
                     descriptionError: "Tipo no encontrado"
                 }
             }
-            let categoriaDocumentoBus = await CategoriaDocumento.findById(input.categoriaDocumento);
-            if (categoriaDocumentoBus == null){
-                return {
-                    statusCode: "400",
-                    body: null,
-                    errorCode: "0",
-                    descriptionError: "Categoreia no encontrada"
+
+            let inputCategoriasList = []
+            let categoriasList = input.categoriaDocumento
+            for (const categoriaObjectId of categoriasList){
+                console.log(categoriaObjectId)
+                let categoria = await CategoriaDocumento.findById(categoriaObjectId);
+                console.log(categoria)
+                if (categoria == null){
+                    return {
+                        statusCode: "400",
+                        body: null,
+                        errorCode: "0",
+                        descriptionError: "Categoria no encontrado"
+                    }
                 }
+                inputCategoriasList.push(categoria._id)
             }
             let documento = new Documento({
                 titulo: input.titulo, autor: input.autor, editorial: input.editorial,
                 anioSalida: input.anioSalida, edicion: input.edicion, codigo: input.codigo,
-                tipoDocumento: tipoDocumentoBus._id, categoriaDocumento: categoriaDocumentoBus._id
+                tipoDocumento: tipoDocumentoBus._id, categoriaDocumento: inputCategoriasList
             });
             await documento.save();
             return {
@@ -647,19 +655,26 @@ const resolvers = {
                     descriptionError: "Tipo no encontrado"
                 }
             }
-            let categoriaDocumentoBus = await CategoriaDocumento.findById(input.categoriaDocumento);
-            if (categoriaDocumentoBus == null){
-                return {
-                    statusCode: "400",
-                    body: null,
-                    errorCode: "0",
-                    descriptionError: "Categoreia no encontrada"
+            let inputCategoriasList = []
+            let categoriasList = input.categoriaDocumento
+            for (const categoriaObjectId of categoriasList){
+                console.log(categoriaObjectId)
+                let categoria = await CategoriaDocumento.findById(categoriaObjectId);
+                console.log(categoria)
+                if (categoria == null){
+                    return {
+                        statusCode: "400",
+                        body: null,
+                        errorCode: "0",
+                        descriptionError: "Categoria no encontrado"
+                    }
                 }
+                inputCategoriasList.push(categoria._id)
             }
             let documento = await Documento.findByIdAndUpdate(id, {
                 titulo: input.titulo, autor: input.autor, editorial: input.editorial,
                 anioSalida: input.anioSalida, edicion: input.edicion, codigo: input.codigo,
-                tipoDocumento: tipoDocumentoBus._id, categoriaDocumento: categoriaDocumentoBus._id
+                tipoDocumento: tipoDocumentoBus._id, categoriaDocumento: inputCategoriasList
             });
             return {
                 statusCode: "200",
@@ -753,7 +768,7 @@ const resolvers = {
         async addDetalleSolicitudPrestamo(obj, {input}){
             let inputEjemplarList = []
             let ejemplarList = input.ejemplares
-            for (ejemplarObjectId in ejemplarList){
+            for (ejemplarObjectId of ejemplarList){
                 let ejemplar = await Ejemplar.findById(ejemplarObjectId);
                 if (ejemplar == null){
                     return {
@@ -835,7 +850,7 @@ const resolvers = {
         async addSolicitudPrestamo(obj, {input}){
             let ListaFinalPrestamos = []
             let ListaPrestamos = input.prestamos
-            for (PrestamosObjectId in ListaPrestamos){
+            for (PrestamosObjectId of ListaPrestamos){
                 let prestamo = await Prestamo.findById(PrestamosObjectId);
                 ListaFinalPrestamos.push(prestamo._id)
             }
@@ -853,7 +868,7 @@ const resolvers = {
         async updSolicitudPrestamo(obj, {input}){
             let ListaFinalPrestamos = []
             let ListaPrestamos = input.prestamos
-            for (PrestamosObjectId in ListaPrestamos){
+            for (PrestamosObjectId of ListaPrestamos){
                 let prestamo = await Prestamo.findById(PrestamosObjectId);
                 ListaFinalPrestamos.push(prestamo._id)
             }
