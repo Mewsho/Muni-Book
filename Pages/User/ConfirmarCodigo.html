@@ -18,18 +18,17 @@
             let userData;
             function validateCode() {
                 let inputCodigo = document.getElementById('codigo').value;
-                inputCodigo = parseInt(inputCodigo,10)
                 console.log(inputCodigo)
                 console.log(userData)
                 let queryFind = `
-                    mutation UpdUsuario($updUsuarioId: ID!, $updUsuarioInput2: UsuarioInput) {
-                        updUsuario(id: $updUsuarioId, input: $updUsuarioInput2) {
-                            statusCode
-                            body
-                            errorCode
-                            descriptionError
-                        }
+                mutation Mutation($updUsuarioId: ID!, $input: UsuarioInput) {
+                    updUsuario(id: $updUsuarioId, input: $input) {
+                    statusCode
+                    body
+                    errorCode
+                    descriptionError
                     }
+                }
                 `;
                 $.ajax({
                 type: "POST",
@@ -40,14 +39,14 @@
                     query: queryFind,
                     variables: {
                         updUsuarioId: userData.id,
-                        updUsuarioInput2:{
+                            input:{
                             rut: userData.rut,
                             nombres: userData.nombres,
                             apellidos: userData.apellidos,
                             direccion: userData.direccion,
                             telefono: userData.telefono,
                             activo: true,
-                            codigo: inputCodigo,
+                            codigo: parseInt(inputCodigo, 10),
                             correo: userData.correo,
                             password: userData.password,
                             tipoUsuario: userData.tipoUsuario
