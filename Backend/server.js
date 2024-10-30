@@ -30,6 +30,7 @@ const typeDefs = gql`
         direccion: String!
         telefono: Int!
         activo: Boolean!
+        codigo: Int
         correo: String!
         password: String!
         tipoUsuario: Int! # 0: usuario 1: bibliotecario 2: admin
@@ -43,6 +44,7 @@ const typeDefs = gql`
         direccion: String!
         telefono: Int!
         activo: Boolean!
+        codigo: Int
         correo: String!
         password: String!
         tipoUsuario: Int! 
@@ -262,12 +264,12 @@ const resolvers = {
         },
 
         async getUsuarioByRut(obj, {rut}){
-            const usuario = await Usuario.find({rut: rut}).exec();
+            const usuario = await Usuario.findOne({rut: rut});
             return usuario;
         },
 
         async getUsuarioByCorreo(obj, {correo}){
-            const usuario = await Usuario.find({correo: correo}).exec();
+            const usuario = await Usuario.findOne({correo: correo});
             return usuario;
         },
 

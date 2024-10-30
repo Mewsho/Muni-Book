@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Registrar Usuarios</title>
+        <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        />
+        <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"
+        ></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script>
+            let userData;
+            function validateCode() {
+                let inputCodigo = document.getElementById('codigo').value;
+                console.log(inputCodigo)
+                console.log(userData)
+                let queryFind = `
+                mutation Mutation($updUsuarioId: ID!, $input: UsuarioInput) {
+                    updUsuario(id: $updUsuarioId, input: $input) {
+                    statusCode
+                    body
+                    errorCode
+                    descriptionError
+                    }
+                }
+                `;
+                $.ajax({
+                type: "POST",
+                url: "http://localhost:8092/graphql",
+                contentType: "application/json",
+                timeout: 15000,
+                data: JSON.stringify({
+                    query: queryFind,
+                    variables: {
+                        updUsuarioId: userData.id,
+                            input:{
+                            rut: userData.rut,
+                            nombres: userData.nombre,
+                            apellidos: userData.apellidos,
+                            direccion: userData.direccion,
+                            telefono: userData.telefono,
+                            activo: true,
+                            codigo: inputCodigo,
+                            correo: userData.correo,
+                            password: userData.password,
+                            tipoUsuario: userData.tipoUsuario
+                        }
+                    }
+                }),
+                success: function(response) {
+                    console.log("Response:", response);
+                },
+                error: function(error) {
+                    console.error("Error:", error);
+                }
+                });
+            }
+
+            function findCode() {
+                let rut = document.getElementById('rut').value;
+                let queryFind = `
+                query Query($rut: Int!) {
+                    getUsuarioByRut(rut: $rut) {
+                    id
+                    rut
+                    nombres
+                    apellidos
+                    direccion
+                    telefono
+                    activo
+                    codigo
+                    correo
+                    password
+                    tipoUsuario
+                    fechaSancion
+                    }
+                }
+                `;
+                $.ajax({
+                type: "POST",
+                url: "http://localhost:8092/graphql",
+                contentType: "application/json",
+                timeout: 15000,
+                data: JSON.stringify({
+                    query: queryFind,
+                    variables: {
+                    rut: parseInt(rut, 10)
+                    }
+                }),
+                success: function(response) {
+                    userData = response.data.getUsuarioByRut;
+                    console.log("Datos del usuario:", userData);
+                    $('#codigoModal').modal('show');
+                }
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container mt-5">
+        <h1 class="text-center mb-4">Confirmar Código</h1>
+        <form id="registrationForm">
+            <div class="mb-3">
+            <label for="rut" class="form-label">Rut</label>
+            <input
+                type="text"
+                class="form-control"
+                id="rut"
+                placeholder="Ingrese el rut del usuario"
+                required
+            />
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="findCode()">
+            Aceptar
+            </button>
+        </form>
+        </div>
+
+        <!-- Modal para código de verificación -->
+        <div class="modal fade" id="codigoModal" tabindex="-1" aria-labelledby="codigoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="codigoModalLabel">Código de Verificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="codigo" class="form-label">Ingrese el código de verificación</label>
+                <input
+                type="text"
+                class="form-control"
+                id="codigo"
+                placeholder="Código"
+                required
+                />
+            </div>
+            <div class="modal-footer">
+                <button
+                type="button"
+                class="btn btn-primary"
+                onclick="validateCode()"
+                >
+                Confirmar
+                </button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

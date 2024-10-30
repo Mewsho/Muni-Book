@@ -7,6 +7,7 @@ const usuarioSchema = mongoose.Schema({
     direccion: String,
     telefono : Number,
     activo : Boolean,
+    codigo: Number,
     correo: String,
     password : String,
     tipoUsuario: Number,
