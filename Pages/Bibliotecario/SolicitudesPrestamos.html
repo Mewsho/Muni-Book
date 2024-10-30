@@ -28,6 +28,10 @@
         font-size: 300%;
       }
 
+      h2 {
+        font-family: "Times New Roman", Times, serif;
+      }
+
       body {
         font-family: Arial, sans-serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
@@ -78,6 +82,27 @@
         margin-bottom: 10px;
       }
 
+      .list-container {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      .table th,
+      .table td {
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      .btn-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
       footer {
         background-color: #000;
         color: #fff;
@@ -88,13 +113,16 @@
         background-color: #f8f9fa;
         padding: 4rem 0;
       }
+
       .features-section {
         padding: 4rem 0;
       }
+
       .display-4 {
         font-size: 1000%;
         font-family: "Times New Roman", Times, serif;
       }
+
       .nav-link {
         align-items: center;
         font-family: "Times New Roman", Times, serif;
@@ -137,7 +165,6 @@
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
-
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
@@ -149,130 +176,146 @@
     <!-- Main Title and Subtitle -->
     <div class="container">
       <h1 class="hero-title">Muni Book</h1>
-      <p class="hero-subtitle">Bienvenido @</p>
+      <p class="hero-subtitle">bibliotecario1</p>
     </div>
 
-    <!-- Search Bar Section -->
-    <div class="container search-bar">
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Busca tu libro"
-          aria-label="Busca tu libro"
-        />
-        <button
-          class="btn btn-outline-secondary"
-          class="fa-solid fa-magnifying-glass"
-          type="button"
-        >
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
+    <!-- list Section -->
+    <div class="container mt-5">
+      <div class="list-container">
+        <h2 class="text-center mb-4">Solicitudes de Préstamos</h2>
+
+        <!-- Lista de solicitudes en formato de tabla -->
+        <table class="table table-bordered">
+          <thead class="table-dark">
+            <tr>
+              <th>Seleccionar</th>
+              <th>ID Solicitud</th>
+              <th>Nombre de Usuario</th>
+              <th>Fecha Solicitada</th>
+              <th>Fecha de Entrega</th>
+              <th>inf</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <!-- Casilla de verificación individual -->
+              <td>
+                <input
+                  type="checkbox"
+                  class="form-check-input select-request"
+                />
+              </td>
+              <td>1</td>
+              <td>Juan Pérez</td>
+              <td>2024-10-01</td>
+              <td>Sala</td>
+              <!-- Botón Info para abrir el modal de más información -->
+              <td class="btn-actions">
+                <button
+                  type="button"
+                  class="btn btn-info"
+                  data-bs-toggle="modal"
+                  data-bs-target="#infoModal"
+                >
+                  Info
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <!-- Casilla de verificación individual -->
+              <td>
+                <input
+                  type="checkbox"
+                  class="form-check-input select-request"
+                />
+              </td>
+              <td>2</td>
+              <td>María López</td>
+              <td>2024-10-05</td>
+              <td>Domicilio</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Sección de botones de acción -->
+        <div class="d-flex justify-content-center mt-4">
+          <!-- Botón para seleccionar/deseleccionar todas las solicitudes -->
+          <div class="form-check me-3">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="selectAll"
+              onclick="toggleSelectAll()"
+            />
+            <label class="form-check-label" for="selectAll"
+              >Seleccionar Todo</label
+            >
+          </div>
+
+          <!-- Botones Confirmar y Rechazar -->
+          <button class="btn btn-success me-2">Confirmar</button>
+          <button class="btn btn-danger">Rechazar</button>
+        </div>
       </div>
     </div>
 
-    <!-- Filter Buttons -->
-    <div class="container filter-buttons text-center">
-      <button type="button" class="btn btn-outline-secondary">Editorial</button>
-      <button type="button" class="btn btn-outline-secondary">
-        Tipo contenido
-      </button>
-      <button type="button" class="btn btn-outline-secondary">Autor</button>
-      <button type="button" class="btn btn-outline-secondary">Año</button>
-      <button type="button" class="btn btn-outline-secondary">Edicion</button>
-      <button type="button" class="btn btn-outline-secondary">
-        Tipo medio
-      </button>
-    </div>
-
-    <!-- Book Grid Section -->
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
+    <!-- Modal de más información -->
+    <div
+      class="modal fade"
+      id="infoModal"
+      tabindex="-1"
+      aria-labelledby="infoModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="infoModalLabel">
+              Información de Préstamos
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Lista de libros -->
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nombre del Libro</th>
+                  <th>Fecha de Solicitud</th>
+                  <th>Tipo de Préstamo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Ejemplo de libros solicitados; puedes duplicar y actualizar según sea necesario -->
+                <tr>
+                  <td>El Quijote</td>
+                  <td>2024-10-01</td>
+                  <td>Sala</td>
+                </tr>
+                <tr>
+                  <td>Cien Años de Soledad</td>
+                  <td>2024-10-05</td>
+                  <td>Domicilio</td>
+                </tr>
+                <!-- Agrega más filas según la información de los libros -->
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
           </div>
         </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <!-- Add more book-card divs as needed -->
       </div>
     </div>
 
@@ -389,5 +432,16 @@
         </div>
       </div>
     </footer>
+
+    <!-- Script para seleccionar o deseleccionar todas las solicitudes -->
+    <script>
+      function toggleSelectAll() {
+        const selectAllCheckbox = document.getElementById("selectAll");
+        const requestCheckboxes = document.querySelectorAll(".select-request");
+        requestCheckboxes.forEach((checkbox) => {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+      }
+    </script>
   </body>
 </html>
