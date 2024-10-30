@@ -3,60 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muni Book - Estado de los Préstamos</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>Muni Book - Buscar Libros</title>
+    <!-- Bootstrap 5 CDN -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <!-- Bootstrap 5 JS bundle -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f9fa;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
       h1 {
         font-family: "Times New Roman", Times, serif;
-        font-size: 2.5rem;
-        margin-top: 30px;
+        font-size: 300%;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        flex-grow: 1; /* Se expande para ocupar el espacio disponible */
+      }
+
+      .hero-title {
+        margin-top: 150px;
         text-align: center;
       }
-      .btn-action {
-        margin-right: 5px;
+
+      .hero-subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 3px;
       }
-      .container {
-        margin-top: 30px;
-        flex-grow: 1;
+
+      .filter-buttons {
+        margin-bottom: 30px;
       }
+
+      .filter-buttons .btn {
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
       footer {
         background-color: #000;
         color: #fff;
         padding: 20px 0;
-        text-align: center;
-        margin-top: auto;
+      }
+
+      .hero-section {
+        background-color: #f8f9fa;
+        padding: 4rem 0;
+      }
+      .features-section {
+        padding: 4rem 0;
+      }
+      .display-4 {
+        font-size: 1000%;
+        font-family: "Times New Roman", Times, serif;
+      }
+      .nav-link {
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        align-content: center;
+        text-align: end;
+      }
+
+      /* Estilo para ocultar el mensaje inicialmente */
+      #mensaje {
+        display: none; /* Oculta el mensaje por defecto */
       }
     </style>
-    <script>
-      // Función para enviar notificación y desactivar el botón
-      function enviarNotificacion(button) {
-        // Desactivar el botón y cambiar el texto
-        button.disabled = true;
-        button.textContent = "Notificación Enviada";
-        button.classList.remove("btn-danger");
-        button.classList.add("btn-secondary");
-
-        // Mostrar un mensaje de éxito
-        alert("Notificación enviada con éxito a " + button.dataset.usuario);
-      }
-    </script>
   </head>
   <body>
     <!-- Header Section -->
@@ -75,6 +99,7 @@
             <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
           </svg>
         </a>
+
         <button
           class="navbar-toggler"
           type="button"
@@ -86,7 +111,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="#products">Productos</a>
+              <a class="nav-link" href="../catalogo.html">Catálogo</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#solutions">Soluciones</a>
@@ -97,57 +122,53 @@
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
+            <li class="nav-item"></li>
           </ul>
         </div>
       </div>
     </nav>
 
-    <!-- Main Title -->
+    <!-- Main Title and Subtitle -->
     <div class="container">
-      <h1>Estado de los Préstamos</h1>
-      <p class="text-center">
-        Revisa los préstamos vencidos y envía recordatorios automáticos de
-        devolución.
-      </p>
+      <h1 class="hero-title">Panel Bibliotecario</h1>
+      <p class="hero-subtitle">Funciones Bibliotecario</p>
+    </div>
 
-      <!-- Sala Section -->
-      <h2 class="text-center my-4">Préstamos en Sala Vencidos</h2>
-      <div class="text-center">
+    <!-- Filter Buttons -->
+    <div class="container text-center">
+      <div class="mb-3">
         <button
-          class="btn btn-primary btn-action"
+          type="button"
+          class="btn btn-outline-secondary btn-lg w-100"
           data-bs-toggle="modal"
-          data-bs-target="#modalSala"
+          data-bs-target="#modalDevolucion"
         >
-          Revisar Préstamos Vencidos
+          Ingresar Devolución
         </button>
       </div>
-
-      <!-- Domicilio Section -->
-      <h2 class="text-center my-4">Préstamos a Domicilio en Mora</h2>
-      <div class="text-center">
-        <button
-          class="btn btn-danger btn-action"
-          data-bs-toggle="modal"
-          data-bs-target="#modalDomicilio"
+      <div class="mb-3">
+        <a
+          href="SolicitudesPrestamos.html"
+          class="btn btn-outline-secondary btn-lg w-100"
         >
-          Enviar Recordatorio de Devolución
-        </button>
+          Revisar solicitudes de préstamo
+        </a>
       </div>
     </div>
 
-    <!-- Modal Préstamos en Sala -->
+    <!-- Modal para Ingresar Devolución -->
     <div
       class="modal fade"
-      id="modalSala"
+      id="modalDevolucion"
       tabindex="-1"
-      aria-labelledby="modalSalaLabel"
+      aria-labelledby="modalDevolucionLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="modalSalaLabel">
-              Préstamos en Sala Vencidos
+            <h5 class="modal-title" id="modalDevolucionLabel">
+              Dashboard Bibliotecario / Devolución
             </h5>
             <button
               type="button"
@@ -157,174 +178,81 @@
             ></button>
           </div>
           <div class="modal-body">
-            <!-- Aquí puedes agregar una tabla o lista con los préstamos vencidos -->
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Nombre del Usuario</th>
-                  <th>Título del Libro</th>
-                  <th>Fecha de Vencimiento</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Juan Pérez</td>
-                  <td>Libro 1</td>
-                  <td>20/10/2024</td>
-                  <td>
-                    <button
-                      class="btn btn-danger"
-                      data-usuario="Juan Pérez"
-                      onclick="enviarNotificacion(this)"
-                    >
-                      Enviar Notificación
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>María González</td>
-                  <td>Libro 2</td>
-                  <td>18/10/2024</td>
-                  <td>
-                    <button
-                      class="btn btn-danger"
-                      data-usuario="María González"
-                      onclick="enviarNotificacion(this)"
-                    >
-                      Enviar Notificación
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cerrar
+            <div class="form-group">
+              <label for="codigoLibro">Código del Libro:</label>
+              <input
+                type="text"
+                id="codigoLibro"
+                class="form-control"
+                placeholder="Ingrese el código"
+              />
+            </div>
+            <button id="btnRegistrar" class="btn btn-primary mt-3">
+              Registrar Devolución
             </button>
+            <div id="mensaje" class="mt-3"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Modal Préstamos a Domicilio -->
-    <div
-      class="modal fade"
-      id="modalDomicilio"
-      tabindex="-1"
-      aria-labelledby="modalDomicilioLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalDomicilioLabel">
-              Préstamos a Domicilio en Mora
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <!-- Aquí puedes agregar una tabla o lista con los préstamos en mora -->
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Nombre del Usuario</th>
-                  <th>Título del Libro</th>
-                  <th>Fecha de Vencimiento</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Pedro López</td>
-                  <td>Libro 3</td>
-                  <td>15/10/2024</td>
-                  <td>
-                    <button
-                      class="btn btn-danger"
-                      data-usuario="Pedro López"
-                      onclick="enviarNotificacion(this)"
-                    >
-                      Enviar Notificación
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Ana Martínez</td>
-                  <td>Libro 4</td>
-                  <td>12/10/2024</td>
-                  <td>
-                    <button
-                      class="btn btn-danger"
-                      data-usuario="Ana Martínez"
-                      onclick="enviarNotificacion(this)"
-                    >
-                      Enviar Notificación
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <script>
+      // Evento para el botón "Registrar Devolución"
+      document.getElementById("btnRegistrar").onclick = function () {
+        var codigo = document.getElementById("codigoLibro").value;
+        var mensajeDiv = document.getElementById("mensaje");
 
-    <!-- Footer Section -->
+        // Mostrar el mensaje de forma predeterminada
+        mensajeDiv.style.display = "block";
+
+        if (codigo) {
+          // Mostrar mensaje de confirmación
+          mensajeDiv.innerHTML =
+            '<div class="alert alert-success">Devolución registrada con éxito para el código: ' +
+            codigo +
+            ".</div>";
+        } else {
+          // Mostrar mensaje de error
+          mensajeDiv.innerHTML =
+            '<div class="alert alert-danger">Por favor, ingrese un código de libro válido.</div>';
+        }
+
+        // Ocultar el mensaje después de 3 segundos
+        setTimeout(function () {
+          mensajeDiv.style.display = "none"; // Oculta el mensaje
+          document.getElementById("codigoLibro").value = ""; // Limpia el campo de entrada
+        }, 5000); // 5000 milisegundos = 5 segundos
+      };
+    </script>
+
+    <!-- Footer -->
     <footer class="bg-dark text-light py-4">
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
-            <h5>Use cases</h5>
+            <h5>Muni Book</h5>
             <ul class="list-unstyled">
-              <li>UI design</li>
-              <li>UX design</li>
-              <li>Prototyping</li>
-              <li>UI development</li>
-              <li>Illustration</li>
+              <li>Tu libreria de confianza</li>
+              <li>Siguenos en redes!</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Explore</h5>
+            <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li>Design systems</li>
-              <li>Features</li>
-              <li>Customers</li>
-              <li>Figma for enterprise</li>
-              <li>Design communities</li>
+              <li>Catalogo</li>
+              <li>Inicia Sesion</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Resources</h5>
+            <h5>Recursos</h5>
             <ul class="list-unstyled">
-              <li>Blog</li>
-              <li>Best practices</li>
-              <li>Support</li>
-              <li>Developers</li>
-              <li>Learn design</li>
+              <li>Sobre nosotros</li>
+              <li>Contactanos</li>
+              <li>Atencion al cliente</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Connect</h5>
+            <h5>Siguenos</h5>
             <div class="d-flex">
               <a href="#" class="text-light me-2">
                 <svg
@@ -388,10 +316,7 @@
                   />
                 </svg>
               </a>
-              <a
-                href="https://www.youtube.com/watch?v=Tf4pSSN_P3w"
-                class="text-light"
-              >
+              <a href="#" class="text-light">
                 <svg
                   width="24"
                   height="24"

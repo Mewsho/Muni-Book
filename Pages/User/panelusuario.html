@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Devoluciones - Muni Book</title>
+    <title>Muni Book - Buscar Libros</title>
     <!-- Bootstrap 5 CDN -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
@@ -14,94 +14,71 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <style>
+      h1 {
+        font-family: "Times New Roman", Times, serif;
+        font-size: 300%;
+      }
+
       body {
-        background-color: #f8f9fa;
         font-family: Arial, sans-serif;
-        padding-bottom: 100px; /* Para que el contenido no se superponga con el footer */
+        min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
+        display: flex;
+        flex-direction: column;
       }
 
-      .container2 {
-        margin-top: 50px;
-      }
-      .form-container {
-        background-color: #fff;
-        padding: 5%;
-        border-radius: 15px;
-        margin-top: 12%;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        max-width: 50%;
-        margin-left: 25%;
-      }
-      footer {
-        background-color: #343a40;
-        color: #ffffff;
-        padding: 20px 0;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
+      .container {
+        flex-grow: 1; /* Se expande para ocupar el espacio disponible */
       }
 
-      .footer-links {
+      .hero-title {
+        margin-top: 150px;
         text-align: center;
       }
 
-      .footer-links a {
-        color: #ffffff;
-        margin: 0 15px;
-        text-decoration: none;
+      .hero-subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 3px;
       }
 
-      .footer-links a:hover {
-        text-decoration: underline;
+      .filter-buttons {
+        margin-bottom: 30px;
       }
 
-      .social-icons a {
-        margin: 0 10px;
-        color: #ffffff;
+      .filter-buttons .btn {
+        margin-right: 10px;
+        margin-bottom: 10px;
       }
 
-      .social-icons a:hover {
-        color: #007bff;
+      footer {
+        background-color: #000;
+        color: #fff;
+        padding: 20px 0;
+      }
+
+      .hero-section {
+        background-color: #f8f9fa;
+        padding: 4rem 0;
+      }
+      .features-section {
+        padding: 4rem 0;
+      }
+      .display-4 {
+        font-size: 1000%;
+        font-family: "Times New Roman", Times, serif;
+      }
+      .nav-link {
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        align-content: center;
+        text-align: end;
       }
     </style>
-    <script>
-      function marcarComoDevuelto() {
-        const codigoEjemplar = document.getElementById("codigoEjemplar").value;
-        if (codigoEjemplar === "") {
-          alert("Por favor, ingrese el código del ejemplar.");
-          return;
-        }
-        alert(
-          `El ejemplar con código ${codigoEjemplar} ha sido marcado como devuelto.`
-        );
-
-        // Simulación de 30 minutos después para marcar como disponible
-        setTimeout(() => {
-          alert(
-            `El ejemplar con código ${codigoEjemplar} ahora está disponible.`
-          );
-        }, 1800000); // 1800000ms = 30 minutos
-
-        // Si es devolución con atraso, calcular sanción
-        const fechaDevolucion = new Date(
-          document.getElementById("fechaDevolucion").value
-        );
-        const fechaActual = new Date();
-
-        if (fechaDevolucion < fechaActual) {
-          const diasAtraso = Math.ceil(
-            (fechaActual - fechaDevolucion) / (1000 * 60 * 60 * 24)
-          );
-          const sancionDias = diasAtraso * 2; // Por cada día de atraso, 2 días de sanción
-          alert(
-            `Devolución con ${diasAtraso} día(s) de atraso. Sanción: ${sancionDias} día(s) sin poder solicitar préstamos.`
-          );
-        }
-      }
-    </script>
   </head>
   <body>
+    <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
         <a class="navbar-brand" href="index.html">
@@ -117,76 +94,98 @@
             <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
           </svg>
         </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#products">Productos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#solutions">Soluciones</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#community">Comunidad</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+            <li class="nav-item"></li>
+          </ul>
+        </div>
       </div>
     </nav>
 
+    <!-- Main Title and Subtitle -->
     <div class="container">
-      <h1 class="text-center">Devolución de Documentos</h1>
-      <div class="form-container">
-        <form>
-          <div class="mb-3">
-            <label for="codigoEjemplar" class="form-label"
-              >Código del Ejemplar</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="codigoEjemplar"
-              placeholder="Ingrese el código del ejemplar"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="fechaDevolucion" class="form-label"
-              >Fecha de Devolución</label
-            >
-            <input type="date" class="form-control" id="fechaDevolucion" />
-          </div>
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="marcarComoDevuelto()"
-          >
-            Marcar como Devuelto
-          </button>
-        </form>
+      <h1 class="hero-title">Panel Usuario</h1>
+      <p class="hero-subtitle">Funciones Usuario</p>
+    </div>
+
+    <!-- Search Bar Section -->
+
+    <!-- Filter Buttons -->
+    <div class="container text-center">
+      <div class="mb-3">
+        <a
+          href="devoluciones.html"
+          class="btn btn-outline-secondary btn-lg w-100"
+        >
+          Ingresar Devolución
+        </a>
+      </div>
+      <div class="mb-3">
+        <a
+          href="solicitudes.html"
+          class="btn btn-outline-secondary btn-lg w-100"
+        >
+          Revisar solicitudes de préstamo
+        </a>
+      </div>
+      <div>
+        <a href="catalogo.html" class="btn btn-outline-secondary btn-lg w-100">
+          Catálogo / Administrar colección
+        </a>
       </div>
     </div>
 
+    <!-- Book Grid Section -->
+
+    <!-- Footer -->
     <footer class="bg-dark text-light py-4">
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
-            <h5>Use cases</h5>
+            <h5>Muni Book</h5>
             <ul class="list-unstyled">
-              <li>UI design</li>
-              <li>UX design</li>
-              <li>Prototyping</li>
-              <li>UI development</li>
-              <li>Illustration</li>
+              <li>Tu libreria de confianza</li>
+              <li>Siguenos en redes!</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Explore</h5>
+            <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li>Design systems</li>
-              <li>Features</li>
-              <li>Customers</li>
-              <li>Figma for enterprise</li>
-              <li>Design communities</li>
+              <li>Catalogo</li>
+              <li>Inicia Sesion</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Resources</h5>
+            <h5>Recursos</h5>
             <ul class="list-unstyled">
-              <li>Blog</li>
-              <li>Best practices</li>
-              <li>Support</li>
-              <li>Developers</li>
-              <li>Learn design</li>
+              <li>Sobre nosotros</li>
+              <li>Contactanos</li>
+              <li>Atencion al cliente</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Connect</h5>
+            <h5>Siguenos</h5>
             <div class="d-flex">
               <a href="#" class="text-light me-2">
                 <svg
@@ -250,10 +249,7 @@
                   />
                 </svg>
               </a>
-              <a
-                href="https://www.youtube.com/watch?v=Tf4pSSN_P3w"
-                class="text-light"
-              >
+              <a href="#" class="text-light">
                 <svg
                   width="24"
                   height="24"

@@ -14,11 +14,22 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <style>
       h1 {
         font-family: "Times New Roman", Times, serif;
         font-size: 300%;
+      }
+
+      h2 {
+        font-family: "Times New Roman", Times, serif;
       }
 
       body {
@@ -71,6 +82,27 @@
         margin-bottom: 10px;
       }
 
+      .list-container {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      .table th,
+      .table td {
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      .btn-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
       footer {
         background-color: #000;
         color: #fff;
@@ -81,13 +113,16 @@
         background-color: #f8f9fa;
         padding: 4rem 0;
       }
+
       .features-section {
         padding: 4rem 0;
       }
+
       .display-4 {
         font-size: 1000%;
         font-family: "Times New Roman", Times, serif;
       }
+
       .nav-link {
         align-items: center;
         font-family: "Times New Roman", Times, serif;
@@ -100,7 +135,7 @@
     <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="#">
           <svg
             width="30"
             height="30"
@@ -113,7 +148,7 @@
             <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
           </svg>
         </a>
-
+        <!-- Botones del navbar-->
         <button
           class="navbar-toggler"
           type="button"
@@ -125,27 +160,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="#products">Productos</a>
+              <a class="nav-link" href="catalogo.html">Catalogo</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#solutions">Soluciones</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#community">Comunidad</a>
+              <a class="nav-link" href="#servicios">Servicios</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="solicitudes.html">Solicitudes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="estadolibros.html">Estado Libros</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="devoluciones.html"
-                >Devolucion de documentos</a
-              >
             </li>
           </ul>
         </div>
@@ -155,65 +176,146 @@
     <!-- Main Title and Subtitle -->
     <div class="container">
       <h1 class="hero-title">Muni Book</h1>
-      <p class="hero-subtitle">Libreria municipal de los Chicos del Barrio</p>
+      <p class="hero-subtitle">bibliotecario1</p>
     </div>
 
-    <!-- Search Bar Section -->
-    <div class="container search-bar">
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Busca tu libro"
-          aria-label="Busca tu libro"
-        />
-        <button class="btn btn-outline-secondary" type="button">🔍</button>
+    <!-- list Section -->
+    <div class="container mt-5">
+      <div class="list-container">
+        <h2 class="text-center mb-4">Solicitudes de Préstamos</h2>
+
+        <!-- Lista de solicitudes en formato de tabla -->
+        <table class="table table-bordered">
+          <thead class="table-dark">
+            <tr>
+              <th>Seleccionar</th>
+              <th>ID Solicitud</th>
+              <th>Nombre de Usuario</th>
+              <th>Fecha Solicitada</th>
+              <th>Fecha de Entrega</th>
+              <th>inf</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <!-- Casilla de verificación individual -->
+              <td>
+                <input
+                  type="checkbox"
+                  class="form-check-input select-request"
+                />
+              </td>
+              <td>1</td>
+              <td>Juan Pérez</td>
+              <td>2024-10-01</td>
+              <td>Sala</td>
+              <!-- Botón Info para abrir el modal de más información -->
+              <td class="btn-actions">
+                <button
+                  type="button"
+                  class="btn btn-info"
+                  data-bs-toggle="modal"
+                  data-bs-target="#infoModal"
+                >
+                  Info
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <!-- Casilla de verificación individual -->
+              <td>
+                <input
+                  type="checkbox"
+                  class="form-check-input select-request"
+                />
+              </td>
+              <td>2</td>
+              <td>María López</td>
+              <td>2024-10-05</td>
+              <td>Domicilio</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Sección de botones de acción -->
+        <div class="d-flex justify-content-center mt-4">
+          <!-- Botón para seleccionar/deseleccionar todas las solicitudes -->
+          <div class="form-check me-3">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="selectAll"
+              onclick="toggleSelectAll()"
+            />
+            <label class="form-check-label" for="selectAll"
+              >Seleccionar Todo</label
+            >
+          </div>
+
+          <!-- Botones Confirmar y Rechazar -->
+          <button class="btn btn-success me-2">Confirmar</button>
+          <button class="btn btn-danger">Rechazar</button>
+        </div>
       </div>
     </div>
 
-    <!-- Filter Buttons -->
-    <div class="container filter-buttons text-center">
-      <button type="button" class="btn btn-outline-secondary">Editorial</button>
-      <button type="button" class="btn btn-outline-secondary">
-        Tipo contenido
-      </button>
-      <button type="button" class="btn btn-outline-secondary">Autor</button>
-      <button type="button" class="btn btn-outline-secondary">Año</button>
-      <button type="button" class="btn btn-outline-secondary">Edicion</button>
-    </div>
-
-    <!-- Book Grid Section -->
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
+    <!-- Modal de más información -->
+    <div
+      class="modal fade"
+      id="infoModal"
+      tabindex="-1"
+      aria-labelledby="infoModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="infoModalLabel">
+              Información de Préstamos
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Lista de libros -->
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nombre del Libro</th>
+                  <th>Fecha de Solicitud</th>
+                  <th>Tipo de Préstamo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Ejemplo de libros solicitados; puedes duplicar y actualizar según sea necesario -->
+                <tr>
+                  <td>El Quijote</td>
+                  <td>2024-10-01</td>
+                  <td>Sala</td>
+                </tr>
+                <tr>
+                  <td>Cien Años de Soledad</td>
+                  <td>2024-10-05</td>
+                  <td>Domicilio</td>
+                </tr>
+                <!-- Agrega más filas según la información de los libros -->
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
           </div>
         </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="placeholder.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <!-- Add more book-card divs as needed -->
       </div>
     </div>
 
@@ -222,37 +324,29 @@
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
-            <h5>Use cases</h5>
+            <h5>Muni Book</h5>
             <ul class="list-unstyled">
-              <li>UI design</li>
-              <li>UX design</li>
-              <li>Prototyping</li>
-              <li>UI development</li>
-              <li>Illustration</li>
+              <li>Tu libreria de confianza</li>
+              <li>Siguenos en redes!</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Explore</h5>
+            <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li>Design systems</li>
-              <li>Features</li>
-              <li>Customers</li>
-              <li>Figma for enterprise</li>
-              <li>Design communities</li>
+              <li>Catalogo</li>
+              <li>Inicia Sesion</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Resources</h5>
+            <h5>Recursos</h5>
             <ul class="list-unstyled">
-              <li>Blog</li>
-              <li>Best practices</li>
-              <li>Support</li>
-              <li>Developers</li>
-              <li>Learn design</li>
+              <li>Sobre nosotros</li>
+              <li>Contactanos</li>
+              <li>Atencion al cliente</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Connect</h5>
+            <h5>Siguenos</h5>
             <div class="d-flex">
               <a href="#" class="text-light me-2">
                 <svg
@@ -316,10 +410,7 @@
                   />
                 </svg>
               </a>
-              <a
-                href="https://www.youtube.com/watch?v=Tf4pSSN_P3w"
-                class="text-light"
-              >
+              <a href="#" class="text-light">
                 <svg
                   width="24"
                   height="24"
@@ -341,5 +432,16 @@
         </div>
       </div>
     </footer>
+
+    <!-- Script para seleccionar o deseleccionar todas las solicitudes -->
+    <script>
+      function toggleSelectAll() {
+        const selectAllCheckbox = document.getElementById("selectAll");
+        const requestCheckboxes = document.querySelectorAll(".select-request");
+        requestCheckboxes.forEach((checkbox) => {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+      }
+    </script>
   </body>
 </html>

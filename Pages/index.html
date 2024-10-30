@@ -23,7 +23,7 @@
 
     <style>
       
-
+    
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
@@ -38,11 +38,16 @@
       .nav-link {
         align-items: center;
         font-family: "Times New Roman", Times, serif;
-        align-content: center;
+        display: flex;
         text-align: end;
-        margin-top: 2%;
+        
       }
-
+      .col-md-6{
+        margin-top: 12px;
+      }
+      .navbar-brand{
+        margin: 0px;
+      }
     </style>
   </head>
   
@@ -122,7 +127,7 @@
   <body onload="checkCookieExistence('tipo')">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="index.html">
           <svg
             width="30"
             height="30"
@@ -146,13 +151,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
+           
+           
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="catalogo.html">Catalogo</a>
+            </li>
+            
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#community">Comunidad</a>
-            </li>
-
+            
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
@@ -166,8 +178,9 @@
     <section class="hero-section">
       <div class="container text-center">
         <h1 class="display-4">Muni Book</h1>
-       
-        <p class="lead">Librería municipal de Lorem ipsum</p>
+        
+        <p class="lead">
+          Librería Municipal</p>
         <div class="mt-4">
           <a onclick="loginButton()" class="btn btn-light">Acceder</a>
         </div>
@@ -180,17 +193,34 @@
       <div class="row">
         <div class="col-md-6">
           <img
-            src="/Assets/Images/Libreria1.jpg"
+            src="/Salvando/Assets/Images/Libreria1.jpg"
             alt="Interior de la librería"
             class="img-fluid rounded w-100 mb-2"
           />
         </div>
         <div class="col-md-6">
           <img
-            src="/Assets/Images/Libreria2.jpg"
+            src="/Salvando/Assets/Images/Libreria2.jpg"
             alt="Estanterías de libros"
             class="img-fluid rounded w-100 mb-2"
           />
+        </div>
+        <div class="col-md-6">
+          <img
+            src="/Salvando/Assets/Images/Libreria 3.jpeg"
+            alt="Estanterías de libros"
+            class="img-fluid rounded w-100 mb-2"
+          />
+        </div>
+        <div class="col-md-6">
+          <img
+            src="/Salvando/Assets/Images/Libreria5.jpeg"
+            alt="Estanterías de libros"
+            class="img-fluid rounded w-100 mb-2"
+          />
+        </div>
+
+          
         </div>
       </div>
     </section>
@@ -203,13 +233,7 @@
           <div class="col-md-4 mb-4">
             <div class="d-flex align-items-center mb-3">
               <i class="fa-sharp fa-solid fa-book"></i>
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="black"
-                  stroke-width="2"
-                />
+                
                 <path d="M12 6V12L16 16" stroke="black" stroke-width="2" />
               </svg>
               <h5 class="ms-2 mb-0">Servicios</h5>
@@ -218,48 +242,18 @@
           </div>
           <div class="col-md-4 mb-4">
             <div class="d-flex align-items-center mb-3">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="black"
-                  stroke-width="2"
-                />
-                <path d="M12 6V12L16 16" stroke="black" stroke-width="2" />
-              </svg>
-              <h5 class="ms-2 mb-0">Title</h5>
+              <i class="fa-solid fa-question"></i>
+                             
+              <h5 class="ms-2 mb-0">Preguntas Frecuentes</h5>
             </div>
             <p>
-              Enter the content of your text here. It can be a short phrase,
-              sentence, or a whole paragraph.
+              Las preguntas mas comunes suelen ser
             </p>
           </div>
           <div class="col-md-4 mb-4">
             <div class="d-flex align-items-center mb-3">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="black"
-                  stroke-width="2"
-                />
-                <path d="M12 6V12L16 16" stroke="black" stroke-width="2" />
-              </svg>
-              <h5 class="ms-2 mb-0">Title</h5>
+              <i class="fa-solid fa-circle-user"></i>
+              <h5 class="ms-2 mb-0">Administrar</h5>
             </div>
             <p>
               Enter the content of your text here. It can be a short phrase,
@@ -274,25 +268,25 @@
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
-            <h5>Casos de uso</h5>
+            <h5>Muni Book</h5>
             <ul class="list-unstyled">
-              <li>UI development</li>
-              <li>Illustration</li>
+              <li>Tu libreria de confianza</li>
+              <li>Siguenos en redes!</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li>Design systems</li>
-              <li>Features</li>
+              <li>Catalogo</li>
+              <li>Inicia Sesion</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
               <li>Sobre nosotros</li>
-              <li>Best practices</li>
-              <li>Contactanos</li>
+                           <li>Contactanos</li>
+                           <li>Atencion al cliente</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">

@@ -28,6 +28,10 @@
         font-size: 300%;
       }
 
+      h2 {
+        font-family: "Times New Roman", Times, serif;
+      }
+
       body {
         font-family: Arial, sans-serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
@@ -78,6 +82,27 @@
         margin-bottom: 10px;
       }
 
+      .list-container {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      .table th,
+      .table td {
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      .btn-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
       footer {
         background-color: #000;
         color: #fff;
@@ -88,13 +113,16 @@
         background-color: #f8f9fa;
         padding: 4rem 0;
       }
+
       .features-section {
         padding: 4rem 0;
       }
+
       .display-4 {
         font-size: 1000%;
         font-family: "Times New Roman", Times, serif;
       }
+
       .nav-link {
         align-items: center;
         font-family: "Times New Roman", Times, serif;
@@ -107,7 +135,7 @@
     <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="#">
           <svg
             width="30"
             height="30"
@@ -120,7 +148,7 @@
             <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
           </svg>
         </a>
-
+        <!-- Botones del navbar-->
         <button
           class="navbar-toggler"
           type="button"
@@ -132,15 +160,11 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="#products">Productos</a>
+              <a class="nav-link" href="catalogo.html">Catalogo</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#solutions">Soluciones</a>
+              <a class="nav-link" href="#servicios">Servicios</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#community">Comunidad</a>
-            </li>
-
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
@@ -152,130 +176,52 @@
     <!-- Main Title and Subtitle -->
     <div class="container">
       <h1 class="hero-title">Muni Book</h1>
-      <p class="hero-subtitle">Bienvenido @</p>
+      <p class="hero-subtitle">bibliotecario1</p>
     </div>
 
-    <!-- Search Bar Section -->
-    <div class="container search-bar">
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Busca tu libro"
-          aria-label="Busca tu libro"
-        />
-        <button
-          class="btn btn-outline-secondary"
-          class="fa-solid fa-magnifying-glass"
-          type="button"
-        >
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Filter Buttons -->
-    <div class="container filter-buttons text-center">
-      <button type="button" class="btn btn-outline-secondary">Editorial</button>
-      <button type="button" class="btn btn-outline-secondary">
-        Tipo contenido
-      </button>
-      <button type="button" class="btn btn-outline-secondary">Autor</button>
-      <button type="button" class="btn btn-outline-secondary">Año</button>
-      <button type="button" class="btn btn-outline-secondary">Edicion</button>
-      <button type="button" class="btn btn-outline-secondary">
-        Tipo medio
-      </button>
-    </div>
-
-    <!-- Book Grid Section -->
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Don quijote de la mahncha</h3>
-            <p class="text-muted">Editorial: Alosans</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="book-card">
-            <img src="/Assets/Images/papimicky.png.png" alt="Book Image" />
-            <h3 class="h6">Title</h3>
-            <p class="text-muted">Updated yesterday</p>
-          </div>
-        </div>
-        <!-- Add more book-card divs as needed -->
+    <!-- list Section -->
+    <div class="container mt-5">
+      <div class="list-container">
+        <h2 class="text-center mb-4">Lista de Solicitudes de Préstamos</h2>
+        <table class="table table-bordered">
+          <thead class="table-dark">
+            <tr>
+              <th>ID Solicitud</th>
+              <th>Nombre de Usuario</th>
+              <th>Título del Libro</th>
+              <th>Fecha Solicitada</th>
+              <th>Fecha de Entrega</th>
+              <th>Tipo de Préstamo</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Juan Pérez</td>
+              <td>El Quijote</td>
+              <td>2024-10-01</td>
+              <td>2024-10-15</td>
+              <td>Sala</td>
+              <!-- Tipo de Préstamo -->
+              <td class="btn-actions">
+                <button class="btn btn-danger btn-sm">Enviar Correo</button>
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>María López</td>
+              <td>Cien Años de Soledad</td>
+              <td>2024-10-05</td>
+              <td>2024-10-19</td>
+              <td>Domicilio</td>
+              <!-- Tipo de Préstamo -->
+              <td class="btn-actions">
+                <button class="btn btn-danger btn-sm">Enviar Correo</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -284,25 +230,25 @@
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
-            <h5>Casos de uso</h5>
+            <h5>Muni Book</h5>
             <ul class="list-unstyled">
-              <li>UI development</li>
-              <li>Illustration</li>
+              <li>Tu libreria de confianza</li>
+              <li>Siguenos en redes!</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li>Design systems</li>
-              <li>Features</li>
+              <li>Catalogo</li>
+              <li>Inicia Sesion</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
               <li>Sobre nosotros</li>
-              <li>Best practices</li>
               <li>Contactanos</li>
+              <li>Atencion al cliente</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
