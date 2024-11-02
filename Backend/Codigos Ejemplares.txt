@@ -1,0 +1,7 @@
+4 digitos 
+Digitos:
+primero -> tipo 1
+segundo, tercero  -> documento 01
+cuarto -> numero ejemplar 1
+
+1011
