@@ -8,7 +8,7 @@ const { GraphQLDateTime } = require('graphql-iso-date')
 
 const DetalleSolicitudPrestamo = require('./models/detalleSolicitudPrestamo.js');
 const Documento = require('./models/documento');
-const Ejemplar = require('./models/ejemplar');
+const Ejemplar = require('./models/ejemplar.js');
 const Prestamo = require('./models/prestamo')
 const SolicitudPrestamo = require('./models/solicitudPrestamo')
 const Usuario = require('./models/usuario');
@@ -716,7 +716,9 @@ const resolvers = {
                     descriptionError: `${check[1]} no valido`
                 };
             };
-            let ejemplar = new Ejemplar({documento: documentoBus._id, estado: input.estado, ubicacion: input.ubicacion});
+            let ejemplar = new Ejemplar({
+                documento: documentoBus._id, estado: input.estado, 
+                ubicacion: input.ubicacion, estadoTexto: input.estadoTexto, codigo: input.codigo});
             await ejemplar.save();
             return {
                 statusCode: "200",
@@ -746,7 +748,8 @@ const resolvers = {
                 }
             }
             let ejemplar = await Ejemplar.findByIdAndUpdate(id, {
-                documento: documentoBus._id, estado: input.estado, ubicacion: input.ubicacion
+                documento: documentoBus._id, estado: input.estado, 
+                ubicacion: input.ubicacion, estadoTexto: input.estadoTexto, codigo: input.codigo
             })
             return {
                 statusCode: "200",
