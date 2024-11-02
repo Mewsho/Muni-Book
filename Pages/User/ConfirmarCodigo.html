@@ -18,9 +18,8 @@
             let userData;
             function validateCode() {
                 let inputCodigo = document.getElementById('codigo').value;
-                console.log(inputCodigo)
-                console.log(userData)
-                let queryFind = `
+                inputCodigo = parseInt(inputCodigo, 10)
+                if (userData.codigo == inputCodigo){let queryFind = `
                 mutation Mutation($updUsuarioId: ID!, $input: UsuarioInput) {
                     updUsuario(id: $updUsuarioId, input: $input) {
                     statusCode
@@ -46,7 +45,7 @@
                             direccion: userData.direccion,
                             telefono: userData.telefono,
                             activo: true,
-                            codigo: parseInt(inputCodigo, 10),
+                            codigo: 0,
                             correo: userData.correo,
                             password: userData.password,
                             tipoUsuario: userData.tipoUsuario
@@ -59,7 +58,12 @@
                 error: function(error) {
                     console.error("Error:", error);
                 }
-                });
+                });}
+
+                else{
+                    console.log("codigo incorrecto")
+                }
+
             }
 
             function findCode() {
@@ -96,7 +100,9 @@
                 success: function(response) {
                     userData = response.data.getUsuarioByRut;
                     console.log("Datos del usuario:", userData);
-                    $('#codigoModal').modal('show');
+                    if (userData != null){
+                        $('#codigoModal').modal('show');
+                    }
                 }
                 });
             }

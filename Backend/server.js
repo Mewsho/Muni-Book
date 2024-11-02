@@ -30,7 +30,7 @@ const typeDefs = gql`
         direccion: String!
         telefono: Int!
         activo: Boolean!
-        codigo: Int
+        codigo: Int #Codigo 0 = activo
         correo: String!
         password: String!
         tipoUsuario: Int! # 0: usuario 1: bibliotecario 2: admin
