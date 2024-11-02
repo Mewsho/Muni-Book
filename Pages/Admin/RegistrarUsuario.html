@@ -25,6 +25,7 @@
         let tel = document.getElementById('phone').value;
         let act = false;
         let tipoUsuario = 0;
+        let randomCode = Math.floor(100000 + Math.random() * 900000);
         let querySignIn = `
           mutation Mutation($input: UsuarioInput) {
             addUsuario(input: $input) {
@@ -50,6 +51,7 @@
                 direccion: dir,
                 telefono: parseInt(tel, 10),
                 activo: act,
+                codigo: randomCode,
                 correo: corr,
                 password: pass,
                 tipoUsuario: tipoUsuario
