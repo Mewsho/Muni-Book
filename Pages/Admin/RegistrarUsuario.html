@@ -8,6 +8,65 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+      function signIn() {
+        let nom = document.getElementById('nombres').value;
+        let apell = document.getElementById('apellidos').value;
+        let pass = document.getElementById('password').value;
+        let rut = document.getElementById('rut').value;
+        let corr = document.getElementById('email').value;
+        let dir = document.getElementById('direccion').value;
+        let tel = document.getElementById('phone').value;
+        let act = false;
+        let tipoUsuario = 0;
+        let randomCode = Math.floor(100000 + Math.random() * 900000);
+        let querySignIn = `
+          mutation Mutation($input: UsuarioInput) {
+            addUsuario(input: $input) {
+              statusCode
+              body
+              errorCode
+              descriptionError
+            }
+          }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySignIn,
+            variables: {
+              input:{
+                rut: parseInt(rut, 10),
+                nombres: nom,
+                apellidos: apell,
+                direccion: dir,
+                telefono: parseInt(tel, 10),
+                activo: act,
+                codigo: randomCode,
+                correo: corr,
+                password: pass,
+                tipoUsuario: tipoUsuario
+              }
+            }
+          }),
+          success: function(response) {
+            console.log("Response:", response);
+          },
+          error: function(error) {
+            console.error("Error:", error);
+          }
+        });
+      }
+    </script>
   </head>
   <body>
     <div class="container mt-5">
@@ -30,6 +89,16 @@
             class="form-control"
             id="apellidos"
             placeholder="Ingrese los apellidos del usuario"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="Ingrese la contraseña del usuario"
             required
           />
         </div>
@@ -73,46 +142,12 @@
             required
           />
         </div>
-        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#verificationModal">
+        <button type="button" class="btn btn-primary w-100" onclick="signIn()">
           Aceptar
         </button>
       </form>
     </div>
-
-    <!-- Modal para ingresar el código de verificación -->
-    <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="verificationModalLabel">Código de Verificación</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p>Ingrese el código de verificación enviado a su correo electrónico:</p>
-            <input type="text" class="form-control" id="verificationCode" placeholder="Código de verificación" required />
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" onclick="verifyCode()">Confirmar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-      function verifyCode() {
-        const code = document.getElementById('verificationCode').value;
-        if (code === '1234') { // Código de ejemplo para validar
-          alert('Cuenta validada exitosamente');
-          const modal = bootstrap.Modal.getInstance(document.getElementById('verificationModal'));
-          modal.hide();
-        } else {
-          alert('Código incorrecto. Intente nuevamente.');
-        }
-      }
-    </script>
   </body>
 </html>
