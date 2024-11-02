@@ -14,16 +14,199 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg">
 
     <title>MuniBook</title>
     
-<!-- Styles como los del css pero no-->
+    <script>
 
-    <style>
+      let optionFormSelectTipo = ['<option value="">Selecciona Tipo Documento</option>']
+      function optionTipo(item){
+        optionFormSelectTipo.push('<option value="'+item.id+'">'+item.tipo+'</option>')
+      }
+
+      let optionFormSelectCategoria = ['<option value="">Selecciona Categoria</option>']
+      function optionCategoria(item){
+        optionFormSelectCategoria.push('<option value="'+item.id+'">'+item.categoria+'</option>')
+      }
+
+      function cargarTipo(){
+        let queryTipo = `
+        query GetTipoDocumentos {
+          getTipoDocumentos {
+            id
+            tipo
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryTipo,
+          }),
+          success: function(response){
+            response.data.getTipoDocumentos.forEach(optionTipo)
+            document.getElementById("formSelectTipo").innerHTML = optionFormSelectTipo.join("")
+          }
+        })
+      }
+
+      function cargarCategoria(){
+        let queryCategoria = `
+        query GetCategoriaDocumentos {
+          getCategoriaDocumentos {
+            id
+            categoria
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryCategoria,
+          }),
+          success: function(response){
+            response.data.getCategoriaDocumentos.forEach(optionCategoria)
+            document.getElementById("formSelectCategoria").innerHTML = optionFormSelectCategoria.join("")
+          }
+        })
+      }
+
+
+      let listCardDocumentos = []
+      function cardDocumentos(item){
+        let listCategoriaDocumentos = []
+        for (categoria of item.categoriaDocumento){
+          listCategoriaDocumentos.push(categoria.id)
+        }
+        let stringCard = `
+        <div class="col-md-4 mb-4">
+          <div class="card" id=${item.id} categoria=${listCategoriaDocumentos} tipoDocumento=${item.tipoDocumento.id}>
+                <div class="card-body">
+                    <h5 class="card-title">${item.titulo}</h5>
+                </div>
+          </div>
+        </div>
+        `
+        listCardDocumentos.push(stringCard)
+      }
+
+      function cargarDocumentos(){
+        let queryDocumentos = `
+        query GetNDocumentos($numero: Int) {
+          getNDocumentos(numero: $numero) {
+            id
+            titulo
+            autor
+            editorial
+            anioSalida
+            edicion
+            codigo
+            tipoDocumento {
+              id
+              tipo
+            }
+            categoriaDocumento {
+              id
+              categoria
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryDocumentos,
+            variables: {
+              numero: 100
+            }
+          }),
+          success: function(response){
+            response.data.getNDocumentos.forEach(cardDocumentos)
+            document.getElementById("catalogContainer").innerHTML = listCardDocumentos.join("")
+          }
+        })
+      }
       
+      function cargarTipoCategoriasDocumentos(){
+        cargarTipo()
+        cargarCategoria()
+        cargarDocumentos()
+      }
 
+      function getDocumentosByTituloAndAutorAndTipoAndCategoria(){
+        
+        listCardDocumentos = []
+        let title = document.getElementById("searchBarTitle").value
+        let aut = document.getElementById("searchBarAuthor").value
+        let tipo = document.getElementById("formSelectTipo").value
+        let categoria = document.getElementById("formSelectCategoria").value
+        
+        if (tipo == ""){
+          tipo = null
+        }
+        if (categoria == ""){
+          categoria = null
+        }
+        console.log(title, aut, tipo, categoria)
+
+        let queryDocumentos = `
+        query GetDocumentosByTituloAndAutorAndTipoAndCategoria($titulo: String, $autor: String, $tipoId: ID, $categoriaId: ID) {
+          getDocumentosByTituloAndAutorAndTipoAndCategoria(titulo: $titulo, autor: $autor, tipoId: $tipoId, categoriaId: $categoriaId) {
+            id
+            titulo
+            autor
+            editorial
+            anioSalida
+            edicion
+            codigo
+            tipoDocumento {
+              id
+              tipo
+            }
+            categoriaDocumento {
+              id
+              categoria
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryDocumentos,
+            variables: {
+              titulo: title,
+              autor: aut,
+              tipoId: tipo,
+              categoriaId: categoria
+            }
+          }),
+          success: function(response){
+            console.log("respuesta: ", response)
+            response.data.getDocumentosByTituloAndAutorAndTipoAndCategoria.forEach(cardDocumentos)
+            document.getElementById("catalogContainer").innerHTML = listCardDocumentos.join("")
+          }
+        })
+      }
+
+    </script>
+<!-- Styles como los del css pero no-->
+    <style>
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
@@ -42,162 +225,66 @@
         text-align: end;
         margin-top: 2%;
       }
+      .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .card:hover {
+          transform: scale(1.05);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
 
     </style>
   </head>
   
   <!-- El cuelpo del diablo -->
   
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container">
-        <a class="navbar-brand" href="#">
-          <svg
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect width="24" height="24" fill="white" />
-            <path d="M4 4H20V20H4V4Z" stroke="black" stroke-width="2" />
-            <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
-          </svg>
-        </a>
-<!-- Botones del navbar-->
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="catalogo.html">Catalogo</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#servicios">Servicios</a>
-            </li>
-            
-            <li class="nav-item">
-              <a class="nav-link" href="#contact">Contacto</a>
-            </li>
-          </ul>
+<body onload="cargarTipoCategoriasDocumentos()">
+  <div class="container my-5">
+    <h1 class="text-center mb-5">Catálogo de Productos</h1>
+
+    <!-- Barra de búsqueda y filtros -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 search-bar">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchBarTitle" class="form-control" placeholder="Buscar por Título..." value="" onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()">
         </div>
-      </div>
-    </nav>
-
-<!-- Texto central de landing -->
-
-    <section class="hero-section">
-      <div class="container text-center">
-        <h1 class="display-4">Muni Book</h1>
-       
-        <p class="lead">Librería municipal de Lorem ipsum</p>
-        <div class="mt-4">
-          <a href="login.html" class="btn btn-light">Acceder</a>
+        <div class="col-md-6 search-bar">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchBarAuthor" class="form-control" placeholder="Buscar por Autor..." value="" onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()">
         </div>
-      </div>
-    </section>
-
-<!-- Imagenes del landing page-->
-
-    <section class="container my-5">
-      <div class="row">
+    </div>
+    <div class="row g-3 mb-5">
         <div class="col-md-6">
-          <img
-            src="/Assets/Images/Libreria1.jpg"
-            alt="Interior de la librería"
-            class="img-fluid rounded w-100 mb-2"
-          />
+            <select id="formSelectTipo" class="form-select" onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()">
+            </select>
         </div>
         <div class="col-md-6">
-          <img
-            src="/Assets/Images/Libreria2.jpg"
-            alt="Estanterías de libros"
-            class="img-fluid rounded w-100 mb-2"
-          />
+            <select id="formSelectCategoria" class="form-select" onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()">
+            </select>
         </div>
-      </div>
-    </section>
+    </div>
 
-<!-- Seccion de servicios una vaina loca que ....-->
-
-  <section id="servicios" class="features-section bg-light">
-      <div class="container">
-        <h2 class="text-center mb-5">Servicios</h2>
-        <div class="row">
-          <div class="col-md-4 mb-4">
-            <div class="d-flex align-items-center mb-3">
-              <i class="fa-sharp fa-solid fa-book"></i>
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="black"
-                  stroke-width="2"
-                />
-                <path d="M12 6V12L16 16" stroke="black" stroke-width="2" />
-              </svg>
-              <h5 class="ms-2 mb-0">Servicios</h5>
-            </div>
-            <p>Prestamo de libros</p>
-          </div>
-          <div class="col-md-4 mb-4">
-            <div class="d-flex align-items-center mb-3">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="black"
-                  stroke-width="2"
-                />
-                <path d="M12 6V12L16 16" stroke="black" stroke-width="2" />
-              </svg>
-              <h5 class="ms-2 mb-0">Preguntas Frecuentes</h5>
-            </div>
-            <p>
-              Enter the content of your text here. It can be a short phrase,
-              sentence, or a whole paragraph.
-            </p>
-          </div>
-          <div class="col-md-4 mb-4">
-            <div class="d-flex align-items-center mb-3">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="black"
-                  stroke-width="2"
-                />
-                <path d="M12 6V12L16 16" stroke="black" stroke-width="2" />
-              </svg>
-              <h5 class="ms-2 mb-0">Title</h5>
-            </div>
-            <p>
-              Enter the content of your text here. It can be a short phrase,
-              sentence, or a whole paragraph.
-            </p>
-          </div>
-    </section>
-
+  <div class="container my-5">
+    <!-- Contenedor de tarjetas -->
+    <div class="row" id="catalogContainer">
+      <!-- Ejemplo de tarjeta -->
+    </div>
+  </div>  
+  </div>
+  <div class="container">
+    <div class="row my-2">
+      <button type="button" class="btn btn-primary">Agregar Documento</button>
+    </div>
+    <div class="row my-2">
+      <button type="button" class="btn btn-danger">Eliminar Documento</button>    
+    </div>
+    <div class="row my-2">
+      <button type="button" class="btn btn-primary">Agregar Ejemplar</button>
+    </div>
+    <div class="row my-2">
+      <button type="button" class="btn btn-danger">Eliminar Ejemplar</button>
+    </div>
+  </div>
 <!-- Footer begins here remember to keep your house tidy an you too-->
 
     <footer class="bg-dark text-light py-4">

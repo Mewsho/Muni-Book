@@ -8,7 +8,7 @@ const { GraphQLDateTime } = require('graphql-iso-date')
 
 const DetalleSolicitudPrestamo = require('./models/detalleSolicitudPrestamo.js');
 const Documento = require('./models/documento');
-const Ejemplar = require('./models/ejemplar');
+const Ejemplar = require('./models/ejemplar.js');
 const Prestamo = require('./models/prestamo')
 const SolicitudPrestamo = require('./models/solicitudPrestamo')
 const Usuario = require('./models/usuario');
@@ -30,7 +30,7 @@ const typeDefs = gql`
         direccion: String!
         telefono: Int!
         activo: Boolean!
-        codigo: Int
+        codigo: Int #Codigo 0 = activo
         correo: String!
         password: String!
         tipoUsuario: Int! # 0: usuario 1: bibliotecario 2: admin
@@ -137,14 +137,14 @@ const typeDefs = gql`
 
     type SolicitudPrestamo{
         id: ID!
-        tipoSolicitud: Int # Sala, domicilio, reserva
+        tipoSolicitud: String # Sala, domicilio, reserva, 0,1,2
         estadoSolicitud: Int # Aprobado y no aprobado 
         fechaSolicitud: GraphQLDateTime
         usuario: Usuario
         prestamos: [Prestamo]
     }
     input SolicitudPrestamoInput{
-        tipoSolicitud: Int
+        tipoSolicitud: String
         estadoSolicitud: Int
         fechaSolicitud: GraphQLDateTime
         usuario: String
@@ -214,7 +214,7 @@ const typeDefs = gql`
         # Query especiales
         getEjemplaresByDocumentoAndEstado(documentoId: ID!, estado: Int): [Ejemplar]
         getCantEjemplaresByDocumentoAndEstado(documentoId: ID!, estado: Int): Int
-        getDocumentosByTituloAndAutorAndTipoAndCategoria(titulo: String, autor: String, tipoId: ID, categoriaId: ID): [Documento]
+        getDocumentosByTituloAndAutorAndTipoAndCategoria(tipoId: ID, categoriaId: ID, titulo: String, autor: String): [Documento]
         getNDocumentos(numero: Int): [Documento]
         getUsuarioByCorreoAndCheckPassword(correo: String!, password: String!): Usuario
     }
@@ -226,7 +226,7 @@ const typeDefs = gql`
         addPrestamo(input: PrestamoInput): Response
         updPrestamo(id: ID!, input: PrestamoInput): Response
         delPrestamo(id: ID!): Response
-        addSolicitudPrestamo(id: ID!): Response
+        addSolicitudPrestamo(input: SolicitudPrestamoInput): Response
         updSolicitudPrestamo(id: ID!, input: SolicitudPrestamoInput): Response
         delSolicitudPrestamo(id: ID!): Response
         addDocumento(input: DocumentoInput): Response
@@ -481,27 +481,39 @@ const resolvers = {
             // Todo esto del regex es algo similar a hacer queries con un like en sql
             // en especifico utiliza un sistema llamado regular expression que es mas brijido 
             // lo que tengo puesto es una implementacion simple que talvez funciona xd
-        async getDocumentosByTituloAndAutorAndTipoAndCategoria(obj, {titulo, autor, tipo, categoria}){
-            let tipoId = tipo
-            let categoriaId = categoria
+        async getDocumentosByTituloAndAutorAndTipoAndCategoria(obj, {tipoId, categoriaId, titulo, autor}){
+            
+            if (titulo == null){
+                titulo = ""
+            }
+            if (autor == null){
+                autor = ""
+            }
+            if (tipoId == null && categoriaId == null){
+                let documentos = await Documento.find({
+                    titulo: {'$regex': titulo, '$options': 'i'}, 
+                    autor: {'$regex': autor, '$options': 'i'}
+                }).populate('tipoDocumento').populate('categoriaDocumento')
+                return documentos
+            }
             if (tipoId == null){
                 let documentos = await Documento.find({
                     titulo: {'$regex': titulo, '$options': 'i'}, 
-                    autor: {'$regex': autor, '$options': 'i'}, categoria: categoriaId
-                })  
+                    autor: {'$regex': autor, '$options': 'i'}, categoriaDocumento: { $in: [categoriaId]}
+                }).populate('tipoDocumento').populate('categoriaDocumento')  
                 return documentos  
             }
             if (categoriaId == null){
                 let documentos = await Documento.find({
                     titulo: {'$regex': titulo, '$options': 'i'}, 
-                    autor: {'$regex': autor, '$options': 'i'}, tipo: tipoId
-                })
+                    autor: {'$regex': autor, '$options': 'i'}, tipoDocumento: tipoId
+                }).populate('tipoDocumento').populate('categoriaDocumento')
                 return documentos
             }
             let documentos = await Documento.find({
                 titulo: {'$regex': titulo, '$options': 'i'}, 
-                autor: {'$regex': autor, '$options': 'i'}, tipo: tipoId, categoria: categoriaId
-            })
+                autor: {'$regex': autor, '$options': 'i'}, tipoDocumento: tipoId, categoriaDocumento: categoriaId
+            }).populate('tipoDocumento').populate('categoriaDocumento')
             return documentos
         },
 
@@ -716,7 +728,9 @@ const resolvers = {
                     descriptionError: `${check[1]} no valido`
                 };
             };
-            let ejemplar = new Ejemplar({documento: documentoBus._id, estado: input.estado, ubicacion: input.ubicacion});
+            let ejemplar = new Ejemplar({
+                documento: documentoBus._id, estado: input.estado, 
+                ubicacion: input.ubicacion, estadoTexto: input.estadoTexto, codigo: input.codigo});
             await ejemplar.save();
             return {
                 statusCode: "200",
@@ -746,7 +760,8 @@ const resolvers = {
                 }
             }
             let ejemplar = await Ejemplar.findByIdAndUpdate(id, {
-                documento: documentoBus._id, estado: input.estado, ubicacion: input.ubicacion
+                documento: documentoBus._id, estado: input.estado, 
+                ubicacion: input.ubicacion, estadoTexto: input.estadoTexto, codigo: input.codigo
             })
             return {
                 statusCode: "200",
@@ -857,7 +872,11 @@ const resolvers = {
                 ListaFinalPrestamos.push(prestamo._id)
             }
             let usuarioBus = await Usuario.findById(input.usuario);
-            let solicitudPrestamo = new SolicitudPrestamo({usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, prestamos: ListaFinalPrestamos});
+            let solicitudPrestamo = new SolicitudPrestamo({
+                usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, 
+                prestamos: ListaFinalPrestamos, tipoSolicitud: input.tipoSolicitud,
+                estadoSolicitud: input.estadoSolicitud
+            });
             await solicitudPrestamo.save();
             return {
                 statusCode: "200",
@@ -875,7 +894,10 @@ const resolvers = {
                 ListaFinalPrestamos.push(prestamo._id)
             }
             let usuarioBus = await Usuario.findById(input.usuario);
-            let solicitudPrestamo = await SolicitudPrestamo.findByIdAndUpdate(id, {usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, prestamos: ListaFinalPrestamos});
+            let solicitudPrestamo = await SolicitudPrestamo.findByIdAndUpdate(id, {
+                usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, 
+                prestamos: ListaFinalPrestamos, tipoSolicitud: input.tipoSolicitud,
+                estadoSolicitud: input.estadoSolicitud});
             return {
                 sstatusCode: "200",
                 body: null,
