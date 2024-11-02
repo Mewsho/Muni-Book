@@ -113,7 +113,7 @@
       function crearCookie(tipo, id){
         let ahora = new Date()
         let tiempo = ahora.getTime()
-        let expireTime = tiempo + 900000 
+        let expireTime = tiempo + 10000
         ahora.setTime(expireTime)  
         document.cookie = "tipo="+tipo+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
         document.cookie = "id="+id+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
@@ -135,7 +135,7 @@
             window.location.href = "vistabibliotecario.html";
           }
           if (tipo == 2){
-            window.location.href = "vistaadmin.html";
+            window.location.href = "./Admin/PanelAdmin.html";
           }
         }
       }
