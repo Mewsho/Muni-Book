@@ -490,7 +490,6 @@ const resolvers = {
                 autor = ""
             }
             if (tipoId == null && categoriaId == null){
-                console.log("test")
                 let documentos = await Documento.find({
                     titulo: {'$regex': titulo, '$options': 'i'}, 
                     autor: {'$regex': autor, '$options': 'i'}
