@@ -472,9 +472,10 @@ const resolvers = {
         async getCantEjemplaresByDocumentoAndEstado(obj, {documentoId, estado}){
             let checkEstado = estado
             let docId = documentoId
-            let cantidadEjemplares = await Ejemplar.find(
+            let Ejemplares = await Ejemplar.find(
                 {documento: docId, estado: checkEstado}
-            ).count()
+            )
+            cantidadEjemplares = Ejemplares.length
             return cantidadEjemplares
         },
 

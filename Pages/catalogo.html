@@ -22,6 +22,55 @@
     
     <script>
 
+
+      
+      // Obtencion de cookies y cambios asociados
+      function aplicarVersionUsuario(){}
+
+      function aplicarVersionBibliotecario(){console.log()}
+
+      function aplicarVersionNotUsuario(){}
+    
+      function aplicarVersionAdministrador(){}
+
+      function checkCookieExistence(name){
+        console.log(document.cookie)
+        if(
+          document.cookie.split(";").some((item) => item.trim().startsWith(`${name}=`))
+        ){
+          let tipoCookie = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith(`tipo=`))
+          ?.split("=")[1];
+  
+          switch (tipoCookie) {
+            case 0:
+              aplicarVersionUsuario()
+              console.log("Usuario")
+              break;
+            case 1:
+              aplicarVersionBibliotecario()
+              console.log("Bibliotecario")
+              break;
+            case 2:
+              aplicarVersionAdministrador()
+              console.log("Administrador")
+              break;
+            /*  
+            default:
+              aplicarVersionNotUsuario()
+              console.log(tipoCookie)
+              console.log("NotUsuario")
+              */
+          }
+        }
+        else{
+          aplicarVersionNotUsuario()
+          console.log("NotUsuario")
+        }
+      }
+
+      // form select de tipo y categoria
       let optionFormSelectTipo = ['<option value="">Selecciona Tipo Documento</option>']
       function optionTipo(item){
         optionFormSelectTipo.push('<option value="'+item.id+'">'+item.tipo+'</option>')
@@ -31,7 +80,7 @@
       function optionCategoria(item){
         optionFormSelectCategoria.push('<option value="'+item.id+'">'+item.categoria+'</option>')
       }
-
+      // Funciones para optener la lista de tipo y categoria
       function cargarTipo(){
         let queryTipo = `
         query GetTipoDocumentos {
@@ -81,24 +130,139 @@
       }
 
 
+
+      function aplicarCambiosCard(){
+        if(
+          document.cookie.split(";").some((item) => item.trim().startsWith(`tipo=`))
+        ){
+          let tipoCookie = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith(`tipo=`))
+          ?.split("=")[1];
+
+          if (tipoCookie == 2){
+            let inputGroupList = document.getElementsByClassName("input-group")
+            for (inputGroup of inputGroupList){
+              inputGroup.classList.add("d-none")
+            }
+          }
+        }
+      }
+
+      let cantEjemplaresDisponible = 0
+      let cantEjemplaresSala = 0
+      // Obtener los ejemplares y crear el inner html
+      function getEjemplares(documentoId, estado, estadoTexto){
+        console.log("Obteniendo Ejemplares")
+        let queryCantEjemplares = `
+        query Query($documentoId: ID!, $estado: Int) {
+          getCantEjemplaresByDocumentoAndEstado(documentoId: $documentoId, estado: $estado)
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryCantEjemplares,
+            variables: {
+              documentoId: documentoId,
+              estado: estado
+            }
+          }),
+          success: function(response){
+            console.log("Ejemplares obtenidos")
+            let cant = response.data.getCantEjemplaresByDocumentoAndEstado
+            if (estado == 3){
+              cantEjemplaresDisponible = response.data.getCantEjemplaresByDocumentoAndEstado
+              let strInputGroup = `
+              <button class="btn btn-outline-secondary btn-number-${documentoId}" type="button" id="${documentoId}-button-minus" documentId="${documentoId}" data-type="minus">-</button>
+              <input type="text" class="form-control input-number" value="0" min="0" max="${cantEjemplaresDisponible}" id="${documentoId}-input">
+              <button class="btn btn-outline-secondary btn-number-${documentoId}" type="button" id="${documentoId}-button-plus" documentId="${documentoId}" data-type="plus">+</button>
+              `
+              document.getElementById(`${documentoId}-inputGroup`).innerHTML = strInputGroup
+
+              $(`.btn-number-${documentoId}`).click(function(){
+                let tipo = $(this).attr("data-type")
+                let documentId = $(this).attr("documentId");
+                let input = $(`#${documentoId}-input`);
+                let currentValue = parseInt(input.val());
+                if(!isNaN(currentValue)){
+                  if (tipo == "minus"){
+                    if(currentValue > input.attr('min')) {
+                      input.val(currentValue - 1).change();
+                    } 
+                    if(parseInt(input.val()) == input.attr('min')) {
+                      $(this).attr('disabled', false);
+                    }
+                  }
+                  else {
+                    if(currentValue < input.attr('max')) {
+                      input.val(currentValue + 1).change();
+                    }
+                    if(parseInt(input.val()) == input.attr('max')) {
+                        $(this).attr('disabled', false);
+                    }
+                  }
+                }
+                else {
+                  input.val(0)
+                }
+              });
+    
+            }
+            if (estado == 2){
+              cantEjemplaresSala = response.data.getCantEjemplaresByDocumentoAndEstado
+            }
+            document.getElementById(`${documentoId}.${estadoTexto}`).innerHTML = `${estadoTexto}: ${cant}`
+          }
+        })
+      }
+
+      // Definir la card para cada elemento del catalogo, obteniendo los ejemplares y preparando la informacion
       let listCardDocumentos = []
       function cardDocumentos(item){
-        let listCategoriaDocumentos = []
+        let listCategoriaDocumentosId = []
+        let listCategoriaDocumentosNombre = []
+        
         for (categoria of item.categoriaDocumento){
-          listCategoriaDocumentos.push(categoria.id)
+          listCategoriaDocumentosId.push(categoria.id)
+          listCategoriaDocumentosNombre.push(categoria.categoria)
         }
+
+        getEjemplares(item.id, 3, "Disponible")
+        getEjemplares(item.id, 2, "En Sala")
+        
+        
         let stringCard = `
         <div class="col-md-4 mb-4">
-          <div class="card" id=${item.id} categoria=${listCategoriaDocumentos} tipoDocumento=${item.tipoDocumento.id}>
-                <div class="card-body">
-                    <h5 class="card-title">${item.titulo}</h5>
+          <div class="card" id=${item.id} categoria=${listCategoriaDocumentosId} tipoDocumento=${item.tipoDocumento.id}>
+              <div class="card-body">
+                <h5 class="card-title">${item.titulo}</h5>
+                <p class="card-text">${item.autor}, ${item.anioSalida}, ${item.editorial}, ${item.tipoDocumento.tipo},</p>
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" 
+                data-bs-target="#${item.id}.collapse">
+                  Ver más información</button>
+                <div class="collapse" id="${item.id}.collapse">
+                  <div class="container my-3">
+                    <p class="card-text my-1">${item.edicion}a Edición</p>
+                    <p class="card-text my-1">Categorias: ${listCategoriaDocumentosNombre.toString()}</p>
+                    <p class="card-text my-1" id="${item.id}.Disponible">Disponible: </p>
+                    <p class="card-text my-1" id="${item.id}.En Sala">Sala: </p>
+                    <div class="input-group my-1" id="${item.id}-inputGroup">
+                      
+                    </div>
+                  </div>
                 </div>
+              </div>
           </div>
         </div>
         `
         listCardDocumentos.push(stringCard)
       }
 
+      // Cargar documentos inicial
       function cargarDocumentos(){
         let queryDocumentos = `
         query GetNDocumentos($numero: Int) {
@@ -135,18 +299,22 @@
           success: function(response){
             response.data.getNDocumentos.forEach(cardDocumentos)
             document.getElementById("catalogContainer").innerHTML = listCardDocumentos.join("")
+            console.log("card agregadas")
+            aplicarCambiosCard()
+            
           }
         })
       }
-      
+      // Llamar todas las cosas
       function cargarTipoCategoriasDocumentos(){
         cargarTipo()
         cargarCategoria()
         cargarDocumentos()
+        checkCookieExistence("tipo")
       }
 
+      // La funcion para el query con los filtros
       function getDocumentosByTituloAndAutorAndTipoAndCategoria(){
-        
         listCardDocumentos = []
         let title = document.getElementById("searchBarTitle").value
         let aut = document.getElementById("searchBarAuthor").value
@@ -197,9 +365,10 @@
             }
           }),
           success: function(response){
-            console.log("respuesta: ", response)
             response.data.getDocumentosByTituloAndAutorAndTipoAndCategoria.forEach(cardDocumentos)
             document.getElementById("catalogContainer").innerHTML = listCardDocumentos.join("")
+            console.log("card agregadas")
+            aplicarCambiosCard()
           }
         })
       }
