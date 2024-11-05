@@ -217,6 +217,7 @@ const typeDefs = gql`
         getDocumentosByTituloAndAutorAndTipoAndCategoria(tipoId: ID, categoriaId: ID, titulo: String, autor: String): [Documento]
         getNDocumentos(numero: Int): [Documento]
         getUsuarioByCorreoAndCheckPassword(correo: String!, password: String!): Usuario
+        sendEmail(correo: String, codigoVerificador: Int, nombres: String): Boolean
     }
 
     type Mutation{
@@ -535,6 +536,44 @@ const resolvers = {
 
             if (contraUsuario == password){
                 return usuario
+            }
+        },
+
+        async sendEmail(correo, codigoVerificador, nombres){
+
+
+            const Mailjet = require('node-mailjet');
+
+            const mailjet = new Mailjet({
+                apiKey: "2c2311d2a5452193e53069707de1828f" || 'your-api-key',
+                apiSecret: "4022789f5d17acc380dc7268152888bd" || 'your-api-secret'
+            });
+
+
+            try {
+                const request = await mailjet.post('send', { version: 'v3.1' }).request({
+                    Messages: [
+                        {
+                            From: {
+                                Email: 'fco.torres01@gmail.com',
+                                Name: 'Me',
+                            },
+                            To: [
+                                {
+                                    Email: codigoVerificador.correo,
+                                    Name: 'You',
+                                },
+                            ],
+                            Subject: 'Codigo de Confirmación',
+                            TextPart: 'Confirmación MuniBook',
+                            HTMLPart:
+                                `<h3>Hola ${codigoVerificador.nombres}</h3><br />Bienvenido a Munibook, para completar la creación de tu cuenta, por favor usa el codigo de abajo:<br /><h2>${codigoVerificador.codigoVerificador}</h2><br />Por favor, ingresa el codigo en la siguiente <a href="ConfirmarCodigo.html">pagina</a><br />Gracias por registrarte a Munibook!`,
+                        },
+                    ],
+                });
+                console.log(request.body);
+            } catch (err) {
+                console.error(`Error: ${err.message} - Código de estado: ${err.statusCode}`);
             }
         }
     },
@@ -1034,3 +1073,59 @@ app.use(cors());
 app.listen(8092, function(){
     console.log("Servidor Iniciado");
 })
+
+
+/*
+const Mailjet = require('node-mailjet');
+
+
+const mailjet = new Mailjet({
+    apiKey: "2c2311d2a5452193e53069707de1828f" || 'your-api-key',
+    apiSecret: "4022789f5d17acc380dc7268152888bd" || 'your-api-secret'
+});
+
+
+const mailjetApi = Mailjet.apiConnect(
+    "2c2311d2a5452193e53069707de1828f",
+    "4022789f5d17acc380dc7268152888bd",
+    {
+      config: {},
+      options: {}
+    } 
+);
+
+
+// El mailjet.post manda el correo
+
+
+function sendMail(){
+    const request = mailjet.post('send', { version: 'v3.1' }).request({
+        Messages: [
+          {
+            From: {
+              Email: 'fco.torres01@gmail.com',
+              Name: 'Me',
+            },
+            To: [
+              {
+                Email: 'eliamrivas016@gmail.com',
+                Name: 'You',
+              },
+            ],
+            Subject: 'My first Mailjet Email!',
+            TextPart: 'Greetings from Mailjet!',
+            HTMLPart:
+              '<h3>Dear passenger 1, welcome to <a href="https://www.mailjet.com/">Mailjet</a>!</h3><br />May the delivery force be with you!',
+          },
+        ],
+    })
+    
+    request
+        .then(result => {
+          console.log(result.body)
+        })
+        .catch(err => {
+          console.log(err.statusCode)
+        })    
+}
+*/
