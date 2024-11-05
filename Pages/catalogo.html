@@ -22,8 +22,6 @@
     
     <script>
 
-
-      
       // Obtencion de cookies y cambios asociados
       function aplicarVersionUsuario(){}
 
@@ -40,21 +38,23 @@
         ){
           let tipoCookie = document.cookie
           .split("; ")
-          .find((row) => row.startsWith(`tipo=`))
+          .find((row) => row.startsWith(`${name}=`))
           ?.split("=")[1];
-  
+          
+          console.log(tipoCookie)
+
           switch (tipoCookie) {
             case 0:
-              aplicarVersionUsuario()
               console.log("Usuario")
+              aplicarVersionUsuario()
               break;
             case 1:
-              aplicarVersionBibliotecario()
               console.log("Bibliotecario")
+              aplicarVersionBibliotecario()
               break;
             case 2:
-              aplicarVersionAdministrador()
               console.log("Administrador")
+              aplicarVersionAdministrador()
               break;
             /*  
             default:
@@ -65,8 +65,8 @@
           }
         }
         else{
-          aplicarVersionNotUsuario()
           console.log("NotUsuario")
+          aplicarVersionNotUsuario()
         }
       }
 
@@ -81,7 +81,7 @@
         optionFormSelectCategoria.push('<option value="'+item.id+'">'+item.categoria+'</option>')
       }
       // Funciones para optener la lista de tipo y categoria
-      function cargarTipo(){
+      async function cargarTipo(){
         let queryTipo = `
         query GetTipoDocumentos {
           getTipoDocumentos {
@@ -105,7 +105,7 @@
         })
       }
 
-      function cargarCategoria(){
+      async function cargarCategoria(){
         let queryCategoria = `
         query GetCategoriaDocumentos {
           getCategoriaDocumentos {
@@ -263,7 +263,7 @@
       }
 
       // Cargar documentos inicial
-      function cargarDocumentos(){
+      async function cargarDocumentos(){
         let queryDocumentos = `
         query GetNDocumentos($numero: Int) {
           getNDocumentos(numero: $numero) {
@@ -306,7 +306,7 @@
         })
       }
       // Llamar todas las cosas
-      function cargarTipoCategoriasDocumentos(){
+      function cargarTipoCategoriasDocumentosAndCookie(){
         cargarTipo()
         cargarCategoria()
         cargarDocumentos()
@@ -407,7 +407,7 @@
   
   <!-- El cuelpo del diablo -->
   
-<body onload="cargarTipoCategoriasDocumentos()">
+<body onload="cargarTipoCategoriasDocumentosAndCookie()">
   <div class="container my-5">
     <h1 class="text-center mb-5">Catálogo de Productos</h1>
 
@@ -440,19 +440,11 @@
     </div>
   </div>  
   </div>
-  <div class="container">
-    <div class="row my-2">
-      <button type="button" class="btn btn-primary">Agregar Documento</button>
-    </div>
-    <div class="row my-2">
-      <button type="button" class="btn btn-danger">Eliminar Documento</button>    
-    </div>
-    <div class="row my-2">
-      <button type="button" class="btn btn-primary">Agregar Ejemplar</button>
-    </div>
-    <div class="row my-2">
-      <button type="button" class="btn btn-danger">Eliminar Ejemplar</button>
-    </div>
+  <div class="d-grid gap-2 d-md-flex justify-content-md-center my-4 mx-3">
+    <button type="button" class="btn btn-primary">Agregar Documento</button>
+    <button type="button" class="btn btn-danger">Eliminar Documento</button>   
+    <button type="button" class="btn btn-primary">Agregar Ejemplar</button>
+    <button type="button" class="btn btn-danger">Eliminar Ejemplar</button>
   </div>
 <!-- Footer begins here remember to keep your house tidy an you too-->
 
