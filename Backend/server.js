@@ -539,7 +539,7 @@ const resolvers = {
             }
         },
 
-        async sendEmail(correo, codigoVerificador, nombres){
+        async sendEmail(obj, {correo, codigoVerificador, nombres}){
 
 
             const Mailjet = require('node-mailjet');
