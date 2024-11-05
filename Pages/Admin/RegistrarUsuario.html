@@ -60,12 +60,41 @@
           }),
           success: function(response) {
             console.log("Response:", response);
+            sendMail(nom, corr, randomCode)
           },
           error: function(error) {
             console.error("Error:", error);
           }
         });
       }
+
+    function sendMail(nombreVerficar, correoVerificar, codigoVerificar){
+        let querySignIn = `
+          query Query($correo: String, $codigoVerificador: Int, $nombres: String) {
+            sendEmail(correo: $correo, codigoVerificador: $codigoVerificador, nombres: $nombres)
+          }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySignIn,
+            variables: {
+              correo: correoVerificar,
+              codigoVerificador: codigoVerificar,
+              nombres: nombreVerficar
+            }
+          }),
+          success: function(response) {
+            console.log("Response:", response);
+          },
+          error: function(error) {
+            console.error("Error:", error);
+          }
+        });
+    }
     </script>
   </head>
   <body>
