@@ -23,13 +23,24 @@
     <script>
 
       // Obtencion de cookies y cambios asociados
-      function aplicarVersionUsuario(){}
+      async function aplicarVersionUsuario(){}
 
-      function aplicarVersionBibliotecario(){console.log()}
+      async function aplicarVersionBibliotecario(){
+        let buttonContainer = document.getElementById("contaniner-bb-buttons")
+        let strButtons = `
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center my-4 mx-3">
+          <button type="button" class="btn btn-primary">Agregar Documento</button>
+          <button type="button" class="btn btn-danger">Eliminar Documento</button>   
+          <button type="button" class="btn btn-primary">Agregar Ejemplar</button>
+          <button type="button" class="btn btn-danger">Eliminar Ejemplar</button>
+        </div>
+        `
+        buttonContainer.innerHTML = strButtons
+      }
 
-      function aplicarVersionNotUsuario(){}
+      async function aplicarVersionNotUsuario(){}
     
-      function aplicarVersionAdministrador(){}
+      async function aplicarVersionAdministrador(){}
 
       function checkCookieExistence(name){
         console.log(document.cookie)
@@ -41,7 +52,7 @@
           .find((row) => row.startsWith(`${name}=`))
           ?.split("=")[1];
           
-          console.log(tipoCookie)
+          tipoCookie = parseInt(tipoCookie,10)
 
           switch (tipoCookie) {
             case 0:
@@ -146,8 +157,98 @@
               inputGroup.classList.add("d-none")
             }
           }
+          else if (tipoCookie == 1){
+
+          }
+          else if (tipoCookie == 0){
+            let collapseList = document.getElementsByClassName("collapse-card")
+            for (collapse of collapseList){
+              let parentBody = collapse.parentElement
+              let idDocumento = parentBody.id
+              console.log(parentBody)
+              let strButton = `<button type="button" class="btn btn-success" 
+              id="${collapse.id}-addButton" onclick="addCardToSolicitudPrestamo(${collapse.id})">
+              Agregar a Solicitud</button>
+              `
+              collapse.insertAdjacentHTML("beforeend", strButton)
+
+              $(`#${collapse.id}-addButton`).click(addCardToSolicitudPrestamo(idDocumento))
+            }
+
+            
+
+            addOffCanvasSolicitud()
+
+          }
         }
       }
+
+
+      async function addOffCanvasSolicitud(){
+        let idCookie = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith(`id=`))
+          ?.split("=")[1];
+
+
+        let strButtonOff = `
+        <button class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+          Carrito
+        </button> 
+        `
+        let strOffCanvas = `
+        <div class="offcanvas offcanvas-start w-50" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Solicitud de Préstamo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body" id="${idCookie}-off-body">
+            
+          </div>
+        </div>
+        `
+        let navbar = document.getElementById("navbarNav")
+        document.body.insertAdjacentHTML("afterbegin",strOffCanvas)
+        navbar.insertAdjacentHTML("beforeend", strButtonOff)
+      }
+
+
+      function addCardToSolicitudPrestamo(idDocumento){
+        console.log("boton agregar")
+
+        
+        let idCookie = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith(`id=`))
+          ?.split("=")[1];
+
+        let elemento = document.getElementsByClassName("card-body").
+        console.log(elemento)
+        let documentoId = idCookie
+        let cantEjemplaresDisponible = 2
+        let strCard = `
+        <div class="card rounded-3 mb-4">
+          <div class="card-body p-4">
+            <div class="row d-flex justify-content-between align-items-center">
+              <div class="col-md-7 col-lg-7 col-xl-7">
+                <h5 class="card-title mb-2">Titulo del Libro</h5>
+                <p class="card-text">Autor, Tipo y Categorias</p>
+              </div>
+              <div class="col-md-3 col-lg-3 col-xl-3 d-flex">
+                <button class="btn btn-outline-secondary btn-number-${documentoId}" type="button" id="${documentoId}-button-minus" documentId="${documentoId}" data-type="minus">-</button>
+                <input type="text" class="form-control input-number" value="0" min="0" max="${cantEjemplaresDisponible}" id="${documentoId}-input">
+                <button class="btn btn-outline-secondary btn-number-${documentoId}" type="button" id="${documentoId}-button-plus" documentId="${documentoId}" data-type="plus">+</button>
+              </div>
+              <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                <a href="#!" class="text-danger"><i class="fas fa-trash fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>`
+
+        document.getElementById(`${idCookie}-off-body`).insertAdjacentHTML("beforeend", strCard)
+      }
+
 
       let cantEjemplaresDisponible = 0
       let cantEjemplaresSala = 0
@@ -215,7 +316,10 @@
             if (estado == 2){
               cantEjemplaresSala = response.data.getCantEjemplaresByDocumentoAndEstado
             }
-            document.getElementById(`${documentoId}.${estadoTexto}`).innerHTML = `${estadoTexto}: ${cant}`
+
+            let elementoCantEjemplares = document.getElementById(`${documentoId}.${estadoTexto}`)
+            elementoCantEjemplares.innerHTML = `${estadoTexto}: ${cant}`
+            elementoCantEjemplares.setAttribute("valor", cant)
           }
         })
       }
@@ -238,13 +342,13 @@
         let stringCard = `
         <div class="col-md-4 mb-4">
           <div class="card" id=${item.id} categoria=${listCategoriaDocumentosId} tipoDocumento=${item.tipoDocumento.id}>
-              <div class="card-body">
+              <div class="card-body" id=${item.id}>
                 <h5 class="card-title">${item.titulo}</h5>
-                <p class="card-text">${item.autor}, ${item.anioSalida}, ${item.editorial}, ${item.tipoDocumento.tipo},</p>
+                <p class="card-text" id="card-text" autor="${item.autor}" tipoDocumento="${item.tipoDocumento.tipo}">${item.autor}, ${item.anioSalida}, ${item.editorial}, ${item.tipoDocumento.tipo},</p>
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" 
                 data-bs-target="#${item.id}.collapse">
                   Ver más información</button>
-                <div class="collapse" id="${item.id}.collapse">
+                <div class="collapse collapse-card" id="${item.id}.collapse">
                   <div class="container my-3">
                     <p class="card-text my-1">${item.edicion}a Edición</p>
                     <p class="card-text my-1">Categorias: ${listCategoriaDocumentosNombre.toString()}</p>
@@ -398,7 +502,7 @@
         transition: transform 0.2s, box-shadow 0.2s;
       }
       .card:hover {
-          transform: scale(1.05);
+          transform: scale(1.03);
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
 
@@ -408,6 +512,53 @@
   <!-- El cuelpo del diablo -->
   
 <body onload="cargarTipoCategoriasDocumentosAndCookie()">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar-catalogo">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <svg
+          width="30"
+          height="30"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="24" height="24" fill="white" />
+          <path d="M4 4H20V20H4V4Z" stroke="black" stroke-width="2" />
+          <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
+        </svg>
+      </a>
+<!-- Botones del navbar-->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+         
+         
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contacto</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="catalogo.html">Catalogo</a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="#servicios">Servicios</a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contacto</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
   <div class="container my-5">
     <h1 class="text-center mb-5">Catálogo de Productos</h1>
 
@@ -440,12 +591,12 @@
     </div>
   </div>  
   </div>
-  <div class="d-grid gap-2 d-md-flex justify-content-md-center my-4 mx-3">
-    <button type="button" class="btn btn-primary">Agregar Documento</button>
-    <button type="button" class="btn btn-danger">Eliminar Documento</button>   
-    <button type="button" class="btn btn-primary">Agregar Ejemplar</button>
-    <button type="button" class="btn btn-danger">Eliminar Ejemplar</button>
+  <div class="container" id="contaniner-bb-buttons">
+
   </div>
+  
+
+
 <!-- Footer begins here remember to keep your house tidy an you too-->
 
     <footer class="bg-dark text-light py-4">
