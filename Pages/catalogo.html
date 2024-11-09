@@ -227,6 +227,12 @@
         background-color: #f8f9fa;
         padding: 4rem 0;
       }
+      h1 {
+        font-family: "Times New Roman", Times, serif;
+        font-size: 2rem;
+        font-weight: 500;
+        font-size: 400%;
+      }
       .features-section {
         padding: 4rem 0;
       }
@@ -248,14 +254,24 @@
         transform: scale(1.05);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      .container {
+        flex: 1;
+      }
+
       footer {
-        background-color: #343a40; /* Color de fondo opcional */
-        color: #ffffff; /* Color de texto opcional */
-        padding: 20px;
-        text-align: center;
-        width: 100%;
-        position: relative;
-        bottom: 0;
+        margin-top: auto;
+      }
+      .btn-custom-width {
+        width: auto;
+        min-width: 400px; /* Ajusta según el tamaño que desees para que no se estiren */
+        padding: 0.5rem 1rem; /* Espaciado interno para darle un aspecto más compacto */
       }
     </style>
   </head>
@@ -316,17 +332,33 @@
       </div>
     </div>
     <div class="container">
-      <div class="row my-2">
-        <button type="button" class="btn btn-primary">Agregar Documento</button>
+      <div class="row my-2 justify-content-center">
+        <div class="col-12 col-md-6 text-center">
+          <button type="button" class="btn btn-primary btn-custom-width w-100">
+            Agregar Documento
+          </button>
+        </div>
       </div>
-      <div class="row my-2">
-        <button type="button" class="btn btn-danger">Eliminar Documento</button>
+      <div class="row my-2 justify-content-center">
+        <div class="col-12 col-md-6 text-center">
+          <button type="button" class="btn btn-danger btn-custom-width w-100">
+            Eliminar Documento
+          </button>
+        </div>
       </div>
-      <div class="row my-2">
-        <button type="button" class="btn btn-primary">Agregar Ejemplar</button>
+      <div class="row my-2 justify-content-center">
+        <div class="col-12 col-md-6 text-center">
+          <button type="button" class="btn btn-primary btn-custom-width w-100">
+            Agregar Ejemplar
+          </button>
+        </div>
       </div>
-      <div class="row my-2">
-        <button type="button" class="btn btn-danger">Eliminar Ejemplar</button>
+      <div class="row my-2 justify-content-center">
+        <div class="col-12 col-md-6 text-center">
+          <button type="button" class="btn btn-danger btn-custom-width w-100">
+            Eliminar Ejemplar
+          </button>
+        </div>
       </div>
     </div>
     <!-- Footer begins here remember to keep your house tidy an you too-->
