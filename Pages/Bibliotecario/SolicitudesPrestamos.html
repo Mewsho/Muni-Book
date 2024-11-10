@@ -33,7 +33,7 @@
       }
 
       body {
-        font-family: "Times New Roman", Times, serif;
+        font-family: Arial, sans-serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
         display: flex;
         flex-direction: column;
@@ -48,13 +48,38 @@
         text-align: center;
       }
 
-      .btn-secondary {
-      }
-
       .hero-subtitle {
         text-align: center;
         color: #666;
         margin-bottom: 30px;
+      }
+
+      .search-bar {
+        max-width: 600px;
+        margin: 0 auto 30px auto;
+      }
+
+      .filter-buttons {
+        margin-bottom: 30px;
+      }
+
+      .filter-buttons .btn {
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .book-card {
+        text-align: center;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+      }
+
+      .book-card img {
+        width: 100px;
+        height: 100px;
+        background-color: #ccc;
+        margin-bottom: 10px;
       }
 
       .list-container {
@@ -76,14 +101,6 @@
         display: flex;
         justify-content: center;
         gap: 10px;
-      }
-
-      #mensaje {
-        display: none;
-        justify-content: center; /* Centra el contenido del div */
-        align-items: center; /* Centra el contenido verticalmente */
-        text-align: center; /* Alinea el texto al centro */
-        margin-top: 20px; /* Margen superior */
       }
 
       footer {
@@ -118,7 +135,7 @@
     <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="/Pages/index.html">
+        <a class="navbar-brand" href="..//index.html">
           <svg
             width="30"
             height="30"
@@ -176,7 +193,7 @@
               <th>Nombre de Usuario</th>
               <th>Fecha Solicitada</th>
               <th>Fecha de Entrega</th>
-              <th>info</th>
+              <th>inf</th>
             </tr>
           </thead>
           <tbody>
@@ -188,20 +205,15 @@
                   class="form-check-input select-request"
                 />
               </td>
-              <!-- id -->
               <td>1</td>
-              <!-- usuario -->
               <td>Juan Pérez</td>
-              <!-- fechaSolicitud -->
               <td>2024-10-01</td>
-              <!-- tipoSolicitud -->
               <td>Sala</td>
-              <!-- Botón Info para abrir el modal de más información (solo muestra los libros) -->
+              <!-- Botón Info para abrir el modal de más información -->
               <td class="btn-actions">
                 <button
                   type="button"
                   class="btn btn-info"
-                  onclick="cargarInfoSolicitud(1)"
                   data-bs-toggle="modal"
                   data-bs-target="#infoModal"
                 >
@@ -217,26 +229,10 @@
                   class="form-check-input select-request"
                 />
               </td>
-              <!-- id -->
               <td>2</td>
-              <!-- usuario -->
               <td>María López</td>
-              <!-- fechaSolicitud -->
               <td>2024-10-05</td>
-              <!-- tipoSolicitud -->
               <td>Domicilio</td>
-              <!-- Botón Info para abrir el modal de más información -->
-              <td class="btn-actions">
-                <button
-                  type="button"
-                  class="btn btn-info"
-                  onclick="cargarInfoSolicitud(2)"
-                  data-bs-toggle="modal"
-                  data-bs-target="#infoModal"
-                >
-                  Info
-                </button>
-              </td>
             </tr>
           </tbody>
         </table>
@@ -257,12 +253,9 @@
           </div>
 
           <!-- Botones Confirmar y Rechazar -->
-          <button class="btn btn-success me-2" onclick="confirmRequest()">
-            Confirmar
-          </button>
+          <button class="btn btn-success me-2">Confirmar</button>
           <button class="btn btn-danger">Rechazar</button>
         </div>
-        <div id="mensaje" class="mt-3" style="display: none"></div>
       </div>
     </div>
 
@@ -288,7 +281,30 @@
             ></button>
           </div>
           <div class="modal-body">
-            <!-- no borrar esta seccion donde cargan los libros -->
+            <!-- Lista de libros -->
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nombre del Libro</th>
+                  <th>Fecha de Solicitud</th>
+                  <th>Tipo de Préstamo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Ejemplo de libros solicitados; puedes duplicar y actualizar según sea necesario -->
+                <tr>
+                  <td>El Quijote</td>
+                  <td>2024-10-01</td>
+                  <td>Sala</td>
+                </tr>
+                <tr>
+                  <td>Cien Años de Soledad</td>
+                  <td>2024-10-05</td>
+                  <td>Domicilio</td>
+                </tr>
+                <!-- Agrega más filas según la información de los libros -->
+              </tbody>
+            </table>
           </div>
           <div class="modal-footer">
             <button
@@ -425,94 +441,6 @@
         requestCheckboxes.forEach((checkbox) => {
           checkbox.checked = selectAllCheckbox.checked;
         });
-      }
-
-      // Función para confirmar solicitudes
-      function confirmRequest() {
-        const checkboxes = document.querySelectorAll(".select-request");
-        let anySelected = false;
-        const mensajeDiv = document.getElementById("mensaje");
-
-        // Verifica si alguna casilla está marcada
-        checkboxes.forEach((checkbox) => {
-          if (checkbox.checked) {
-            anySelected = true;
-          }
-        });
-
-        // Mostrar el mensaje de forma predeterminada
-        mensajeDiv.style.display = "block";
-
-        if (anySelected) {
-          // Mostrar mensaje de confirmación
-          mensajeDiv.innerHTML =
-            '<div class="alert alert-success">Solicitud confirmada.</div>';
-        } else {
-          // Mostrar mensaje de error
-          mensajeDiv.innerHTML =
-            '<div class="alert alert-danger">No hay solicitudes seleccionadas.</div>';
-        }
-
-        // Ocultar el mensaje después de 5 segundos
-        setTimeout(function () {
-          mensajeDiv.style.display = "none"; // Oculta el mensaje
-        }, 5000); // 5000 milisegundos = 5 segundos
-      }
-
-      // cargar informacion de los libros del boton "info"
-      function cargarInfoSolicitud(id) {
-        const modalBody = document.querySelector("#infoModal .modal-body");
-        let librosHTML = "";
-
-        if (id === 1) {
-          librosHTML = `
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Nombre del Libro</th>
-              <th>Tipo de Préstamo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>El Quijote</td>
-              <td>Sala</td>
-            </tr>
-            <tr>
-              <td>Cien Años de Soledad</td>
-              <td>Sala</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-        } else if (id === 2) {
-          librosHTML = `
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Nombre del Libro</th>
-              <th>Tipo de Préstamo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Le Parfum</td>
-              <td>Domicilio</td>
-            </tr>
-            <tr>
-              <td>Juan Salvador Gaviota</td>
-              <td>Domicilio</td>
-            </tr>
-            <tr>
-              <td>Silabario Hispanoamericano</td>
-              <td>Domicilio</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-        }
-
-        modalBody.innerHTML = librosHTML;
       }
     </script>
   </body>

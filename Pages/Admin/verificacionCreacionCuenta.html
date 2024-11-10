@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verificación de Creación de Cuenta</title>
+    <!-- Bootstrap 5 CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      .hero-section {
+        background-color: #f8f9fa;
+        padding: 4rem 0;
+      }
+      .features-section {
+        padding: 4rem 0;
+      }
+      .display-4 {
+        font-size: 1000%;
+        font-family: "Times New Roman", Times, serif;
+      }
+      .nav-link {
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        text-align: end;
+      }
+      .col-md-6 {
+        margin-top: 12px;
+      }
+      .navbar-brand {
+        margin: 0px;
+      }
+      .list-container {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: auto;
+      }
+      .input-group-text {
+        cursor: pointer; /* Cambia el cursor al pasar sobre el ícono */
+      }
+      #mensaje {
+        display: none; /* Oculta el mensaje por defecto */
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="..//index.html">
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="24" height="24" fill="white" />
+            <path d="M4 4H20V20H4V4Z" stroke="black" stroke-width="2" />
+            <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
+          </svg>
+        </a>
+        <!-- Botones del navbar-->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="catalogo.html">Catalogo</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#servicios">Servicios</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container mt-5">
+      <h1 class="text-center mb-4">Ingresa tu contraseña</h1>
+      <div class="list-container">
+        <div id="mensaje"></div>
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <td>
+                <label for="password" class="form-label">Contraseña</label>
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    placeholder="Ingrese su contraseña"
+                    required
+                  />
+                  <span class="input-group-text" id="togglePassword">
+                    <i class="bi bi-eye-slash"></i>
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="confirmPassword" class="form-label"
+                  >Confirmar contraseña</label
+                >
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="confirmPassword"
+                    placeholder="Confirme su contraseña"
+                    required
+                  />
+                  <span class="input-group-text" id="toggleConfirmPassword">
+                    <i class="bi bi-eye-slash"></i>
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="button" class="btn btn-primary w-100" id="btnConfirmar">
+          Confirmar
+        </button>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Función para mostrar/ocultar la contraseña
+      const togglePasswordVisibility = (inputId, iconId) => {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId).querySelector("i");
+        const isPasswordVisible = input.type === "text";
+
+        input.type = isPasswordVisible ? "password" : "text";
+        icon.classList.toggle("bi-eye", !isPasswordVisible);
+        icon.classList.toggle("bi-eye-slash", isPasswordVisible);
+      };
+
+      // Event listeners para los iconos
+      document
+        .getElementById("togglePassword")
+        .addEventListener("click", () => {
+          togglePasswordVisibility("password", "togglePassword");
+        });
+      document
+        .getElementById("toggleConfirmPassword")
+        .addEventListener("click", () => {
+          togglePasswordVisibility("confirmPassword", "toggleConfirmPassword");
+        });
+
+      // Evento para el botón "Confirmar"
+      document.getElementById("btnConfirmar").onclick = function () {
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+        const mensajeDiv = document.getElementById("mensaje");
+
+        // Mostrar el mensaje de forma predeterminada
+        mensajeDiv.style.display = "block";
+
+        if (password === confirmPassword && password !== "") {
+          // Mostrar mensaje de confirmación
+          mensajeDiv.innerHTML =
+            '<div class="alert alert-success">Las contraseñas coinciden. Cuenta creada con éxito.</div>';
+        } else {
+          // Mostrar mensaje de error
+          mensajeDiv.innerHTML =
+            '<div class="alert alert-danger">Las contraseñas no coinciden. Intente de nuevo.</div>';
+        }
+
+        // Ocultar el mensaje después de 5 segundos
+        setTimeout(function () {
+          mensajeDiv.style.display = "none"; // Oculta el mensaje
+          document.getElementById("password").value = ""; // Limpia el campo de entrada de la contraseña
+          document.getElementById("confirmPassword").value = ""; // Limpia el campo de entrada de confirmación
+        }, 5000); // 5000 milisegundos = 5 segundos
+      };
+    </script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </body>
+</html>
