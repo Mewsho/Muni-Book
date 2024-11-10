@@ -1,16 +1,11 @@
 
 
-## Salvando dev web
+# Proyecto Muni Book
 
 ### Integrantes
-
 Eliam Rivas
-Manuel Vidal
 Vicente Poblete
-Francisco Torres
-Cesar Lopez
 Matias Godoy
+Francisco Torres
+Manuel Vidal
 
-### Notas importantes
-
-# Elliam wequito
