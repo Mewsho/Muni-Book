@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muni Book - Buscar Libros</title>
+    <title>Muni Book - solisitud Libros</title>
     <!-- Bootstrap 5 CDN -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
@@ -48,15 +48,14 @@
         text-align: center;
       }
 
-      .btn-secondary {
-      }
-
       .hero-subtitle {
         text-align: center;
         color: #666;
         margin-bottom: 30px;
       }
 
+      /* cuadro solisitud */
+      /* Mantener el estilo general de la lista contenedora */
       .list-container {
         background-color: #f8f9fa;
         padding: 2rem;
@@ -66,26 +65,76 @@
         margin: auto;
       }
 
-      .table th,
-      .table td {
+      /* Ajustes de la tabla */
+      .table {
+        border-collapse: separate;
+        border-spacing: 0 15px;
+      }
+
+      /* Encabezado de la tabla */
+      .table th {
         text-align: center;
-        vertical-align: middle;
+        font-size: 1.25rem;
+        background-color: #e9ecef;
+        border: none;
       }
 
-      .btn-actions {
+      /* Elementos de la lista de libros */
+      .book-list-item {
         display: flex;
-        justify-content: center;
-        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
       }
 
-      #mensaje {
+      /* Botón de eliminar libro */
+      .remove-btn {
+        color: #ff4d4d;
+        border: none;
+        background-color: transparent;
+      }
+
+      .remove-btn:hover {
+        color: #fff;
+        background-color: #ff4d4d;
+        border-radius: 4px;
+      }
+
+      /* Opciones de préstamo */
+      .option-box {
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Cuadro de selección de fecha */
+      .date-box {
         display: none;
-        justify-content: center; /* Centra el contenido del div */
-        align-items: center; /* Centra el contenido verticalmente */
-        text-align: center; /* Alinea el texto al centro */
-        margin-top: 20px; /* Margen superior */
+        padding: 10px;
+        margin-top: 15px;
+        border-radius: 8px;
+        background-color: #c9c9c9;
+        color: #2b2b2b;
       }
 
+      /* Botón de confirmación */
+      .confirm-btn {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+      }
+
+      .confirm-btn:hover {
+        background-color: #218838;
+      }
       footer {
         background-color: #000;
         color: #fff;
@@ -158,149 +207,112 @@
 
     <!-- Main Title and Subtitle -->
     <div class="container">
-      <h1 class="hero-title">Muni Book</h1>
-      <p class="hero-subtitle">bibliotecario1</p>
+      <h1 class="hero-title">Solicitud de Préstamo</h1>
+      <p class="hero-subtitle">usuario1</p>
     </div>
 
-    <!-- list Section -->
-    <div class="container mt-5">
-      <div class="list-container">
-        <h2 class="text-center mb-4">Solicitudes de Préstamos</h2>
+    <!-- contenedor solisitud -->
+    <div class="list-container mt-5">
+      <h2>Tus préstamos / Tu reserva</h2>
+      <hr />
 
-        <!-- Lista de solicitudes en formato de tabla -->
-        <table class="table table-bordered">
-          <thead class="table-dark">
-            <tr>
-              <th>Seleccionar</th>
-              <th>ID Solicitud</th>
-              <th>Nombre de Usuario</th>
-              <th>Fecha Solicitada</th>
-              <th>Fecha de Entrega</th>
-              <th>info</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <!-- Casilla de verificación individual -->
-              <td>
-                <input
-                  type="checkbox"
-                  class="form-check-input select-request"
-                />
-              </td>
-              <!-- id -->
-              <td>1</td>
-              <!-- usuario -->
-              <td>Juan Pérez</td>
-              <!-- fechaSolicitud -->
-              <td>2024-10-01</td>
-              <!-- tipoSolicitud -->
-              <td>Sala</td>
-              <!-- Botón Info para abrir el modal de más información (solo muestra los libros) -->
-              <td class="btn-actions">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  onclick="cargarInfoSolicitud(1)"
-                  data-bs-toggle="modal"
-                  data-bs-target="#infoModal"
-                >
-                  Info
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <!-- Casilla de verificación individual -->
-              <td>
-                <input
-                  type="checkbox"
-                  class="form-check-input select-request"
-                />
-              </td>
-              <!-- id -->
-              <td>2</td>
-              <!-- usuario -->
-              <td>María López</td>
-              <!-- fechaSolicitud -->
-              <td>2024-10-05</td>
-              <!-- tipoSolicitud -->
-              <td>Domicilio</td>
-              <!-- Botón Info para abrir el modal de más información -->
-              <td class="btn-actions">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  onclick="cargarInfoSolicitud(2)"
-                  data-bs-toggle="modal"
-                  data-bs-target="#infoModal"
-                >
-                  Info
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Sección de botones de acción -->
-        <div class="d-flex justify-content-center mt-4">
-          <!-- Botón para seleccionar/deseleccionar todas las solicitudes -->
-          <div class="form-check me-3">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              id="selectAll"
-              onclick="toggleSelectAll()"
-            />
-            <label class="form-check-label" for="selectAll"
-              >Seleccionar Todo</label
-            >
-          </div>
-
-          <!-- Botones Confirmar y Rechazar -->
-          <button class="btn btn-success me-2" onclick="confirmRequest()">
-            Confirmar
-          </button>
-          <button class="btn btn-danger">Rechazar</button>
-        </div>
-        <div id="mensaje" class="mt-3" style="display: none"></div>
-      </div>
-    </div>
-
-    <!-- Modal de más información -->
-    <div
-      class="modal fade"
-      id="infoModal"
-      tabindex="-1"
-      aria-labelledby="infoModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="infoModalLabel">
-              Información de Préstamos
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <!-- no borrar esta seccion donde cargan los libros -->
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      </div>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td colspan="3">
+              <!-- Lista de libros -->
+              <div id="book-list">
+                <div class="book-list-item">
+                  <span>Libro 1</span>
+                  <input
+                    type="number"
+                    class="form-control w-25"
+                    placeholder="Qty"
+                    min="1"
+                    value="1"
+                  />
+                  <button class="btn btn-danger">Eliminar</button>
+                </div>
+                <div class="book-list-item">
+                  <span>Libro 2</span>
+                  <input
+                    type="number"
+                    class="form-control w-25"
+                    placeholder="Qty"
+                    min="1"
+                    value="1"
+                  />
+                  <button class="btn btn-danger">Eliminar</button>
+                </div>
+                <div class="book-list-item">
+                  <span>Libro 3</span>
+                  <input
+                    type="number"
+                    class="form-control w-25"
+                    placeholder="Qty"
+                    min="1"
+                    value="1"
+                  />
+                  <button class="btn btn-danger">Eliminar</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3">
+              <!-- Opciones de préstamo -->
+              <div class="option-box">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="loanOption"
+                    id="inRoom"
+                    value="inRoom"
+                  />
+                  <label class="form-check-label" for="inRoom">En sala</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="loanOption"
+                    id="atHome"
+                    value="atHome"
+                  />
+                  <label class="form-check-label" for="atHome"
+                    >A domicilio</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="loanOption"
+                    id="reserve"
+                    value="reserve"
+                    onclick="toggleDateBox(true)"
+                  />
+                  <label class="form-check-label" for="reserve">Reserva</label>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr id="dateBox" class="date-box">
+            <td colspan="3">
+              <!-- Selección de fecha -->
+              <label for="reserveDate">Fecha de reserva:</label>
+              <input type="date" id="reserveDate" class="form-control" />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3" class="text-center">
+              <!-- Botón de confirmación -->
+              <button class="btn btn-success me-2">Confirmar solicitud</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- Footer -->
@@ -417,103 +429,23 @@
       </div>
     </footer>
 
-    <!-- Script para seleccionar o deseleccionar todas las solicitudes -->
+    <!-- Script para Mostrar/ocultar -->
     <script>
-      function toggleSelectAll() {
-        const selectAllCheckbox = document.getElementById("selectAll");
-        const requestCheckboxes = document.querySelectorAll(".select-request");
-        requestCheckboxes.forEach((checkbox) => {
-          checkbox.checked = selectAllCheckbox.checked;
-        });
+      // Mostrar/ocultar el cuadro de fecha para reservas
+      function toggleDateBox(show) {
+        document.getElementById("dateBox").style.display = show
+          ? "table-row"
+          : "none";
       }
 
-      // Función para confirmar solicitudes
-      function confirmRequest() {
-        const checkboxes = document.querySelectorAll(".select-request");
-        let anySelected = false;
-        const mensajeDiv = document.getElementById("mensaje");
-
-        // Verifica si alguna casilla está marcada
-        checkboxes.forEach((checkbox) => {
-          if (checkbox.checked) {
-            anySelected = true;
+      // Ocultar el cuadro de fecha cuando se seleccionan otras opciones
+      document.querySelectorAll('input[name="loanOption"]').forEach((radio) => {
+        radio.addEventListener("change", function () {
+          if (this.value !== "reserve") {
+            toggleDateBox(false);
           }
         });
-
-        // Mostrar el mensaje de forma predeterminada
-        mensajeDiv.style.display = "block";
-
-        if (anySelected) {
-          // Mostrar mensaje de confirmación
-          mensajeDiv.innerHTML =
-            '<div class="alert alert-success">Solicitud confirmada.</div>';
-        } else {
-          // Mostrar mensaje de error
-          mensajeDiv.innerHTML =
-            '<div class="alert alert-danger">No hay solicitudes seleccionadas.</div>';
-        }
-
-        // Ocultar el mensaje después de 5 segundos
-        setTimeout(function () {
-          mensajeDiv.style.display = "none"; // Oculta el mensaje
-        }, 5000); // 5000 milisegundos = 5 segundos
-      }
-
-      // cargar informacion de los libros del boton "info"
-      function cargarInfoSolicitud(id) {
-        const modalBody = document.querySelector("#infoModal .modal-body");
-        let librosHTML = "";
-
-        if (id === 1) {
-          librosHTML = `
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Nombre del Libro</th>
-              <th>Tipo de Préstamo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>El Quijote</td>
-              <td>Sala</td>
-            </tr>
-            <tr>
-              <td>Cien Años de Soledad</td>
-              <td>Sala</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-        } else if (id === 2) {
-          librosHTML = `
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Nombre del Libro</th>
-              <th>Tipo de Préstamo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Le Parfum</td>
-              <td>Domicilio</td>
-            </tr>
-            <tr>
-              <td>Juan Salvador Gaviota</td>
-              <td>Domicilio</td>
-            </tr>
-            <tr>
-              <td>Silabario Hispanoamericano</td>
-              <td>Domicilio</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-        }
-
-        modalBody.innerHTML = librosHTML;
-      }
+      });
     </script>
   </body>
 </html>

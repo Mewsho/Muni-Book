@@ -16,13 +16,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
       function signIn() {
-        let nom = document.getElementById('nombres').value;
-        let apell = document.getElementById('apellidos').value;
-        let pass = document.getElementById('password').value;
-        let rut = document.getElementById('rut').value;
-        let corr = document.getElementById('email').value;
-        let dir = document.getElementById('direccion').value;
-        let tel = document.getElementById('phone').value;
+        let nom = document.getElementById("nombres").value;
+        let apell = document.getElementById("apellidos").value;
+        let pass = document.getElementById("password").value;
+        let rut = document.getElementById("rut").value;
+        let corr = document.getElementById("email").value;
+        let dir = document.getElementById("direccion").value;
+        let tel = document.getElementById("phone").value;
         let act = false;
         let tipoUsuario = 0;
         let randomCode = Math.floor(100000 + Math.random() * 900000);
@@ -44,7 +44,7 @@
           data: JSON.stringify({
             query: querySignIn,
             variables: {
-              input:{
+              input: {
                 rut: parseInt(rut, 10),
                 nombres: nom,
                 apellidos: apell,
@@ -54,19 +54,29 @@
                 codigo: randomCode,
                 correo: corr,
                 password: pass,
-                tipoUsuario: tipoUsuario
-              }
-            }
+                tipoUsuario: tipoUsuario,
+              },
+            },
           }),
-          success: function(response) {
+          success: function (response) {
             console.log("Response:", response);
           },
-          error: function(error) {
+          error: function (error) {
             console.error("Error:", error);
-          }
+          },
         });
       }
     </script>
+    <style>
+      h1 {
+        font-family: "Times New Roman", Times, serif;
+        font-weight: 500;
+      }
+
+      .container {
+        max-width: 600px;
+      }
+    </style>
   </head>
   <body>
     <div class="container mt-5">
