@@ -421,6 +421,25 @@
         document.getElementById("cantidadLibros").value = totalBooks;
       }
 
+      // Función para establecer la fecha mínima en el campo de fecha de préstamo
+      function setMinDateForPrestamo() {
+        const fechaPrestamoInput = document.getElementById("fechaPrestamo");
+        const today = new Date();
+        // Formato a "AAAA-MM-DDTHH:MM" compatible con datetime-local
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+        const hours = String(today.getHours()).padStart(2, "0");
+        const minutes = String(today.getMinutes()).padStart(2, "0");
+        const minDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+        // Asigna la fecha mínima al campo de fecha de préstamo
+        fechaPrestamoInput.min = minDate;
+      }
+
+      // Llama a la función cuando la página se carga
+      document.addEventListener("DOMContentLoaded", setMinDateForPrestamo);
+
       // Función para calcular la fecha de devolución, aproximadamente 2 semanas después de la fecha de préstamo
       function calcularFechaDevolucion() {
         const fechaPrestamo = new Date(
