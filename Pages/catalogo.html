@@ -15,24 +15,37 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
 
     <title>MuniBook</title>
-    
+
     <script>
-
-      let optionFormSelectTipo = ['<option value="">Selecciona Tipo Documento</option>']
-      function optionTipo(item){
-        optionFormSelectTipo.push('<option value="'+item.id+'">'+item.tipo+'</option>')
+      let optionFormSelectTipo = [
+        '<option value="">Selecciona Tipo Documento</option>',
+      ];
+      function optionTipo(item) {
+        optionFormSelectTipo.push(
+          '<option value="' + item.id + '">' + item.tipo + "</option>"
+        );
       }
 
-      let optionFormSelectCategoria = ['<option value="">Selecciona Categoria</option>']
-      function optionCategoria(item){
-        optionFormSelectCategoria.push('<option value="'+item.id+'">'+item.categoria+'</option>')
+      let optionFormSelectCategoria = [
+        '<option value="">Selecciona Categoria</option>',
+      ];
+      function optionCategoria(item) {
+        optionFormSelectCategoria.push(
+          '<option value="' + item.id + '">' + item.categoria + "</option>"
+        );
       }
 
-      function cargarTipo(){
+      function cargarTipo() {
         let queryTipo = `
         query GetTipoDocumentos {
           getTipoDocumentos {
@@ -40,7 +53,7 @@
             tipo
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -49,14 +62,15 @@
           data: JSON.stringify({
             query: queryTipo,
           }),
-          success: function(response){
-            response.data.getTipoDocumentos.forEach(optionTipo)
-            document.getElementById("formSelectTipo").innerHTML = optionFormSelectTipo.join("")
-          }
-        })
+          success: function (response) {
+            response.data.getTipoDocumentos.forEach(optionTipo);
+            document.getElementById("formSelectTipo").innerHTML =
+              optionFormSelectTipo.join("");
+          },
+        });
       }
 
-      function cargarCategoria(){
+      function cargarCategoria() {
         let queryCategoria = `
         query GetCategoriaDocumentos {
           getCategoriaDocumentos {
@@ -64,7 +78,7 @@
             categoria
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -73,19 +87,19 @@
           data: JSON.stringify({
             query: queryCategoria,
           }),
-          success: function(response){
-            response.data.getCategoriaDocumentos.forEach(optionCategoria)
-            document.getElementById("formSelectCategoria").innerHTML = optionFormSelectCategoria.join("")
-          }
-        })
+          success: function (response) {
+            response.data.getCategoriaDocumentos.forEach(optionCategoria);
+            document.getElementById("formSelectCategoria").innerHTML =
+              optionFormSelectCategoria.join("");
+          },
+        });
       }
 
-
-      let listCardDocumentos = []
-      function cardDocumentos(item){
-        let listCategoriaDocumentos = []
-        for (categoria of item.categoriaDocumento){
-          listCategoriaDocumentos.push(categoria.id)
+      let listCardDocumentos = [];
+      function cardDocumentos(item) {
+        let listCategoriaDocumentos = [];
+        for (categoria of item.categoriaDocumento) {
+          listCategoriaDocumentos.push(categoria.id);
         }
         let stringCard = `
         <div class="col-md-4 mb-4">
@@ -95,11 +109,11 @@
                 </div>
           </div>
         </div>
-        `
-        listCardDocumentos.push(stringCard)
+        `;
+        listCardDocumentos.push(stringCard);
       }
 
-      function cargarDocumentos(){
+      function cargarDocumentos() {
         let queryDocumentos = `
         query GetNDocumentos($numero: Int) {
           getNDocumentos(numero: $numero) {
@@ -120,7 +134,7 @@
             }
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -129,37 +143,37 @@
           data: JSON.stringify({
             query: queryDocumentos,
             variables: {
-              numero: 100
-            }
+              numero: 100,
+            },
           }),
-          success: function(response){
-            response.data.getNDocumentos.forEach(cardDocumentos)
-            document.getElementById("catalogContainer").innerHTML = listCardDocumentos.join("")
-          }
-        })
-      }
-      
-      function cargarTipoCategoriasDocumentos(){
-        cargarTipo()
-        cargarCategoria()
-        cargarDocumentos()
+          success: function (response) {
+            response.data.getNDocumentos.forEach(cardDocumentos);
+            document.getElementById("catalogContainer").innerHTML =
+              listCardDocumentos.join("");
+          },
+        });
       }
 
-      function getDocumentosByTituloAndAutorAndTipoAndCategoria(){
-        
-        listCardDocumentos = []
-        let title = document.getElementById("searchBarTitle").value
-        let aut = document.getElementById("searchBarAuthor").value
-        let tipo = document.getElementById("formSelectTipo").value
-        let categoria = document.getElementById("formSelectCategoria").value
-        
-        if (tipo == ""){
-          tipo = null
+      function cargarTipoCategoriasDocumentos() {
+        cargarTipo();
+        cargarCategoria();
+        cargarDocumentos();
+      }
+
+      function getDocumentosByTituloAndAutorAndTipoAndCategoria() {
+        listCardDocumentos = [];
+        let title = document.getElementById("searchBarTitle").value;
+        let aut = document.getElementById("searchBarAuthor").value;
+        let tipo = document.getElementById("formSelectTipo").value;
+        let categoria = document.getElementById("formSelectCategoria").value;
+
+        if (tipo == "") {
+          tipo = null;
         }
-        if (categoria == ""){
-          categoria = null
+        if (categoria == "") {
+          categoria = null;
         }
-        console.log(title, aut, tipo, categoria)
+        console.log(title, aut, tipo, categoria);
 
         let queryDocumentos = `
         query GetDocumentosByTituloAndAutorAndTipoAndCategoria($titulo: String, $autor: String, $tipoId: ID, $categoriaId: ID) {
@@ -181,7 +195,7 @@
             }
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -193,23 +207,31 @@
               titulo: title,
               autor: aut,
               tipoId: tipo,
-              categoriaId: categoria
-            }
+              categoriaId: categoria,
+            },
           }),
-          success: function(response){
-            console.log("respuesta: ", response)
-            response.data.getDocumentosByTituloAndAutorAndTipoAndCategoria.forEach(cardDocumentos)
-            document.getElementById("catalogContainer").innerHTML = listCardDocumentos.join("")
-          }
-        })
+          success: function (response) {
+            console.log("respuesta: ", response);
+            response.data.getDocumentosByTituloAndAutorAndTipoAndCategoria.forEach(
+              cardDocumentos
+            );
+            document.getElementById("catalogContainer").innerHTML =
+              listCardDocumentos.join("");
+          },
+        });
       }
-
     </script>
-<!-- Styles como los del css pero no-->
+    <!-- Styles como los del css pero no-->
     <style>
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
+      }
+      h1 {
+        font-family: "Times New Roman", Times, serif;
+        font-size: 2rem;
+        font-weight: 500;
+        font-size: 400%;
       }
       .features-section {
         padding: 4rem 0;
@@ -229,63 +251,159 @@
         transition: transform 0.2s, box-shadow 0.2s;
       }
       .card:hover {
-          transform: scale(1.05);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
 
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      .container {
+        flex: 1;
+      }
+
+      footer {
+        margin-top: auto;
+      }
+      .btn-custom-width {
+        width: auto;
+        min-width: 400px; /* Ajusta según el tamaño que desees para que no se estiren */
+        padding: 0.5rem 1rem; /* Espaciado interno para darle un aspecto más compacto */
+      }
     </style>
   </head>
-  
+
   <!-- El cuelpo del diablo -->
   
-<body onload="cargarTipoCategoriasDocumentos()">
-  <div class="container my-5">
-    <h1 class="text-center mb-5">Catálogo de Productos</h1>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="/Pages/index.html">
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="24" height="24" fill="white" />
+            <path d="M4 4H20V20H4V4Z" stroke="black" stroke-width="2" />
+            <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
+          </svg>
+        </a>
+<!-- Botones del navbar-->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="catalogo.html">Catalogo</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#servicios">Servicios</a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-    <!-- Barra de búsqueda y filtros -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-6 search-bar">
-            <i class="bi bi-search"></i>
-            <input type="text" id="searchBarTitle" class="form-control" placeholder="Buscar por Título..." value="" onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()">
-        </div>
-        <div class="col-md-6 search-bar">
-            <i class="bi bi-search"></i>
-            <input type="text" id="searchBarAuthor" class="form-control" placeholder="Buscar por Autor..." value="" onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()">
-        </div>
-    </div>
-    <div class="row g-3 mb-5">
-        <div class="col-md-6">
-            <select id="formSelectTipo" class="form-select" onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()">
-            </select>
-        </div>
-        <div class="col-md-6">
-            <select id="formSelectCategoria" class="form-select" onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()">
-            </select>
-        </div>
-    </div>
+  <body onload="cargarTipoCategoriasDocumentos()">
+    <div class="container my-5">
+      <h1 class="text-center mb-5">Catálogo de Productos</h1>
 
-  <div class="container my-5">
-    <!-- Contenedor de tarjetas -->
-    <div class="row" id="catalogContainer">
-      <!-- Ejemplo de tarjeta -->
+      <!-- Barra de búsqueda y filtros -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-6 search-bar">
+          <i class="bi bi-search"></i>
+          <input
+            type="text"
+            id="searchBarTitle"
+            class="form-control"
+            placeholder="Buscar por Título..."
+            value=""
+            onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()"
+          />
+        </div>
+        <div class="col-md-6 search-bar">
+          <i class="bi bi-search"></i>
+          <input
+            type="text"
+            id="searchBarAuthor"
+            class="form-control"
+            placeholder="Buscar por Autor..."
+            value=""
+            onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()"
+          />
+        </div>
+      </div>
+      <div class="row g-3 mb-5">
+        <div class="col-md-6">
+          <select
+            id="formSelectTipo"
+            class="form-select"
+            onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()"
+          ></select>
+        </div>
+        <div class="col-md-6">
+          <select
+            id="formSelectCategoria"
+            class="form-select"
+            onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()"
+          ></select>
+        </div>
+      </div>
+
+      <div class="container my-5">
+        <!-- Contenedor de tarjetas -->
+        <div class="row" id="catalogContainer">
+          <!-- Ejemplo de tarjeta -->
+        </div>
+      </div>
     </div>
-  </div>  
-  </div>
-  <div class="container">
-    <div class="row my-2">
-      <button type="button" class="btn btn-primary">Agregar Documento</button>
+    <div class="container">
+      <div class="row my-2 justify-content-center">
+        <div class="col-12 col-md-6 text-center">
+          <button type="button" class="btn btn-primary btn-custom-width w-100">
+            Agregar Documento
+          </button>
+        </div>
+      </div>
+      <div class="row my-2 justify-content-center">
+        <div class="col-12 col-md-6 text-center">
+          <button type="button" class="btn btn-danger btn-custom-width w-100">
+            Eliminar Documento
+          </button>
+        </div>
+      </div>
+      <div class="row my-2 justify-content-center">
+        <div class="col-12 col-md-6 text-center">
+          <button type="button" class="btn btn-primary btn-custom-width w-100">
+            Agregar Ejemplar
+          </button>
+        </div>
+      </div>
+      <div class="row my-2 justify-content-center">
+        <div class="col-12 col-md-6 text-center">
+          <button type="button" class="btn btn-danger btn-custom-width w-100">
+            Eliminar Ejemplar
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="row my-2">
-      <button type="button" class="btn btn-danger">Eliminar Documento</button>    
-    </div>
-    <div class="row my-2">
-      <button type="button" class="btn btn-primary">Agregar Ejemplar</button>
-    </div>
-    <div class="row my-2">
-      <button type="button" class="btn btn-danger">Eliminar Ejemplar</button>
-    </div>
-  </div>
-<!-- Footer begins here remember to keep your house tidy an you too-->
+    <!-- Footer begins here remember to keep your house tidy an you too-->
 
     <footer class="bg-dark text-light py-4">
       <div class="container">
@@ -301,14 +419,15 @@
             <h5>Explorar</h5>
             <ul class="list-unstyled">
               <li>Catalogo</li>
-              <li>Inicia Sesion</li>
+              <li onclick="loginButton()">Inicia Sesion</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
               <li>Sobre nosotros</li>
-                           <li>Contactanos</li>
+              <li>Contactanos</li>
+              <li>Atencion al cliente</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">

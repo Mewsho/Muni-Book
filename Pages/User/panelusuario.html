@@ -21,8 +21,12 @@
         font-size: 300%;
       }
 
+      p {
+        font-size: 1.3rem;
+      }
+
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Times New Roman", Times, serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
         display: flex;
         flex-direction: column;
@@ -72,8 +76,14 @@
       .nav-link {
         align-items: center;
         font-family: "Times New Roman", Times, serif;
-        align-content: center;
+        font-weight: 500;
+        font-size: 1.2rem;
         text-align: end;
+      }
+
+      .text-center {
+        max-width: 600px;
+        font-family: "Times New Roman", Times, serif;
       }
     </style>
   </head>
@@ -81,7 +91,7 @@
     <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="/Pages/index.html">
           <svg
             width="30"
             height="30"
@@ -117,7 +127,6 @@
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
-            <li class="nav-item"></li>
           </ul>
         </div>
       </div>
@@ -133,30 +142,33 @@
 
     <!-- Filter Buttons -->
     <div class="container text-center">
-      <div class="mb-3">
-        <a
-          href="devoluciones.html"
-          class="btn btn-outline-secondary btn-lg w-100"
-        >
-          Ingresar Devolución
-        </a>
-      </div>
-      <div class="mb-3">
-        <a
-          href="solicitudes.html"
-          class="btn btn-outline-secondary btn-lg w-100"
-        >
-          Revisar solicitudes de préstamo
-        </a>
-      </div>
-      <div>
-        <a href="catalogo.html" class="btn btn-outline-secondary btn-lg w-100">
-          Catálogo / Administrar colección
-        </a>
+      <div class="row">
+        <div class="col-12 mb-3">
+          <a
+            href="devoluciones.html"
+            class="btn btn-outline-secondary btn-lg w-100"
+          >
+            Ingresar Devolución
+          </a>
+        </div>
+        <div class="col-12 mb-3">
+          <a
+            href="solicitudDePrestamo.html"
+            class="btn btn-outline-secondary btn-lg w-100"
+          >
+            Revisar solicitudes de préstamo
+          </a>
+        </div>
+        <div class="col-12 mb-3">
+          <a
+            href="../catalogo.html"
+            class="btn btn-outline-secondary btn-lg w-100"
+          >
+            Catálogo / Administrar colección
+          </a>
+        </div>
       </div>
     </div>
-
-    <!-- Book Grid Section -->
 
     <!-- Footer -->
     <footer class="bg-dark text-light py-4">

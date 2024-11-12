@@ -23,7 +23,19 @@
 
     <style>
       
-    
+      h1 {
+        letter-spacing: -0.2rem;
+       }
+
+      p {
+        font-weight: 500;
+      }
+
+      h2 {
+        font-family: 'Times New Roman', Times, serif;
+        font-weight: 600;
+
+      }
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
@@ -38,15 +50,24 @@
       .nav-link {
         align-items: center;
         font-family: "Times New Roman", Times, serif;
-        display: flex;
+        font-weight: 500;
+        font-size: 1.2rem;
         text-align: end;
-        
+
       }
       .col-md-6{
         margin-top: 12px;
       }
       .navbar-brand{
         margin: 0px;
+      }
+      .btn-dark{
+        font-family: 'Times New Roman', Times, serif;
+      }
+
+      .textobajotitulo{
+        font-size: 1.5rem;
+        font-family: 'Times New Roman', Times, serif;
       }
     </style>
   </head>
@@ -127,7 +148,7 @@
   <body onload="checkCookieExistence('tipo')">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="/Pages/index.html">
           <svg
             width="30"
             height="30"
@@ -152,21 +173,26 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
            
-           
-            <li class="nav-item">
-              <a class="nav-link" href="#contact">Contacto</a>
-            </li>
-
             <li class="nav-item">
               <a class="nav-link" href="catalogo.html">Catalogo</a>
             </li>
-            
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
-            
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+            <!-- "d.none" para oculta como "nav-item d-none"-->
+            <li class="nav-item">
+              <a class="nav-link" href="/Pages/Admin/PanelAdmin.html">admin</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/Pages/Bibliotecario/panelbibliotecario.html">bibliotecario</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/Pages/User/panelusuario.html">usuario</a>
             </li>
           </ul>
         </div>
@@ -179,10 +205,10 @@
       <div class="container text-center">
         <h1 class="display-4">Muni Book</h1>
         
-        <p class="lead">
+        <p class="textobajotitulo">
           Librería Municipal</p>
         <div class="mt-4">
-          <a onclick="loginButton()" class="btn btn-light">Acceder</a>
+                 <a onclick="loginButton()" class="btn btn-dark">Acceder</a>
         </div>
       </div>
     </section>
@@ -193,28 +219,28 @@
       <div class="row">
         <div class="col-md-6">
           <img
-            src="/Salvando/Assets/Images/Libreria1.jpg"
+            src="/Assets/Images/Libreria1.jpg"
             alt="Interior de la librería"
             class="img-fluid rounded w-100 mb-2"
           />
         </div>
         <div class="col-md-6">
           <img
-            src="/Salvando/Assets/Images/Libreria2.jpg"
+            src="/Assets/Images/Libreria2.jpg"
             alt="Estanterías de libros"
             class="img-fluid rounded w-100 mb-2"
           />
         </div>
         <div class="col-md-6">
           <img
-            src="/Salvando/Assets/Images/Libreria 3.jpeg"
+            src="/Assets/Images/Libreria 3.jpeg"
             alt="Estanterías de libros"
             class="img-fluid rounded w-100 mb-2"
           />
         </div>
         <div class="col-md-6">
           <img
-            src="/Salvando/Assets/Images/Libreria5.jpeg"
+            src="/Assets/Images/Libreria5.jpeg"
             alt="Estanterías de libros"
             class="img-fluid rounded w-100 mb-2"
           />
