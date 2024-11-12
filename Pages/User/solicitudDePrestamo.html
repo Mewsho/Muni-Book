@@ -83,8 +83,38 @@
       }
     </style>
     <script>
-      let ListaDeDocumentos = []
-      
+
+      function cargarPrestamo12(prestamo) {
+        let elemento = document.getElementById(prestamo.titulo);
+        if (elemento == null) {
+          let strPrestamo = `
+            <li class="list-group-item d-flex justify-content-between align-items-center" id="${prestamo.titulo}">
+              ${prestamo.titulo}
+              <div>
+                <span id="cantidad-${prestamo.titulo}" class="mx-2">1</span>
+              </div>
+            </li>
+          `;
+          let listaCarrito = document.getElementById("listaPrestamos");
+          listaCarrito.insertAdjacentHTML("beforeend", strPrestamo);
+        } else {
+          let cantidadElemento = document.getElementById(`cantidad-${prestamo.titulo}`);
+          let valorActual = parseInt(cantidadElemento.innerHTML, 10);
+          cantidadElemento.innerHTML = valorActual + 1;
+          console.log(cantidadElemento, valorActual);
+        }
+      }
+
+      function updateQuantity(id, cantidad) {
+        let cantidadElemento = document.getElementById(`cantidad-${id}`);
+        let valorActual = parseInt(cantidadElemento.innerHTML, 10);
+        let nuevoValor = valorActual + cantidad;
+        if (nuevoValor >= 1) { // Evita que la cantidad sea menor que 1
+          cantidadElemento.innerHTML = nuevoValor;
+        }
+      }
+
+
       function ObtenerIdDocumentoOfEjemplar(ejemplar){
         let idEjemplar = ejemplar.id
         let queryEjemplares = `
@@ -110,8 +140,8 @@
             }
           }),
           success: function(response){
-            let documentoActual = response.data.getEjemplarByIdDocumento.documento      
-            ListaDeDocumentos.push(documentoActual)
+            let documentoActual = response.data.getEjemplarByIdDocumento.documento
+            cargarPrestamo12(documentoActual)
           }
         })
       }
@@ -145,7 +175,7 @@
         })
       }
 
-      function ObtenerSolicitudPrestamos(){
+      async function ObtenerSolicitudPrestamos(){
         let idDeUsuario = "67228915b848509b6a13f386"
         let querySolicitudPrestamos = `
           query GetSolicitudPrestamoByUsuarioId($usuarioId: ID!) {
@@ -173,10 +203,12 @@
           }),
           success: function(response){
             let arrayPrestamos = response.data.getSolicitudPrestamoByUsuarioId.prestamos
+            let cantidadTotalLibros = document.getElementById("cantidadLibros").value = arrayPrestamos.length
             arrayPrestamos.forEach(ObtenerIdEjemplaresofPrestamos)
+            console.log(arrayPrestamos)
             console.log(ListaDeDocumentos)
           }
-        })
+        }) 
       }
     </script>
   </head>
@@ -235,67 +267,7 @@
         <!-- Lista de libros (span 8) -->
         <div class="col-md-8">
           <h3>Lista de Libros</h3>
-          <ul class="list-group mb-3">
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Libro 1
-              <div>
-                <button
-                  class="btn btn-outline-secondary btn-sm"
-                  onclick="updateQuantity('book1', -1)"
-                >
-                  -
-                </button>
-                <span id="book1" class="mx-2">1</span>
-                <button
-                  class="btn btn-outline-secondary btn-sm"
-                  onclick="updateQuantity('book1', 1)"
-                >
-                  +
-                </button>
-              </div>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Libro 2
-              <div>
-                <button
-                  class="btn btn-outline-secondary btn-sm"
-                  onclick="updateQuantity('book2', -1)"
-                >
-                  -
-                </button>
-                <span id="book2" class="mx-2">1</span>
-                <button
-                  class="btn btn-outline-secondary btn-sm"
-                  onclick="updateQuantity('book2', 1)"
-                >
-                  +
-                </button>
-              </div>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Libro 3
-              <div>
-                <button
-                  class="btn btn-outline-secondary btn-sm"
-                  onclick="updateQuantity('book3', -1)"
-                >
-                  -
-                </button>
-                <span id="book3" class="mx-2">1</span>
-                <button
-                  class="btn btn-outline-secondary btn-sm"
-                  onclick="updateQuantity('book3', 1)"
-                >
-                  +
-                </button>
-              </div>
-            </li>
+          <ul class="list-group mb-3" id="listaPrestamos">
           </ul>
         </div>
 
