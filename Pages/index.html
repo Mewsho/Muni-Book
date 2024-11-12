@@ -14,27 +14,31 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg">
-    
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
+
     <title>MuniBook</title>
-    
-<!-- Styles como los del css pero no-->
+
+    <!-- Styles como los del css pero no-->
 
     <style>
-      
       h1 {
         letter-spacing: -0.2rem;
-       }
+      }
 
       p {
         font-weight: 500;
       }
 
       h2 {
-        font-family: 'Times New Roman', Times, serif;
+        font-family: "Times New Roman", Times, serif;
         font-weight: 600;
-
       }
       .hero-section {
         background-color: #f8f9fa;
@@ -53,18 +57,18 @@
         font-weight: 500;
         font-size: 1.2rem;
         text-align: end;
-
       }
-      .col-md-6{
+      .col-md-6 {
         margin-top: 12px;
       }
-      .navbar-brand{
+      .navbar-brand {
         margin: 0px;
       }
-      .btn-dark{
-        font-family: 'Times New Roman', Times, serif;
+      .btn-dark {
+        font-family: "Times New Roman", Times, serif;
       }
 
+<<<<<<< Updated upstream
       .col-md-6 img {
     width: 100%;
     height: 300px; /* Altura fija para todas las imágenes */
@@ -73,8 +77,11 @@
 }
 
       .textobajotitulo{
+=======
+      .textobajotitulo {
+>>>>>>> Stashed changes
         font-size: 1.5rem;
-        font-family: 'Times New Roman', Times, serif;
+        font-family: "Times New Roman", Times, serif;
       }
 
       .footer{
@@ -82,62 +89,64 @@
       }
     </style>
   </head>
-  
+
   <script>
-    
-    console.log(document.cookie)
+    console.log(document.cookie);
 
-    function aplicarVersionUsuario(){}
+    function aplicarVersionUsuario() {}
 
-    function aplicarVersionBibliotecario(){console.log()}
+    function aplicarVersionBibliotecario() {
+      console.log();
+    }
 
-    function aplicarVersionNotUsuario(){}
-    
-    function aplicarVersionAdministrador(){}
+    function aplicarVersionNotUsuario() {}
 
-    function loginButton(){
+    function aplicarVersionAdministrador() {}
+
+    function loginButton() {
       let tipoCookie = document.cookie
         .split("; ")
         .find((row) => row.startsWith(`tipo=`))
         ?.split("=")[1];
-      if (tipoCookie){
-        if (tipoCookie == 0){
+      if (tipoCookie) {
+        if (tipoCookie == 0) {
           window.location.href = "vistausuario.html";
         }
-        if (tipoCookie == 1){
+        if (tipoCookie == 1) {
           window.location.href = "vistabibliotecario.html";
         }
-        if (tipoCookie == 2){
+        if (tipoCookie == 2) {
           window.location.href = "./Admin/PanelAdmin.html";
         }
-      }
-      else{
-        window.location.href = "login.html"
+      } else {
+        window.location.href = "login.html";
       }
     }
 
     // Revisa la exitencia de la cookie, obteniendo el tipo y aplicando los cambios respectivos
-    function checkCookieExistence(name){
-      if(
-        document.cookie.split(";").some((item) => item.trim().startsWith(`${name}=`))
-      ){
+    function checkCookieExistence(name) {
+      if (
+        document.cookie
+          .split(";")
+          .some((item) => item.trim().startsWith(`${name}=`))
+      ) {
         let tipoCookie = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith(`tipo=`))
-        ?.split("=")[1];
+          .split("; ")
+          .find((row) => row.startsWith(`tipo=`))
+          ?.split("=")[1];
 
         switch (tipoCookie) {
           case 0:
-            aplicarVersionUsuario()
-            console.log("Usuario")
+            aplicarVersionUsuario();
+            console.log("Usuario");
             break;
           case 1:
-            aplicarVersionBibliotecario()
-            console.log("Bibliotecario")
+            aplicarVersionBibliotecario();
+            console.log("Bibliotecario");
             break;
           case 2:
-            aplicarVersionAdministrador()
-            console.log("Administrador")
+            aplicarVersionAdministrador();
+            console.log("Administrador");
             break;
           /*  
           default:
@@ -146,16 +155,15 @@
             console.log("NotUsuario")
             */
         }
-      }
-      else{
-        aplicarVersionNotUsuario()
-        console.log("NotUsuario")
+      } else {
+        aplicarVersionNotUsuario();
+        console.log("NotUsuario");
       }
     }
   </script>
 
   <!-- El cuelpo del diablo -->
-  
+
   <body onload="checkCookieExistence('tipo')">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
@@ -172,7 +180,7 @@
             <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
           </svg>
         </a>
-<!-- Botones del navbar-->
+        <!-- Botones del navbar-->
         <button
           class="navbar-toggler"
           type="button"
@@ -183,7 +191,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
-           
             <li class="nav-item">
               <a class="nav-link" href="catalogo.html">Catalogo</a>
             </li>
@@ -199,35 +206,100 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="/Pages/Bibliotecario/panelbibliotecario.html">bibliotecario</a>
+              <a
+                class="nav-link"
+                href="/Pages/Bibliotecario/panelbibliotecario.html"
+                >bibliotecario</a
+              >
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="/Pages/User/panelusuario.html">usuario</a>
+              <a class="nav-link" href="/Pages/User/panelusuario.html"
+                >usuario</a
+              >
             </li>
           </ul>
         </div>
       </div>
     </nav>
 
-<!-- Texto central de landing -->
+    <!-- Texto central de landing -->
 
     <section class="hero-section">
       <div class="container text-center">
         <h1 class="display-4">Muni Book</h1>
-        
-        <p class="textobajotitulo">
-          Librería Municipal</p>
+
+        <p class="textobajotitulo">Librería Municipal</p>
         <div class="mt-4">
-                 <a onclick="loginButton()" class="btn btn-dark">Acceder</a>
+          <a onclick="loginButton()" class="btn btn-dark">Acceder</a>
         </div>
       </div>
     </section>
 
-<!-- Imagenes del landing page-->
+    <!-- Imagenes del landing page-->
 
     <section class="container my-5">
-      <div class="row">
+      <!-- Carrusel para pantallas pequeñas -->
+      <div class="d-block d-md-none">
+        <div
+          id="carouselExample"
+          class="carousel slide"
+          data-bs-ride="carousel"
+        >
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img
+                src="/Assets/Images/Libreria1.jpg"
+                class="d-block w-100 img-fluid"
+                alt="Interior de la librería"
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="/Assets/Images/Libreria2.jpg"
+                class="d-block w-100 img-fluid"
+                alt="Estanterías de libros"
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="/Assets/Images/Libreria 3.jpeg"
+                class="d-block w-100 img-fluid"
+                alt="Estanterías de libros"
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="/Assets/Images/Libreria5.jpeg"
+                class="d-block w-100 img-fluid"
+                alt="Estanterías de libros"
+              />
+            </div>
+          </div>
+          <!-- Controles del carrusel -->
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselExample"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselExample"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Galería para pantallas grandes -->
+      <div class="row d-none d-md-flex">
         <div class="col-md-6">
           <img
             src="/Assets/Images/fotoindex1.jpg"
@@ -256,46 +328,45 @@
             class="img-fluid rounded w-100 mb-2"
           />
         </div>
-
-          
-        </div>
       </div>
     </section>
 
+<<<<<<< Updated upstream
 
   
 
 <!-- Seccion de servicios una vaina loca que ....-->
   <section id="servicios" class="features-section bg-light">
+=======
+    <!-- Seccion de servicios una vaina loca que ....-->
+    <section id="servicios" class="features-section bg-light">
+>>>>>>> Stashed changes
       <div class="container">
         <h2 class="text-center mb-5">Servicios</h2>
-        <div class="row">
-          <div class="col-md-6 mb-6">
+        <div class="row justify-content-center">
+          <div
+            class="col-md-6 mb-4 d-flex flex-column align-items-center text-center"
+          >
             <div class="d-flex align-items-center mb-3">
               <i class="fa-sharp fa-solid fa-book"></i>
-                
-                <path d="M12 6V12L16 16" stroke="black" stroke-width="2" />
-              </svg>
               <h5 class="ms-2 mb-0">Servicios</h5>
             </div>
             <p>Prestamo de libros</p>
           </div>
-          <div class="col-md-6 mb-6">
+          <div
+            class="col-md-6 mb-4 d-flex flex-column align-items-center text-center"
+          >
             <div class="d-flex align-items-center mb-3">
               <i class="fa-solid fa-question"></i>
-                             
               <h5 class="ms-2 mb-0">Preguntas Frecuentes</h5>
             </div>
-            <p>
-              Las preguntas mas comunes suelen ser
-            </p>
+            <p>¿Cuántos libros puedo llevarme?</p>
           </div>
- 
-            </p>
-          </div>
+        </div>
+      </div>
     </section>
 
-<!-- Footer begins here remember to keep your house tidy an you too-->
+    <!-- Footer begins here remember to keep your house tidy an you too-->
 
     <footer class="bg-dark text-light py-4">
       <div class="container">
@@ -318,8 +389,8 @@
             <h5>Recursos</h5>
             <ul class="list-unstyled">
               <li>Sobre nosotros</li>
-                           <li>Contactanos</li>
-                           <li>Atencion al cliente</li>
+              <li>Contactanos</li>
+              <li>Atencion al cliente</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
@@ -336,7 +407,6 @@
               </a>
               <a href="#" class="text-light">
                 <i class="fa-brands fa-youtube"></i>
-
               </a>
             </div>
           </div>
