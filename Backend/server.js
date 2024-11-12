@@ -218,6 +218,7 @@ const typeDefs = gql`
         getNDocumentos(numero: Int): [Documento]
         getUsuarioByCorreoAndCheckPassword(correo: String!, password: String!): Usuario
         sendEmail(correo: String, codigoVerificador: Int, nombres: String): Boolean
+        getSolicitudPrestamoByUsuarioId(usuarioID: ID!): SolicitudPrestamo
     }
 
     type Mutation{
@@ -571,6 +572,11 @@ const resolvers = {
             } catch (err) {
                 console.error(`Error: ${err.message} - Código de estado: ${err.statusCode}`);
             }
+        },
+
+        async getSolicitudPrestamoByUsuarioId(obj, {usuarioID}){
+            let solicitudPrestamo = await SolicitudPrestamo.findOne({usuario: usuarioID}).populate('prestamos');
+            return solicitudPrestamo;
         }
     },
     

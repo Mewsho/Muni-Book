@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Muni Book - solisitud Libros</title>
+    <!-- Bootstrap 5 CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .container {
+        flex-grow: 1;
+      }
+      .cart-section {
+        margin-top: 30px;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+      }
+      /* Botón de confirmación */
+      .confirm-btn {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+      }
+
+      .confirm-btn:hover {
+        background-color: #218838;
+      }
+      /* Botón de eliminar libro */
+      .remove-btn {
+        color: #ff4d4d;
+        border: none;
+        background-color: transparent;
+      }
+
+      .remove-btn:hover {
+        color: #fff;
+        background-color: #ff4d4d;
+        border-radius: 4px;
+      }
+      footer {
+        background-color: #000;
+        color: #fff;
+        padding: 20px 0;
+      }
+
+      .hero-section {
+        background-color: #f8f9fa;
+        padding: 4rem 0;
+      }
+
+      .features-section {
+        padding: 4rem 0;
+      }
+
+      .display-4 {
+        font-size: 1000%;
+        font-family: "Times New Roman", Times, serif;
+      }
+
+      .nav-link {
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        align-content: center;
+        text-align: end;
+      }
+    </style>
+    <script>
+      let ListaDeDocumentos = []
+      
+      function ObtenerIdDocumentoOfEjemplar(ejemplar){
+        let idEjemplar = ejemplar.id
+        let queryEjemplares = `
+          query GetEjemplarByIdDocumento($getEjemplarByIdDocumentoId: ID!) {
+            getEjemplarByIdDocumento(id: $getEjemplarByIdDocumentoId) {
+              documento {
+                titulo
+                autor
+                editorial
+              }
+            }
+          }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryEjemplares,
+            variables: {
+              getEjemplarByIdDocumentoId: idEjemplar
+            }
+          }),
+          success: function(response){
+            let documentoActual = response.data.getEjemplarByIdDocumento.documento      
+            ListaDeDocumentos.push(documentoActual)
+          }
+        })
+      }
+
+      function ObtenerIdEjemplaresofPrestamos(prestamo){
+        let idPrestamo = prestamo.id
+        let queryPrestamos = `
+          query GetPrestamoById($getPrestamoByIdEjemplarId: ID!) {
+            getPrestamoByIdEjemplar(id: $getPrestamoByIdEjemplarId) {
+              ejemplar {
+                id
+              }
+            }
+          }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryPrestamos,
+            variables: {
+              getPrestamoByIdEjemplarId: idPrestamo
+            }
+          }),
+          success: function(response){
+            let EjemplarActual = response.data.getPrestamoByIdEjemplar.ejemplar
+            ObtenerIdDocumentoOfEjemplar(EjemplarActual)
+          }
+        })
+      }
+
+      function ObtenerSolicitudPrestamos(){
+        let idDeUsuario = "67228915b848509b6a13f386"
+        let querySolicitudPrestamos = `
+          query GetSolicitudPrestamoByUsuarioId($usuarioId: ID!) {
+            getSolicitudPrestamoByUsuarioId(usuarioID: $usuarioId) {
+              id
+              tipoSolicitud
+              estadoSolicitud
+              fechaSolicitud
+              prestamos {
+                id
+              }
+            }
+          }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySolicitudPrestamos,
+            variables: {
+              usuarioId: idDeUsuario
+            }
+          }),
+          success: function(response){
+            let arrayPrestamos = response.data.getSolicitudPrestamoByUsuarioId.prestamos
+            arrayPrestamos.forEach(ObtenerIdEjemplaresofPrestamos)
+            console.log(ListaDeDocumentos)
+          }
+        })
+      }
+    </script>
+  </head>
+
+  </head>
+  <body onload="ObtenerSolicitudPrestamos()">
+    <!-- Header Section -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="/Pages/index.html">
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="24" height="24" fill="white" />
+            <path d="M4 4H20V20H4V4Z" stroke="black" stroke-width="2" />
+            <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
+          </svg>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#products">Productos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#solutions">Soluciones</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#community">Comunidad</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="perfilusuario.html">perfil</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Shopping Cart Section -->
+    <div class="container cart-section">
+      <div class="row">
+        <!-- Lista de libros (span 8) -->
+        <div class="col-md-8">
+          <h3>Lista de Libros</h3>
+          <ul class="list-group mb-3">
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center"
+            >
+              Libro 1
+              <div>
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  onclick="updateQuantity('book1', -1)"
+                >
+                  -
+                </button>
+                <span id="book1" class="mx-2">1</span>
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  onclick="updateQuantity('book1', 1)"
+                >
+                  +
+                </button>
+              </div>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center"
+            >
+              Libro 2
+              <div>
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  onclick="updateQuantity('book2', -1)"
+                >
+                  -
+                </button>
+                <span id="book2" class="mx-2">1</span>
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  onclick="updateQuantity('book2', 1)"
+                >
+                  +
+                </button>
+              </div>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center"
+            >
+              Libro 3
+              <div>
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  onclick="updateQuantity('book3', -1)"
+                >
+                  -
+                </button>
+                <span id="book3" class="mx-2">1</span>
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  onclick="updateQuantity('book3', 1)"
+                >
+                  +
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Opciones de préstamo y detalles (span 4) -->
+        <div class="col-md-4">
+          <h3>Detalles del Prestamo</h3>
+
+          <div class="mb-3">
+            <label for="cantidadLibros" class="form-label"
+              >Cantidad Total de Libros</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="cantidadLibros"
+              placeholder="0"
+              readonly
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Tipo de Prestamo</label>
+            <div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="tipoPrestamo"
+                  id="prestamoSala"
+                  value="sala"
+                />
+                <label class="form-check-label" for="prestamoSala">
+                  Prestamo en Sala
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="tipoPrestamo"
+                  id="prestamoDomicilio"
+                  value="domicilio"
+                />
+                <label class="form-check-label" for="prestamoDomicilio">
+                  Prestamo a Domicilio
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="tipoPrestamo"
+                  id="reserve"
+                  value="reserve"
+                  onclick="toggleDateBox(true)"
+                />
+                <label class="form-check-label" for="reserve">Reserva</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- fecha prestamo -->
+          <div class="mb-3" id="fechaPrestamoContainer" style="display: none">
+            <label for="fechaPrestamo" class="form-label"
+              >Fecha de Prestamo</label
+            >
+            <input
+              type="datetime-local"
+              class="form-control"
+              id="fechaPrestamo"
+              onchange="calcularFechaDevolucion()"
+            />
+          </div>
+
+          <!-- fecha devolucion -->
+          <div class="mb-3" id="fechaDevolucionContainer" style="display: none">
+            <label for="fechaDevolucion" class="form-label"
+              >Fecha de Devolucion</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="fechaDevolucion"
+              readonly
+            />
+          </div>
+
+          <button
+            class="btn btn-success w-100 mt-3"
+            onclick="confirmarSolisitud()"
+          >
+            Confirmar solisitud
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar libro -->
+    <div
+      class="modal fade"
+      id="deleteConfirmModal"
+      tabindex="-1"
+      aria-labelledby="deleteConfirmModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteConfirmModalLabel">
+              Eliminar Libro
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            ¿Está seguro de que desea eliminar este libro de la lista?
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="confirmDeleteButton"
+              data-bs-dismiss="modal"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <h5>Muni Book</h5>
+            <ul class="list-unstyled">
+              <li>Tu libreria de confianza</li>
+              <li>Siguenos en redes!</li>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-3">
+            <h5>Explorar</h5>
+            <ul class="list-unstyled">
+              <li>Catalogo</li>
+              <li>Inicia Sesion</li>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-3">
+            <h5>Recursos</h5>
+            <ul class="list-unstyled">
+              <li>Sobre nosotros</li>
+              <li>Contactanos</li>
+              <li>Atencion al cliente</li>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-3">
+            <h5>Siguenos</h5>
+            <div class="d-flex">
+              <a href="#" class="text-light me-2">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </a>
+              <a href="#" class="text-light me-2">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M23 3C22.1 3.35 21.2 3.58 20.2 3.69C21.2 3.08 22 2.13 22.4 1C21.5 1.55 20.5 1.95 19.4 2.17C18.5 1.23 17.3 0.67 16 0.67C13.5 0.67 11.5 2.67 11.5 5.17C11.5 5.55 11.5 5.92 11.6 6.27C7.8 6.09 4.3 4.29 2 1.5C1.6 2.22 1.4 3.03 1.4 3.89C1.4 5.5 2.2 6.94 3.4 7.79C2.6 7.77 1.8 7.55 1.1 7.19V7.23C1.1 9.43 2.7 11.28 4.8 11.73C4.4 11.83 4 11.88 3.6 11.88C3.3 11.88 3 11.85 2.7 11.79C3.3 13.61 5 14.92 7 14.96C5.4 16.17 3.4 16.89 1.2 16.89C0.8 16.89 0.4 16.87 0 16.82C2 18.12 4.4 18.87 7 18.87C16 18.87 20.7 11.41 20.7 4.95C20.7 4.75 20.7 4.55 20.7 4.35C21.6 3.67 22.4 2.82 23 1.85V3Z"
+                    fill="white"
+                  />
+                </svg>
+              </a>
+              <a href="#" class="text-light me-2">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8V8Z"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M6 9H2V21H6V9Z"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </a>
+              <a href="#" class="text-light">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M17 2H7C4.23858 2 2 4.23858 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V7C22 4.23858 19.7614 2 17 2Z"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Función para actualizar la cantidad de libros y la cantidad total
+      function updateQuantity(bookId, change) {
+        const bookElement = document.getElementById(bookId);
+        const rowElement = document.getElementById(bookId + "Row");
+        let currentQuantity = parseInt(bookElement.textContent);
+        currentQuantity = currentQuantity + change;
+        if (currentQuantity <= 0) {
+          // Guardar la fila que se debe eliminar y mostrar el modal de confirmación
+          rowToDelete = rowElement;
+          const deleteConfirmModal = new bootstrap.Modal(
+            document.getElementById("deleteConfirmModal")
+          );
+          deleteConfirmModal.show();
+          return; // Salir de la función para no actualizar la cantidad a menos de 1
+        }
+        bookElement.textContent = currentQuantity;
+
+        updateTotalBooks();
+      }
+
+      // Función para actualizar la cantidad total de libros
+      function updateTotalBooks() {
+        const book1 = parseInt(
+          document.getElementById("book1").textContent || 0
+        );
+        const book2 = parseInt(
+          document.getElementById("book2").textContent || 0
+        );
+        const book3 = parseInt(
+          document.getElementById("book3").textContent || 0
+        );
+        const totalBooks = book1 + book2 + book3;
+        document.getElementById("cantidadLibros").value = totalBooks;
+      }
+
+      // Función para calcular la fecha de devolución, aproximadamente 2 semanas después de la fecha de préstamo
+      function calcularFechaDevolucion() {
+        const fechaPrestamo = new Date(
+          document.getElementById("fechaPrestamo").value
+        );
+        if (fechaPrestamo) {
+          fechaPrestamo.setDate(fechaPrestamo.getDate() + 14); // Añadir tiempo estimado (14 días)
+          document.getElementById("fechaDevolucion").value =
+            fechaPrestamo.toLocaleDateString("es-ES");
+        }
+      }
+
+      // Función para confirmar la reserva (puedes agregar la lógica que desees)
+      function confirmarSolisitud() {
+        alert("Reserva confirmada. ¡Gracias por utilizar nuestro servicio!");
+      }
+
+      // Función para mostrar u ocultar los cuadros de fecha
+      function toggleDateBox(show) {
+        document.getElementById("fechaPrestamoContainer").style.display = show
+          ? "block"
+          : "none";
+        document.getElementById("fechaDevolucionContainer").style.display = show
+          ? "block"
+          : "none";
+      }
+
+      // Configurar el evento para mostrar/ocultar los cuadros de fecha según el tipo de préstamo
+      document
+        .querySelectorAll('input[name="tipoPrestamo"]')
+        .forEach((radio) => {
+          radio.addEventListener("change", function () {
+            // Mostrar las fechas solo si el valor seleccionado es "reserve"
+            toggleDateBox(this.value === "reserve");
+          });
+        });
+    </script>
+  </body>
+</html>
