@@ -53,8 +53,8 @@ const typeDefs = gql`
 
     type Prestamo{
         id: ID!
-        tipoPrestamo: String!
-        ejemplar: Ejemplar!
+        tipoPrestamo: String! #  Sala, Domicilio, Reserva, 0,1,2
+        ejemplar: Ejemplar! 
         fechaPrestamo: GraphQLDateTime
         fechaDevolucion: GraphQLDateTime
         fechaDevolucionReal: GraphQLDateTime
@@ -137,8 +137,8 @@ const typeDefs = gql`
 
     type SolicitudPrestamo{
         id: ID!
-        tipoSolicitud: String # Sala, domicilio, reserva, 0,1,2
-        estadoSolicitud: Int # Aprobado y no aprobado 
+        tipoSolicitud: String # Sala, Domicilio, Reserva, 0,1,2
+        estadoSolicitud: Int # Aprobado y No Aprobado 
         fechaSolicitud: GraphQLDateTime
         usuario: Usuario
         prestamos: [Prestamo]
@@ -218,13 +218,14 @@ const typeDefs = gql`
         getNDocumentos(numero: Int): [Documento]
         getUsuarioByCorreoAndCheckPassword(correo: String!, password: String!): Usuario
         sendEmail(correo: String, codigoVerificador: Int, nombres: String): Boolean
+        getNEjemplaresDisponiblesByDocumentId(documentoId: ID, cantEjemplares: Int): [Ejemplar]
     }
 
     type Mutation{
         addUsuario(input: UsuarioInput): Response
         updUsuario(id: ID!, input: UsuarioInput): Response
         delUsuario(id: ID!): Response
-        addPrestamo(input: PrestamoInput): Response
+        addPrestamo(input: PrestamoInput): Prestamo
         updPrestamo(id: ID!, input: PrestamoInput): Response
         delPrestamo(id: ID!): Response
         addSolicitudPrestamo(input: SolicitudPrestamoInput): Response
@@ -575,7 +576,19 @@ const resolvers = {
             } catch (err) {
                 console.error(`Error: ${err.message} - Código de estado: ${err.statusCode}`);
             }
+        },
+
+        async getNEjemplaresDisponiblesByDocumentId(obj, {documentoId, cantEjemplares}){
+            let Ejemplares = await Ejemplar.find({
+                documento: documentoId,
+                estadoTexto: "Disponible",
+                estado: 3
+            }).limit(cantEjemplares)
+            return Ejemplares
         }
+
+
+
     },
     
     Mutation: {
@@ -610,12 +623,7 @@ const resolvers = {
             let ejemplarBus = await Ejemplar.findById(input.ejemplar);
             let prestamo = new Prestamo({tipoPrestamo: input.tipoPrestamo, ejemplar: ejemplarBus._id, fechaPrestamo: input.fechaPrestamo, fechaDevolucion: input.fechaDevolucion, fechaDevolucionReal: input.fechaDevolucionReal});
             await prestamo.save();
-            return {
-                statusCode: "200",
-                body: null,
-                errorCode: "0",
-                descriptionError: ""
-            };
+            return prestamo;
         },
 
         async updPrestamo(obj, {id, input}){

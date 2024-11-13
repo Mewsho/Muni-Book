@@ -22,6 +22,9 @@
     
     <script>
 
+      let isFirstAddItemToSolicitud = true
+      let usuarioIdGeneral = ""
+      let listaPrestamosGeneral = [] 
       // Obtencion de cookies y cambios asociados
       async function aplicarVersionUsuario(){}
 
@@ -51,7 +54,13 @@
           .split("; ")
           .find((row) => row.startsWith(`${name}=`))
           ?.split("=")[1];
+          let UsuarioIdCookie = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith(`id=`))
+          ?.split("=")[1];
           
+          usuarioIdGeneral = UsuarioIdCookie
+
           tipoCookie = parseInt(tipoCookie,10)
 
           switch (tipoCookie) {
@@ -141,7 +150,6 @@
       }
 
 
-
       function aplicarCambiosCard(){
         if(
           document.cookie.split(";").some((item) => item.trim().startsWith(`tipo=`))
@@ -150,6 +158,8 @@
           .split("; ")
           .find((row) => row.startsWith(`tipo=`))
           ?.split("=")[1];
+
+          tipoCookie = parseInt(tipoCookie,10)
 
           if (tipoCookie == 2){
             let inputGroupList = document.getElementsByClassName("input-group")
@@ -163,92 +173,197 @@
           else if (tipoCookie == 0){
             let collapseList = document.getElementsByClassName("collapse-card")
             for (collapse of collapseList){
-              let parentBody = collapse.parentElement
-              let idDocumento = parentBody.id
-              console.log(parentBody)
+              let idDocumentoCollapse = collapse.id
+              let idDocumento = idDocumentoCollapse.split('-')[0]
               let strButton = `<button type="button" class="btn btn-success" 
-              id="${collapse.id}-addButton" onclick="addCardToSolicitudPrestamo(${collapse.id})">
+              id="${idDocumento}-addButton">
               Agregar a Solicitud</button>
               `
               collapse.insertAdjacentHTML("beforeend", strButton)
 
-              $(`#${collapse.id}-addButton`).click(addCardToSolicitudPrestamo(idDocumento))
+              $(`#${idDocumento}-addButton`).click(function(){
+                addSolicitud(idDocumento)
+              })
             }
-
-            
-
-            addOffCanvasSolicitud()
-
           }
         }
       }
 
-
-      async function addOffCanvasSolicitud(){
-        let idCookie = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith(`id=`))
-          ?.split("=")[1];
-
-
-        let strButtonOff = `
-        <button class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-          Carrito
-        </button> 
-        `
-        let strOffCanvas = `
-        <div class="offcanvas offcanvas-start w-50" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-          <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Solicitud de Préstamo</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-          <div class="offcanvas-body" id="${idCookie}-off-body">
-            
-          </div>
-        </div>
-        `
-        let navbar = document.getElementById("navbarNav")
-        document.body.insertAdjacentHTML("afterbegin",strOffCanvas)
-        navbar.insertAdjacentHTML("beforeend", strButtonOff)
+      function addDays(date, days) {
+        var result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
       }
 
-
-      function addCardToSolicitudPrestamo(idDocumento){
-        console.log("boton agregar")
-
+      // Poner un if si apretan el boton con un 0
+      async function addSolicitud(idDocumentoDelBoton){
+        // Conseguir cant de ejemplares de la pagina
+        let inputNumberDocumento = document.getElementById(`${idDocumentoDelBoton}-input`)
+        let cantEjemplares = parseInt(inputNumberDocumento.value, 10)
+        let arrayEjemplares = await getNEjemplaresByDocumentId(idDocumentoDelBoton, cantEjemplares)
         
-        let idCookie = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith(`id=`))
-          ?.split("=")[1];
-
-        let elemento = document.getElementsByClassName("card-body").
-        console.log(elemento)
-        let documentoId = idCookie
-        let cantEjemplaresDisponible = 2
-        let strCard = `
-        <div class="card rounded-3 mb-4">
-          <div class="card-body p-4">
-            <div class="row d-flex justify-content-between align-items-center">
-              <div class="col-md-7 col-lg-7 col-xl-7">
-                <h5 class="card-title mb-2">Titulo del Libro</h5>
-                <p class="card-text">Autor, Tipo y Categorias</p>
-              </div>
-              <div class="col-md-3 col-lg-3 col-xl-3 d-flex">
-                <button class="btn btn-outline-secondary btn-number-${documentoId}" type="button" id="${documentoId}-button-minus" documentId="${documentoId}" data-type="minus">-</button>
-                <input type="text" class="form-control input-number" value="0" min="0" max="${cantEjemplaresDisponible}" id="${documentoId}-input">
-                <button class="btn btn-outline-secondary btn-number-${documentoId}" type="button" id="${documentoId}-button-plus" documentId="${documentoId}" data-type="plus">+</button>
-              </div>
-              <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                <a href="#!" class="text-danger"><i class="fas fa-trash fa-lg"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>`
-
-        document.getElementById(`${idCookie}-off-body`).insertAdjacentHTML("beforeend", strCard)
+        if (isFirstAddItemToSolicitud){
+          addSolicitudPrestamo(idDocumentoDelBoton)
+          isFirstAddItemToSolicitud = false
+        }
+        else {
+          addPrestamosToSolicitudPrestamo(idDocumentoDelBoton)
+        }
       }
 
+
+      function addPrestamo(ejemplarParametro){
+        let idEjemplar = ejemplarParametro.id
+        let queryAddPrestamo = `
+        mutation AddPrestamo($input: PrestamoInput) {
+          addPrestamo(input: $input) {
+            id
+            tipoPrestamo
+            fechaPrestamo
+            fechaDevolucion
+            fechaDevolucionReal
+          }
+        }
+        `
+        // Por default el prestamo sera en sala y la fecha es la actual
+        let fechaActual = Date.now()
+        let fechaDevolucion = addDays(fechaActual, 7)
+        console.log("Antes ajax addPrestamo", idEjemplar)
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryAddPrestamo,
+            variables: {
+              input: {
+                tipoPrestamo: "Sala",
+                ejemplar: idEjemplar,
+                fechaPrestamo: fechaActual,
+                fechaDevolucion: fechaDevolucion,
+                fechaDevolucionReal: null
+              }
+            } 
+          }),
+          success: function(response){
+            let prestamo = response.data.addPrestamo
+            console.log("Response addPrestamo",response)
+            listaPrestamosGeneral.push(prestamo.id)
+          }
+        })
+      }
+
+      function getNEjemplaresByDocumentId(idDocumento, cantEjemplares){
+        let queryEjemplares= `
+        query GetNEjemplaresDisponiblesByDocumentId($documentoId: ID, $cantEjemplares: Int) {
+          getNEjemplaresDisponiblesByDocumentId(documentoId: $documentoId, cantEjemplares: $cantEjemplares) {
+            id
+            codigo
+            estado
+            estadoTexto
+            ubicacion
+          }
+        }
+        ` 
+        console.log(idDocumento, cantEjemplares)
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryEjemplares,
+            variables: {
+              documentoId: idDocumento,
+              cantEjemplares: cantEjemplares
+            }
+          }),
+          success: function(response){
+            let Ejemplares = response.data.getNEjemplaresDisponiblesByDocumentId
+            Ejemplares.forEach(addPrestamo)
+          }
+        })
+      }
+
+      function addPrestamos(){
+        let queryAddPrestamo = `
+        mutation AddPrestamo($addPrestamoInput2: PrestamoInput) {
+          addPrestamo(input: $addPrestamoInput2) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryCantEjemplares,
+            addPrestamoInput2: {
+              tipoPrestamo: null,
+              ejemplar: null,
+              fechaPrestamo: null,
+              fechaDevolucion: null,
+              fechaDevolucionReal: null
+            }
+          }),
+          success: function(response){
+            console.log("Agregar Prestamos")
+          }
+        })
+
+      }
+
+      async function addSolicitudPrestamo(idDocumento){
+        console.log("AddSolicitud Prestamos",listaPrestamosGeneral)
+        let usuarioId = usuarioIdGeneral
+        let listaPrestamos = listaPrestamosGeneral
+        console.log(listaPrestamos)
+        let queryAddSolicitudPrestamo = `
+        mutation AddSolicitudPrestamo($addSolicitudPrestamoInput2: SolicitudPrestamoInput) {
+          addSolicitudPrestamo(input: $addSolicitudPrestamoInput2) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        // Los defaults de la Solicitud
+        let fechaActual = Date.now()
+        let tipo = "Sala"
+        let estado = 0
+        console.log()
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryAddSolicitudPrestamo,
+            variables: {
+              addSolicitudPrestamoInput2: {
+                tipoSolicitud: tipo,
+                estadoSolicitud: estado,
+                fechaSolicitud: fechaActual,
+                usuario: usuarioId,
+                prestamos: listaPrestamos
+              }
+            }   
+          }),
+          success: function(response){
+            console.log(response)
+          }
+        })
+      }
+
+
+      function addPrestamoToSolicitudPrestamo(){}
 
       let cantEjemplaresDisponible = 0
       let cantEjemplaresSala = 0
@@ -346,9 +461,9 @@
                 <h5 class="card-title">${item.titulo}</h5>
                 <p class="card-text" id="card-text" autor="${item.autor}" tipoDocumento="${item.tipoDocumento.tipo}">${item.autor}, ${item.anioSalida}, ${item.editorial}, ${item.tipoDocumento.tipo},</p>
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#${item.id}.collapse">
+                data-bs-target="#${item.id}-collapse">
                   Ver más información</button>
-                <div class="collapse collapse-card" id="${item.id}.collapse">
+                <div class="collapse collapse-card" id="${item.id}-collapse">
                   <div class="container my-3">
                     <p class="card-text my-1">${item.edicion}a Edición</p>
                     <p class="card-text my-1">Categorias: ${listCategoriaDocumentosNombre.toString()}</p>
