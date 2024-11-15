@@ -84,6 +84,127 @@
     </style>
     <script>
 
+    let PrestamosGlobal = []
+    let SolicitudPrestamosGlobal = ""
+    let IdUsuarioGlobal = ""
+    let IdEjemplaresGlobales = []
+
+
+      function ActualizarFechaPrestamos(idActual, valor, fechaPrestamo,fechaDevolucion, index){
+        
+        let listaAuxiliar1 = []
+
+        for (variable of IdEjemplaresGlobales){
+          listaAuxiliar1.push(variable.id)
+        }
+
+        console.log(idActual)
+        console.log(index)
+        let queryActualizarPrestamos = `
+          mutation UpdPrestamo($updPrestamoId: ID!, $input: PrestamoInput) {
+            updPrestamo(id: $updPrestamoId, input: $input) {
+              statusCode
+              body
+              errorCode
+              descriptionError
+            }
+          }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryActualizarPrestamos,
+            variables: {
+              updPrestamoId: idActual,
+              input: {
+                fechaPrestamo: fechaPrestamo,
+                fechaDevolucion: fechaDevolucion,
+                tipoPrestamo: valor,
+                ejemplar: listaAuxiliar1[index]
+              }
+            }
+          }),
+          success: function(response){
+          }
+        })
+      }
+
+      function ObtenerEleccion(){
+        let radio1 = document.getElementsByClassName('form-check-input');
+        let fechaPrestamo = null
+        let fechaDevolucion = null
+        
+        let valor;
+        for (let button of radio1) {
+          if (button.checked) {
+            valor = button.value;
+          }          
+        }
+        
+        if (valor == "sala"){
+          fechaPrestamo = new Date()
+          fechaDevolucion = new Date()
+          fechaDevolucion.setHours(fechaDevolucion.getHours() + 3);
+           
+        }
+
+        if (valor == "domicilio"){
+          fechaPrestamo = new Date()
+          fechaDevolucion = new Date()
+          fechaDevolucion.setDate(fechaDevolucion.getDate() + 14);
+
+        }
+
+        if (valor == "reserve"){
+           fechaPrestamo = new Date(document.getElementById("fechaPrestamo").value);
+           fechaDevolucion = new Date(document.getElementById("fechaDevolucion").value);
+        }
+         
+        let listaAuxiliar = []
+
+        for (variable of PrestamosGlobal){
+          listaAuxiliar.push(variable.id)
+        }
+
+        console.log(IdEjemplaresGlobales)
+
+        let queryActualizarSolicitudPrestamo = `
+          mutation UpdSolicitudPrestamo($updSolicitudPrestamoId: ID!, $input: SolicitudPrestamoInput) {
+            updSolicitudPrestamo(id: $updSolicitudPrestamoId, input: $input) {
+              statusCode
+              body
+              errorCode
+              descriptionError
+            }
+          }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryActualizarSolicitudPrestamo,
+            variables: {
+              updSolicitudPrestamoId: SolicitudPrestamosGlobal,
+              input: {
+                fechaSolicitud: fechaPrestamo,
+                prestamos: listaAuxiliar,
+                tipoSolicitud: valor,
+                usuario: IdUsuarioGlobal
+              }
+            }
+          }),
+          success: function(response){
+            listaAuxiliar.forEach((id_prestamo, index) => ActualizarFechaPrestamos(id_prestamo, valor, fechaPrestamo,fechaDevolucion, index))
+          }
+        })
+      }
+
+
       function cargarPrestamo12(prestamo) {
         let elemento = document.getElementById(prestamo.titulo);
         if (elemento == null) {
@@ -170,13 +291,14 @@
           }),
           success: function(response){
             let EjemplarActual = response.data.getPrestamoByIdEjemplar.ejemplar
+            IdEjemplaresGlobales.push(EjemplarActual)
             ObtenerIdDocumentoOfEjemplar(EjemplarActual)
           }
         })
       }
 
       async function ObtenerSolicitudPrestamos(){
-        let idDeUsuario = "67228915b848509b6a13f386"
+        let idDeUsuario = "671d5f62e7aba670c895dc01"
         let querySolicitudPrestamos = `
           query GetSolicitudPrestamoByUsuarioId($usuarioId: ID!) {
             getSolicitudPrestamoByUsuarioId(usuarioID: $usuarioId) {
@@ -203,10 +325,12 @@
           }),
           success: function(response){
             let arrayPrestamos = response.data.getSolicitudPrestamoByUsuarioId.prestamos
+            let solicitudPrestamoActualId = response.data.getSolicitudPrestamoByUsuarioId.id
             let cantidadTotalLibros = document.getElementById("cantidadLibros").value = arrayPrestamos.length
             arrayPrestamos.forEach(ObtenerIdEjemplaresofPrestamos)
-            console.log(arrayPrestamos)
-            console.log(ListaDeDocumentos)
+            SolicitudPrestamosGlobal = solicitudPrestamoActualId
+            PrestamosGlobal = arrayPrestamos
+            IdUsuarioGlobal = idDeUsuario 
           }
         }) 
       }
@@ -357,9 +481,9 @@
 
           <button
             class="btn btn-success w-100 mt-3"
-            onclick="confirmarSolisitud()"
+            onclick="ObtenerEleccion()"
           >
-            Confirmar solisitud
+            Confirmar solicitud
           </button>
         </div>
       </div>
@@ -525,41 +649,6 @@
     </footer>
 
     <script>
-      // Función para actualizar la cantidad de libros y la cantidad total
-      function updateQuantity(bookId, change) {
-        const bookElement = document.getElementById(bookId);
-        const rowElement = document.getElementById(bookId + "Row");
-        let currentQuantity = parseInt(bookElement.textContent);
-        currentQuantity = currentQuantity + change;
-        if (currentQuantity <= 0) {
-          // Guardar la fila que se debe eliminar y mostrar el modal de confirmación
-          rowToDelete = rowElement;
-          const deleteConfirmModal = new bootstrap.Modal(
-            document.getElementById("deleteConfirmModal")
-          );
-          deleteConfirmModal.show();
-          return; // Salir de la función para no actualizar la cantidad a menos de 1
-        }
-        bookElement.textContent = currentQuantity;
-
-        updateTotalBooks();
-      }
-
-      // Función para actualizar la cantidad total de libros
-      function updateTotalBooks() {
-        const book1 = parseInt(
-          document.getElementById("book1").textContent || 0
-        );
-        const book2 = parseInt(
-          document.getElementById("book2").textContent || 0
-        );
-        const book3 = parseInt(
-          document.getElementById("book3").textContent || 0
-        );
-        const totalBooks = book1 + book2 + book3;
-        document.getElementById("cantidadLibros").value = totalBooks;
-      }
-
       // Función para calcular la fecha de devolución, aproximadamente 2 semanas después de la fecha de préstamo
       function calcularFechaDevolucion() {
         const fechaPrestamo = new Date(
@@ -567,16 +656,17 @@
         );
         if (fechaPrestamo) {
           fechaPrestamo.setDate(fechaPrestamo.getDate() + 14); // Añadir tiempo estimado (14 días)
+          // Formato ISO (YYYY-MM-DD)
           document.getElementById("fechaDevolucion").value =
-            fechaPrestamo.toLocaleDateString("es-ES");
+            fechaPrestamo.toISOString().split("T")[0];
         }
       }
-
+    
       // Función para confirmar la reserva (puedes agregar la lógica que desees)
       function confirmarSolisitud() {
         alert("Reserva confirmada. ¡Gracias por utilizar nuestro servicio!");
       }
-
+    
       // Función para mostrar u ocultar los cuadros de fecha
       function toggleDateBox(show) {
         document.getElementById("fechaPrestamoContainer").style.display = show
@@ -586,7 +676,7 @@
           ? "block"
           : "none";
       }
-
+    
       // Configurar el evento para mostrar/ocultar los cuadros de fecha según el tipo de préstamo
       document
         .querySelectorAll('input[name="tipoPrestamo"]')
@@ -597,5 +687,6 @@
           });
         });
     </script>
+    
   </body>
 </html>
