@@ -219,6 +219,8 @@ const typeDefs = gql`
         getUsuarioByCorreoAndCheckPassword(correo: String!, password: String!): Usuario
         sendEmail(correo: String, codigoVerificador: Int, nombres: String): Boolean
         getNEjemplaresDisponiblesByDocumentId(documentoId: ID, cantEjemplares: Int): [Ejemplar]
+        getSolicitudPrestamoByUsuarioId(usuarioID: ID!): SolicitudPrestamo
+
     }
 
     type Mutation{
@@ -540,16 +542,12 @@ const resolvers = {
             }
         },
 
-        async sendEmail(correo, codigoVerificador, nombres){
-
-
+        async sendEmail(obj, {correo, codigoVerificador, nombres}){
             const Mailjet = require('node-mailjet');
-
             const mailjet = new Mailjet({
                 apiKey: "2c2311d2a5452193e53069707de1828f" || 'your-api-key',
                 apiSecret: "4022789f5d17acc380dc7268152888bd" || 'your-api-secret'
             });
-
 
             try {
                 const request = await mailjet.post('send', { version: 'v3.1' }).request({
@@ -561,14 +559,14 @@ const resolvers = {
                             },
                             To: [
                                 {
-                                    Email: codigoVerificador.correo,
+                                    Email: correo,
                                     Name: 'You',
                                 },
                             ],
                             Subject: 'Codigo de Confirmación',
                             TextPart: 'Confirmación MuniBook',
                             HTMLPart:
-                                `<h3>Hola ${codigoVerificador.nombres}</h3><br />Bienvenido a Munibook, para completar la creación de tu cuenta, por favor usa el codigo de abajo:<br /><h2>${codigoVerificador.codigoVerificador}</h2><br />Por favor, ingresa el codigo en la siguiente <a href="ConfirmarCodigo.html">pagina</a><br />Gracias por registrarte a Munibook!`,
+                                `<h3>Hola ${nombres}</h3><br />Bienvenido a Munibook, para completar la creación de tu cuenta, por favor usa el codigo de abajo:<br /><h2>${codigoVerificador}</h2><br />Por favor, ingresa el codigo en la siguiente <a href="ConfirmarCodigo.html">pagina</a><br />Gracias por registrarte a Munibook!`,
                         },
                     ],
                 });
@@ -585,6 +583,11 @@ const resolvers = {
                 estado: 3
             }).limit(cantEjemplares)
             return Ejemplares
+        },
+          
+        async getSolicitudPrestamoByUsuarioId(obj, {usuarioID}){
+            let solicitudPrestamo = await SolicitudPrestamo.findOne({usuario: usuarioID}).populate('prestamos');
+            return solicitudPrestamo;
         }
 
 
