@@ -228,7 +228,7 @@ const typeDefs = gql`
         addPrestamo(input: PrestamoInput): Prestamo
         updPrestamo(id: ID!, input: PrestamoInput): Response
         delPrestamo(id: ID!): Response
-        addSolicitudPrestamo(input: SolicitudPrestamoInput): Response
+        addSolicitudPrestamo(input: SolicitudPrestamoInput): SolicitudPrestamo
         updSolicitudPrestamo(id: ID!, input: SolicitudPrestamoInput): Response
         delSolicitudPrestamo(id: ID!): Response
         addDocumento(input: DocumentoInput): Response
@@ -926,15 +926,10 @@ const resolvers = {
                 estadoSolicitud: input.estadoSolicitud
             });
             await solicitudPrestamo.save();
-            return {
-                statusCode: "200",
-                body: null,
-                errorCode: "0",
-                descriptionError: ""
-            };
+            return solicitudPrestamo;
         },
         
-        async updSolicitudPrestamo(obj, {input}){
+        async updSolicitudPrestamo(obj, {id, input}){
             let ListaFinalPrestamos = []
             let ListaPrestamos = input.prestamos
             for (PrestamosObjectId of ListaPrestamos){
@@ -947,7 +942,7 @@ const resolvers = {
                 prestamos: ListaFinalPrestamos, tipoSolicitud: input.tipoSolicitud,
                 estadoSolicitud: input.estadoSolicitud});
             return {
-                sstatusCode: "200",
+                statusCode: "200",
                 body: null,
                 errorCode: "0",
                 descriptionError: ""

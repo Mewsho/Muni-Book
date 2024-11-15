@@ -22,9 +22,33 @@
     
     <script>
 
-      let isFirstAddItemToSolicitud = true
+      let listaDocumentosAgregados = []
+      let listaCantEjemplaresAgregados = []
+      const objectPrestamos = {
+        MapPrestamos: new Map()
+      }
+
+      Object.defineProperty(objectPrestamos, "setter",{
+        set: function(input) {
+          let idDocumento = input[0]
+          let Prestamo = input[1]
+
+          if (this.MapPrestamos.has(idDocumento)){
+            let list = this.MapPrestamos.get(idDocumento)
+            list.push(Prestamo)
+            this.MapPrestamos.set(idDocumento, list)
+
+          }
+          else{
+            this.MapPrestamos.set(idDocumento, [Prestamo])
+          }  
+          console.log(this.MapPrestamos)
+          let list = this.MapPrestamos.get(idDocumento)
+          updSolicitudPrestamo(list)
+        }
+      })
+
       let usuarioIdGeneral = ""
-      let listaPrestamosGeneral = [] 
       // Obtencion de cookies y cambios asociados
       async function aplicarVersionUsuario(){}
 
@@ -182,9 +206,10 @@
               collapse.insertAdjacentHTML("beforeend", strButton)
 
               $(`#${idDocumento}-addButton`).click(function(){
-                addSolicitud(idDocumento)
+                addPrestamoToSolicitud(idDocumento)
               })
             }
+            crearSolicitudInicial()
           }
         }
       }
@@ -195,24 +220,54 @@
         return result;
       }
 
-      // Poner un if si apretan el boton con un 0
-      async function addSolicitud(idDocumentoDelBoton){
-        // Conseguir cant de ejemplares de la pagina
+      async function addPrestamoToSolicitud(idDocumentoDelBoton){
         let inputNumberDocumento = document.getElementById(`${idDocumentoDelBoton}-input`)
         let cantEjemplares = parseInt(inputNumberDocumento.value, 10)
+        if (cantEjemplares == 0){
+          let prestamosAnteriores = objectPrestamos.MapPrestamos.get(idDocumentoDelBoton)
+          prestamosAnteriores.forEach((prestamo) => eliminarPrestamo(prestamo))
+          objectPrestamos.MapPrestamos.set(idDocumentoDelBoton, [])
+          return
+        }
+        if (objectPrestamos.MapPrestamos.has(idDocumentoDelBoton)){
+          let prestamosAnteriores = objectPrestamos.MapPrestamos.get(idDocumentoDelBoton)
+          prestamosAnteriores.forEach((prestamo) => eliminarPrestamo(prestamo))
+          objectPrestamos.MapPrestamos.set(idDocumentoDelBoton, [])
+        }
         let arrayEjemplares = await getNEjemplaresByDocumentId(idDocumentoDelBoton, cantEjemplares)
-        
-        if (isFirstAddItemToSolicitud){
-          addSolicitudPrestamo(idDocumentoDelBoton)
-          isFirstAddItemToSolicitud = false
-        }
-        else {
-          addPrestamosToSolicitudPrestamo(idDocumentoDelBoton)
-        }
       }
 
 
-      function addPrestamo(ejemplarParametro){
+      function eliminarPrestamo(prestamo){
+        let idPrestamo = prestamo.id
+        let queryDelPrestamo = `
+        mutation DelPrestamo($delPrestamoId: ID!) {
+          delPrestamo(id: $delPrestamoId) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryDelPrestamo,
+            variables: {
+              delPrestamoId: idPrestamo
+            }
+          }),
+          success: function(response){
+            console.log("Prestamo eliminado")
+          }
+        })
+      }
+
+      function addPrestamo(ejemplarParametro, idDocumento){
         let idEjemplar = ejemplarParametro.id
         let queryAddPrestamo = `
         mutation AddPrestamo($input: PrestamoInput) {
@@ -227,8 +282,7 @@
         `
         // Por default el prestamo sera en sala y la fecha es la actual
         let fechaActual = Date.now()
-        let fechaDevolucion = addDays(fechaActual, 7)
-        console.log("Antes ajax addPrestamo", idEjemplar)
+        let fechaDevolucion = addDays(fechaActual, 7).toISOString()
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -248,8 +302,8 @@
           }),
           success: function(response){
             let prestamo = response.data.addPrestamo
-            console.log("Response addPrestamo",response)
-            listaPrestamosGeneral.push(prestamo.id)
+            console.log(idDocumento,prestamo)
+            objectPrestamos.setter = [idDocumento, prestamo]
           }
         })
       }
@@ -266,7 +320,6 @@
           }
         }
         ` 
-        console.log(idDocumento, cantEjemplares)
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -281,56 +334,30 @@
           }),
           success: function(response){
             let Ejemplares = response.data.getNEjemplaresDisponiblesByDocumentId
-            Ejemplares.forEach(addPrestamo)
+            Ejemplares.forEach((item) => addPrestamo(item, idDocumento))
+            console.log(Ejemplares)
           }
         })
       }
 
-      function addPrestamos(){
-        let queryAddPrestamo = `
-        mutation AddPrestamo($addPrestamoInput2: PrestamoInput) {
-          addPrestamo(input: $addPrestamoInput2) {
-            statusCode
-            body
-            errorCode
-            descriptionError
-          }
+
+      async function crearSolicitudInicial(){
+        let hasSolicitudCookie = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith(`hasSolicitud=`))
+          ?.split("=")[1];
+        if (hasSolicitudCookie){
+          return
         }
-        `
-        $.ajax({
-          type: "POST",
-          url: "http://localhost:8092/graphql",
-          contentType: "application/json",
-          timeout: 15000,
-          data: JSON.stringify({
-            query: queryCantEjemplares,
-            addPrestamoInput2: {
-              tipoPrestamo: null,
-              ejemplar: null,
-              fechaPrestamo: null,
-              fechaDevolucion: null,
-              fechaDevolucionReal: null
-            }
-          }),
-          success: function(response){
-            console.log("Agregar Prestamos")
-          }
-        })
-
-      }
-
-      async function addSolicitudPrestamo(idDocumento){
-        console.log("AddSolicitud Prestamos",listaPrestamosGeneral)
         let usuarioId = usuarioIdGeneral
-        let listaPrestamos = listaPrestamosGeneral
-        console.log(listaPrestamos)
+        let listaPrestamos = []
         let queryAddSolicitudPrestamo = `
         mutation AddSolicitudPrestamo($addSolicitudPrestamoInput2: SolicitudPrestamoInput) {
           addSolicitudPrestamo(input: $addSolicitudPrestamoInput2) {
-            statusCode
-            body
-            errorCode
-            descriptionError
+            id
+            tipoSolicitud
+            estadoSolicitud
+            fechaSolicitud
           }
         }
         `
@@ -338,7 +365,6 @@
         let fechaActual = Date.now()
         let tipo = "Sala"
         let estado = 0
-        console.log()
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -352,7 +378,62 @@
                 estadoSolicitud: estado,
                 fechaSolicitud: fechaActual,
                 usuario: usuarioId,
-                prestamos: listaPrestamos
+                prestamos: []
+              }
+            }   
+          }),
+          success: function(response){
+            let ahora = new Date()
+            let tiempo = ahora.getTime()
+            let expireTime = tiempo + 900000 
+            ahora.setTime(expireTime)
+            let solicitud = response.data.addSolicitudPrestamo
+            document.cookie = "hasSolicitud="+true+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
+            document.cookie = "solicitudID="+solicitud.id+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
+          }
+        })
+      }
+
+
+      function updSolicitudPrestamo(listaPrestamos){
+        let idSolicitudCookie = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith(`solicitudID=`))
+          ?.split("=")[1];
+        let listaIDPrestamos = []
+        for (prestamo of listaPrestamos){
+          listaIDPrestamos.push(prestamo.id)
+        }
+        console.log(listaIDPrestamos)
+        let fechaActual = Date.now()
+        let tipo = "Sala"
+        let estado = 0
+        let usuarioId = usuarioIdGeneral
+        let queryupdSolicitud=`
+        mutation UpdSolicitudPrestamo($updSolicitudPrestamoId: ID!, $updSolicitudPrestamoInput2: SolicitudPrestamoInput) {
+          updSolicitudPrestamo(id: $updSolicitudPrestamoId, input: $updSolicitudPrestamoInput2) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryupdSolicitud,
+            variables: {
+              updSolicitudPrestamoId: idSolicitudCookie,
+              updSolicitudPrestamoInput2: {
+                tipoSolicitud: tipo,
+                estadoSolicitud: estado,
+                fechaSolicitud: fechaActual,
+                usuario: usuarioId,
+                prestamos: listaIDPrestamos
               }
             }   
           }),
@@ -361,9 +442,6 @@
           }
         })
       }
-
-
-      function addPrestamoToSolicitudPrestamo(){}
 
       let cantEjemplaresDisponible = 0
       let cantEjemplaresSala = 0
