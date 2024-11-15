@@ -928,7 +928,7 @@ const resolvers = {
             };
         },
         
-        async updSolicitudPrestamo(obj, {input}){
+        async updSolicitudPrestamo(obj, {id, input}){
             let ListaFinalPrestamos = []
             let ListaPrestamos = input.prestamos
             for (PrestamosObjectId of ListaPrestamos){
