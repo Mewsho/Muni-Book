@@ -218,6 +218,7 @@ const typeDefs = gql`
         getNDocumentos(numero: Int): [Documento]
         getUsuarioByCorreoAndCheckPassword(correo: String!, password: String!): Usuario
         sendEmail(correo: String, codigoVerificador: Int, nombres: String): Boolean
+        sendEmailRecordatorio(correo: String, nombres: String): Boolean
         getNEjemplaresDisponiblesByDocumentId(documentoId: ID, cantEjemplares: Int): [Ejemplar]
         getSolicitudPrestamoByUsuarioId(usuarioID: ID!): SolicitudPrestamo
 
@@ -567,6 +568,40 @@ const resolvers = {
                             TextPart: 'Confirmación MuniBook',
                             HTMLPart:
                                 `<h3>Hola ${nombres}</h3><br />Bienvenido a Munibook, para completar la creación de tu cuenta, por favor usa el codigo de abajo:<br /><h2>${codigoVerificador}</h2><br />Por favor, ingresa el codigo en la siguiente <a href="ConfirmarCodigo.html">pagina</a><br />Gracias por registrarte a Munibook!`,
+                        },
+                    ],
+                });
+                console.log(request.body);
+            } catch (err) {
+                console.error(`Error: ${err.message} - Código de estado: ${err.statusCode}`);
+            }
+        },
+
+        async sendEmailRecordatorio(obj, {correo, nombres}){
+            const Mailjet = require('node-mailjet');
+            const mailjet = new Mailjet({
+                apiKey: "2c2311d2a5452193e53069707de1828f" || 'your-api-key',
+                apiSecret: "4022789f5d17acc380dc7268152888bd" || 'your-api-secret'
+            });
+
+            try {
+                const request = await mailjet.post('send', { version: 'v3.1' }).request({
+                    Messages: [
+                        {
+                            From: {
+                                Email: 'fco.torres01@gmail.com',
+                                Name: 'Me',
+                            },
+                            To: [
+                                {
+                                    Email: correo,
+                                    Name: 'You',
+                                },
+                            ],
+                            Subject: 'Tiempo de Prestamo Agotado',
+                            TextPart: 'Retornar libro a MuniBook',
+                            HTMLPart:
+                                `<h3>Hola ${nombres}</h3><br />Tu tiempo de lectura se ha terminado, por favor retorna el libro a la biblioteca lo antes posible <br/><br/>`,
                         },
                     ],
                 });
