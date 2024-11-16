@@ -578,9 +578,11 @@
                 }" tipoDocumento="${item.tipoDocumento.tipo}">${item.autor}, ${
           item.anioSalida
         }, ${item.editorial}, ${item.tipoDocumento.tipo},</p>
-                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#${item.id}-collapse">
-                  Ver más información</button>
+                <div class="d-flex justify-content-center">
+                  <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#${item.id}-collapse">
+                    Ver más información
+                  </button>
+                </div>
                 <div class="collapse collapse-card" id="${item.id}-collapse">
                   <div class="container my-3">
                     <p class="card-text my-1">${item.edicion}a Edición</p>
