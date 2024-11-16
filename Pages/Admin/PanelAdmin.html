@@ -16,13 +16,14 @@
     ></script>
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <style>
+      /* Asi se comenta en Css*/
       h1 {
         font-family: "Times New Roman", Times, serif;
         font-size: 300%;
       }
 
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Times New Roman", Times, serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
         display: flex;
         flex-direction: column;
@@ -52,12 +53,6 @@
         margin-bottom: 10px;
       }
 
-      footer {
-        background-color: #000;
-        color: #fff;
-        padding: 20px 0;
-      }
-
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
@@ -75,13 +70,19 @@
         align-content: center;
         text-align: end;
       }
+
+      footer {
+        background-color: #000;
+        color: #fff;
+        padding: 20px 0;
+      }
     </style>
   </head>
   <body>
-    <!-- Header Section -->
+    <!-- Seccion del header - la barrita que aparece arriba del site  -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="/Pages/index.html">
           <svg
             width="30"
             height="30"
@@ -95,6 +96,7 @@
           </svg>
         </a>
 
+        <!-- Boton desplegable que se activa con vista mobil -->
         <button
           class="navbar-toggler"
           type="button"
@@ -103,6 +105,7 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
@@ -156,29 +159,40 @@
           <div class="col-md-3 mb-3">
             <h5>Muni Book</h5>
             <ul class="list-unstyled">
-              <li>Tu librería de confianza</li>
-              <li>Síguenos en redes!</li>
+              <li>Tu libreria de confianza</li>
+              <li>Siguenos en redes!</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li>Catálogo</li>
-              <li>Inicia Sesión</li>
+              <li><a href="catalogo.html"> Catalogo </a></li>
+              <a onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
               <li>Sobre nosotros</li>
-              <li>Contáctanos</li>
-              <li>Atención al cliente</li>
+              <li>Contactanos</li>
+              <li>Atencion al cliente</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
-            <h5>Síguenos</h5>
+            <h5>Siguenos</h5>
             <div class="d-flex">
-              <!-- Social media icons here -->
+              <a href="#" class="text-light me-2">
+                <i class="fa-brands fa-instagram"></i>
+              </a>
+              <a href="#" class="text-light me-2">
+                <i class="fa-brands fa-facebook"></i>
+              </a>
+              <a href="#" class="text-light me-2">
+                <i class="fa-brands fa-x-twitter"></i>
+              </a>
+              <a href="#" class="text-light">
+                <i class="fa-brands fa-youtube"></i>
+              </a>
             </div>
           </div>
         </div>

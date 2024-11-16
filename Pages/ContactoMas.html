@@ -29,7 +29,6 @@
 
     <style>
       h1 {
-        letter-spacing: -0.2rem;
       }
 
       p {
@@ -48,7 +47,7 @@
         padding: 4rem 0;
       }
       .display-4 {
-        font-size: 1000%;
+        font-size: 4em;
         font-family: "Times New Roman", Times, serif;
       }
       .nav-link {
@@ -94,78 +93,6 @@
     </style>
   </head>
 
-  <script>
-    console.log(document.cookie);
-
-    function aplicarVersionUsuario() {}
-
-    function aplicarVersionBibliotecario() {
-      console.log();
-    }
-
-    function aplicarVersionNotUsuario() {}
-
-    function aplicarVersionAdministrador() {}
-
-    function loginButton() {
-      let tipoCookie = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith(`tipo=`))
-        ?.split("=")[1];
-      if (tipoCookie) {
-        if (tipoCookie == 0) {
-          window.location.href = "vistausuario.html";
-        }
-        if (tipoCookie == 1) {
-          window.location.href = "vistabibliotecario.html";
-        }
-        if (tipoCookie == 2) {
-          window.location.href = "./Admin/PanelAdmin.html";
-        }
-      } else {
-        window.location.href = "login.html";
-      }
-    }
-
-    // Revisa la exitencia de la cookie, obteniendo el tipo y aplicando los cambios respectivos
-    function checkCookieExistence(name) {
-      if (
-        document.cookie
-          .split(";")
-          .some((item) => item.trim().startsWith(`${name}=`))
-      ) {
-        let tipoCookie = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith(`tipo=`))
-          ?.split("=")[1];
-
-        switch (tipoCookie) {
-          case 0:
-            aplicarVersionUsuario();
-            console.log("Usuario");
-            break;
-          case 1:
-            aplicarVersionBibliotecario();
-            console.log("Bibliotecario");
-            break;
-          case 2:
-            aplicarVersionAdministrador();
-            console.log("Administrador");
-            break;
-          /*  
-          default:
-            aplicarVersionNotUsuario()
-            console.log(tipoCookie)
-            console.log("NotUsuario")
-            */
-        }
-      } else {
-        aplicarVersionNotUsuario();
-        console.log("NotUsuario");
-      }
-    }
-  </script>
-
   <!-- El cuelpo del diablo -->
 
   <body onload="checkCookieExistence('tipo')">
@@ -201,9 +128,7 @@
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#contact">Contacto</a>
-            </li>
+
             <!-- "d.none" para oculta como "nav-item d-none"-->
             <li class="nav-item">
               <a class="nav-link" href="/Pages/Admin/PanelAdmin.html">admin</a>
@@ -231,12 +156,44 @@
 
     <section class="hero-section">
       <div class="container text-center">
-        <h1 class="display-4">Muni Book</h1>
+        <h1 class="display-4">Sobre Nosotros</h1>
+        <p class="textobajotitulo">Mas de 12 años junto a ti</p>
 
-        <p class="textobajotitulo">Librería Municipal</p>
-        <div class="mt-4">
-          <a onclick="loginButton()" class="btn btn-dark">Acceder</a>
-        </div>
+        <p class="textobajotitulo">
+          La historia de la Biblioteca Municipal de Santiago de Chile es digna
+          de un buen cuento de sobremesa. Cuenta la leyenda que allá por los
+          años ‘40, un bibliotecario llamado don Manuel, más conocido como "el
+          Manu", era el alma de esa casona antigua y algo polvorienta donde
+          funcionaba la biblioteca. El Manu era un caballero de bigote grueso,
+          gafas redondas y siempre llevaba un chaleco de lana, a pesar de que en
+          verano se cocinaba a fuego lento entre los libros. A Manu le decían
+          "el tesoro del cerro", porque conocía cada rincón y cada libro de la
+          biblioteca como la palma de su mano. Sabía a quién le gustaba leer
+          historias de detectives, a los cabros que venían a leer aventuras de
+          vaqueros y, por supuesto, a los universitarios que siempre andaban
+          buscando algún dato raro para sus tesis. Manu tenía fama de adivino;
+          bastaba con que alguien le dijera "ando buscando algo...", y él ya
+          sabía exactamente qué libro recomendar. Pero la magia verdadera,
+          decían, venía en las noches de invierno. Cuando las luces de la
+          biblioteca se apagaban y la ciudad se arropaba en silencio, la
+          biblioteca no quedaba tan vacía como parecía. Era entonces cuando Manu
+          se encerraba entre los estantes, sacaba su linterna, y con una sonrisa
+          pícara, abría un libro y comenzaba a leer en voz baja. Dicen que las
+          palabras flotaban por los pasillos, y que los personajes de los
+          libros, sin decir "agua va", se escabullían de las páginas y rondaban
+          por la biblioteca. Alguien juraba haber visto al Quijote pasearse con
+          lanza en mano, y otros decían que hasta Gabriela Mistral se aparecía
+          en alguna que otra noche, tomando apuntes en un rincón. La Biblioteca
+          Municipal se convirtió en un lugar donde la realidad y la ficción se
+          entremezclaban. Los lectores de Santiago, chicos y grandes, pasaban
+          las tardes esperando cruzarse con algún fantasma literario y siempre
+          pedían “algo bueno” cuando Manu les recomendaba un libro. Cuando Manu
+          se retiró, su espíritu quedó tan aferrado a esos pasillos como el
+          polvo a los libros antiguos. Hoy en día, cada vez que cae la noche en
+          la biblioteca, algún libro cae solo del estante o las páginas se pasan
+          sin ayuda de ninguna mano. Los más valientes juran que, si escuchas
+          bien, puedes oír una voz susurrando pasajes de una historia antigua...
+        </p>
       </div>
     </section>
 
@@ -253,28 +210,28 @@
           <div class="carousel-inner">
             <div class="carousel-item active">
               <img
-                src="/Assets/Images/fotoindex1.jpg"
+                src="/Assets/Images/fotocontacto.jpg"
                 class="d-block w-100 img-fluid carrousel-img"
                 alt="Interior de la librería"
               />
             </div>
             <div class="carousel-item">
               <img
-                src="/Assets/Images/fotoindex2.jpeg"
+                src="/Assets/Images/fotocontacto1.jpg"
                 class="d-block w-100 img-fluid carrousel-img"
                 alt="Estanterías de libros"
               />
             </div>
             <div class="carousel-item">
               <img
-                src="/Assets/Images/fotoindex3.jpeg"
+                src="/Assets/Images/fotocontacto2.jpg"
                 class="d-block w-100 img-fluid carrousel-img"
                 alt="Estanterías de libros"
               />
             </div>
             <div class="carousel-item">
               <img
-                src="/Assets/Images/fotoindex4.jpeg"
+                src="/Assets/Images/fotocontacto3.jpg"
                 class="d-block w-100 img-fluid carrousel-img"
                 alt="Estanterías de libros"
               />
@@ -306,28 +263,28 @@
       <div class="row d-none d-md-flex">
         <div class="col-md-6">
           <img
-            src="/Assets/Images/fotoindex1.jpg"
+            src="/Assets/Images/fotocontacto.jpg"
             alt="Interior de la librería"
             class="img-fluid rounded w-100 mb-2"
           />
         </div>
         <div class="col-md-6">
           <img
-            src="/Assets/Images/fotoindex2.jpeg"
+            src="/Assets/Images/fotocontacto1.jpg"
             alt="Estanterías de libros"
             class="img-fluid rounded w-100 mb-2"
           />
         </div>
         <div class="col-md-6">
           <img
-            src="/Assets/Images/fotoindex3.jpeg"
+            src="/Assets/Images/fotocontacto2.jpg"
             alt="Estanterías de libros"
             class="img-fluid rounded w-100 mb-2"
           />
         </div>
         <div class="col-md-6">
           <img
-            src="/Assets/Images/fotoindex4.jpeg"
+            src="/Assets/Images/fotocontacto3.jpg"
             alt="Estanterías de libros"
             class="img-fluid rounded w-100 mb-2"
           />
@@ -335,31 +292,25 @@
       </div>
     </section>
 
-    <!-- Seccion de servicios una vaina loca que ....-->
-    <section id="servicios" class="features-section bg-light">
-      <div class="container">
-        <h2 class="text-center mb-5">Servicios</h2>
-        <div class="row justify-content-center">
-          <div
-            class="col-md-6 mb-4 d-flex flex-column align-items-center text-center"
-          >
-            <div class="d-flex align-items-center mb-3">
-              <i class="fa-sharp fa-solid fa-book"></i>
-              <h5 class="ms-2 mb-0">Servicios</h5>
-            </div>
-            <p>Prestamo de libros</p>
-          </div>
-          <div
-            class="col-md-6 mb-4 d-flex flex-column align-items-center text-center"
-          >
-            <div class="d-flex align-items-center mb-3">
-              <i class="fa-solid fa-question"></i>
-              <h5 class="ms-2 mb-0">Preguntas Frecuentes</h5>
-            </div>
-            <p>¿Cuántos libros puedo llevarme?</p>
-          </div>
-        </div>
-      </div>
+    <section class="hero-section">
+      <div class="container text-center">
+        <h1 class="display-4">Contacto</h1>
+        <p class="textobajotitulo">
+          Siguenos en nuestras redes!
+
+          <a href="#" class="text-dark me-2">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="#" class="text-dark me-2">
+            <i class="fa-brands fa-facebook"></i>
+          </a>
+          <a href="#" class="text-dark me-2">
+            <i class="fa-brands fa-x-twitter"></i>
+          </a>
+        </p>
+        <p> Escribenos a nuestro correo Munibook@munibook.cl</p>
+        <p> Numero de contacto: 9 7479 4555 </p>
+
     </section>
 
     <!-- Footer begins here remember to keep your house tidy an you too-->
@@ -392,7 +343,7 @@
           <div class="col-md-3 mb-3">
             <h5>Siguenos</h5>
             <div class="d-flex">
-              <a href="#" class="text-light me-2">
+              <a href="https://www.instagram.com/muniecentral/" class="text-light me-2">
                 <i class="fa-brands fa-instagram"></i>
               </a>
               <a href="#" class="text-light me-2">
