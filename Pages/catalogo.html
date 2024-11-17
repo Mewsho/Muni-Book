@@ -27,6 +27,7 @@
     <title>MuniBook</title>
 
     <script>
+
       let listaDocumentosAgregados = [];
       let listaCantEjemplaresAgregados = [];
       const objectPrestamos = {
@@ -55,6 +56,36 @@
       // Obtencion de cookies y cambios asociados
       async function aplicarVersionUsuario() {}
 
+      async function ModalGenCheckBox(){
+        let buttonContainer = document.getElementById("ModalCheckboxCategoria");
+        let strButtons = `
+        <li>
+        <label class="dropdown-item">
+          <input type="checkbox" value="option1"> Opción 1
+        </label>
+        </li>
+      <li>
+        <label class="dropdown-item">
+          <input type="checkbox" value="option2"> Opción 2
+        </label>
+      </li>
+      <li>
+        <label class="dropdown-item">
+          <input type="checkbox" value="option3"> Opción 3
+        </label>
+      </li>
+      <li>
+        <label class="dropdown-item">
+          <input type="checkbox" value="option4"> Opción 4
+        </label>
+      </li>
+        `;
+        buttonContainer.innerHTML = strButtons;
+      }
+
+
+      
+
       async function aplicarVersionBibliotecario() {
         let buttonContainer = document.getElementById("contaniner-bb-buttons");
         let strButtons = `
@@ -71,6 +102,60 @@
         `;
         buttonContainer.innerHTML = strButtons;
       }
+
+      function AddDocumento() {
+        let ModalAnioSalida = document.getElementById("ModalAnioSalida").value;
+        let ModalAutor = document.getElementById("ModalAutor").value;
+        let ModalCategoriaDocumento = document.getElementById("ModalCategoriaDocumento").value;
+        let ModalCodigo = document.getElementById("ModalCodigo").value;
+        let ModalEdicion = document.getElementById("ModalEdicion").value;
+        let ModalEditorial = document.getElementById("ModalEditorial").value;
+        //let ModalTipoDocumento = document.getElementById("ModalTipoDocumento").value;
+        let ModalTitulo = document.getElementById("ModalTitulo").value;
+        let Modal = document.getElementById("Agregardoc");
+        let tipo = document.getElementById("ModalformSelectTipo").value;
+        console.log(tipo)
+
+        let queryAddDocumento = `
+          mutation AddDocumento($input: DocumentoInput) {
+          addDocumento(input: $input) {
+          body
+          descriptionError
+          errorCode
+          statusCode
+          }
+        }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryAddDocumento,
+            variables: {
+              input: {
+                  anioSalida: ModalAnioSalida,
+                  autor: ModalAutor,
+                  categoriaDocumento: ModalCategoriaDocumento,
+                  codigo: ModalCodigo,
+                  edicion: ModalEdicion,
+                  editorial: ModalEditorial,
+                  tipoDocumento: tipo,
+                  titulo: ModalTitulo
+              },
+            },
+          }),
+          success: function (response) {
+            console.log("Response:", response);
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+
+
 
       async function aplicarVersionNotUsuario() {}
 
@@ -140,7 +225,7 @@
           '<option value="' + item.id + '">' + item.categoria + "</option>"
         );
       }
-
+      
       // Funciones para optener la lista de tipo y categoria
       async function cargarTipo() {
         let queryTipo = `
@@ -163,6 +248,9 @@
             response.data.getTipoDocumentos.forEach(optionTipo);
             document.getElementById("formSelectTipo").innerHTML =
               optionFormSelectTipo.join("");
+
+            document.getElementById("ModalformSelectTipo").innerHTML =
+            optionFormSelectTipo.join("");  
           },
         });
       }
@@ -717,8 +805,11 @@
           },
         });
       }
+    
     </script>
+    
     <!-- Styles como los del css pero no-->
+    
     <style>
 
       .enlarge-modal{
@@ -886,14 +977,15 @@
         <!-- Ejemplo de tarjeta -->
       </div>
     
-    <!-- Modal Agregar Ejemplo -->
-    <div
-      class="modal fade"
-      id="Agregardoc"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
+    <!-- Modal Agregar Documentos -->
+      <div
+        class="modal fade"
+        id="Agregardoc"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+
       <div class="modal-dialog modal-dialog-centered modal">
         <div class="modal-content">
           <div class="modal-header">
@@ -908,47 +1000,81 @@
           <div class="modal-body">Informacion
             <form>
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Titulo</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <label for="exampleInputEmail1" class="form-label">AnioSalida</label>
+                <input type="email" class="form-control" id="ModalAnioSalida" aria-describedby="emailHelp">
               </div>
               <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Edicion</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
+                <label for="exampleInputEmail1" class="form-label">Autor</label>
+                <input type="email" class="form-control" id="ModalAutor" aria-describedby="emailHelp">
               </div>
               <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Disponibles</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
-              </div>
-              <div class="mb-3">
-                <label for="formFile" class="form-label">Default file input example</label>
-                <input class="form-control" type="file" id="formFile">
-              </div>
-              <select class="form-select" aria-label="Default select example">
-                <option selected>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </select>
-
-              <label for="exampleDataList" class="form-label">Datalist example</label>
-<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
-<datalist id="datalistOptions">
-  <option value="San Francisco">
-  <option value="New York">
-  <option value="Seattle">
-  <option value="Los Angeles">
-  <option value="Chicago">
-</datalist>
-                      <!-- Botones -->
-                      <div class="d-flex justify-content-between">
-                        <button type="button" class="btn btn-outline-danger">Cancelar</button>
-                        <button type="button" class="btn btn-success">Agregar</button>
-                      </div>
-                    </div>
+                <label for="exampleInputEmail1" class="form-label">Categoria Documento</label>
+                <select id="ModalCategoriaDocumento" class="form-select">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Default checkbox
+                    </label>
                   </div>
-                </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Default checkbox
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Default checkbox
+                    </label>
+                  </div>
+                </select>
+
+
+                <div class="dropdown">
+                  <button class="btn btn-primary-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" onclick="ModalGenCheckBox()">
+                      Select an option
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="row" id="ModalCheckboxCategoria">
+                      <li>
+                          
+              </div>
+
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Codigo</label>
+                <input type="email" class="form-control" id="ModalCodigo" aria-describedby="emailHelp">
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Edicion</label>
+                <input type="email" class="form-control" id="ModalEdicion" aria-describedby="emailHelp">
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Editorial</label>
+                <input type="email" class="form-control" id="ModalEditorial" aria-describedby="emailHelp">
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Tipo Documento</label>
+                <select id="ModalformSelectTipo" class="form-select"></select>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Titulo</label>
+                <input type="email" class="form-control" id="ModalTitulo" aria-describedby="emailHelp">
+              </div>
+              
+              
+              <!-- Modal AddDocumento Final -->
+              
+              <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-danger">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="AddDocumento()">Agregar</button>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
           
           
           <div class="modal-footer">
