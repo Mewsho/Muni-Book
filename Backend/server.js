@@ -61,7 +61,7 @@ const typeDefs = gql`
     }
 
     input PrestamoInput{
-        tipoPrestamo: String!
+        tipoPrestamo: String
         ejemplar: String
         fechaPrestamo: GraphQLDateTime
         fechaDevolucion: GraphQLDateTime
@@ -79,10 +79,10 @@ const typeDefs = gql`
     }
 
     input EjemplarInput{
-        codigo: Int!
-        estado: Int!
-        estadoTexto: String!
-        ubicacion: String!
+        codigo: Int
+        estado: Int
+        estadoTexto: String
+        ubicacion: String
         documento: String
     }
 
@@ -183,9 +183,9 @@ const typeDefs = gql`
         getSolicitudPrestamoById(id: ID!): SolicitudPrestamo
         getSolicitudPrestamoByIdUsuario(id: ID!): SolicitudPrestamo
         getSolicitudPrestamosPrestamos: [SolicitudPrestamo]
-        getSolicitudPrestamoByIdPrestamos: SolicitudPrestamo
+        getSolicitudPrestamoByIdPrestamos(id: ID!): SolicitudPrestamo
         getSolicitudPrestamosUsuarioPrestamos: [SolicitudPrestamo]
-        getSolicitudPrestamoByIdUsuarioPrestamos: SolicitudPrestamo
+        getSolicitudPrestamoByIdUsuarioPrestamos(id: ID!): SolicitudPrestamo
         getDocumentos: [Documento]
         getDocumentosTipo: [Documento]
         getDocumentosCategoria: [Documento]
@@ -220,7 +220,7 @@ const typeDefs = gql`
         sendEmail(correo: String, codigoVerificador: Int, nombres: String): Boolean
         getNEjemplaresDisponiblesByDocumentId(documentoId: ID, cantEjemplares: Int): [Ejemplar]
         getSolicitudPrestamoByUsuarioId(usuarioID: ID!): SolicitudPrestamo
-
+        getPrestamoByEjemplarId(ejemplarID: ID!): Prestamo
     }
 
     type Mutation{
@@ -588,9 +588,12 @@ const resolvers = {
         async getSolicitudPrestamoByUsuarioId(obj, {usuarioID}){
             let solicitudPrestamo = await SolicitudPrestamo.findOne({usuario: usuarioID}).populate('prestamos');
             return solicitudPrestamo;
-        }
+        },
 
-
+        async getPrestamoByEjemplarId(obj, {ejemplarID}){
+            let prestamo = await Prestamo.findOne({ejemplar: ejemplarID}).populate('ejemplar')
+            return prestamo;
+        },
 
     },
     
@@ -630,8 +633,25 @@ const resolvers = {
         },
 
         async updPrestamo(obj, {id, input}){
-            let ejemplarBus = await Ejemplar.findById(input.ejemplar);
-            let prestamo = await Prestamo.findByIdAndUpdate(id, {tipoPrestamo: input.tipoPrestamo, ejemplar: ejemplarBus._id, fechaPrestamo: input.fechaPrestamo, fechaDevolucion: input.fechaDevolucion, fechaDevolucionReal: input.fechaDevolucionReal});
+            let ejemplarBus = await Ejemplar.findOne({_id: input.ejemplar});
+            let inputPrestamo
+            if (ejemplarBus == null){
+                inputPrestamo = {
+                    tipoPrestamo: input.tipoPrestamo, 
+                    fechaPrestamo: input.fechaPrestamo, 
+                    fechaDevolucion: input.fechaDevolucion, 
+                    fechaDevolucionReal: input.fechaDevolucionReal
+                }
+            }
+            else{
+                inputPrestamo = {
+                    tipoPrestamo: input.tipoPrestamo, 
+                    ejemplar: ejemplarBus._id, fechaPrestamo: input.fechaPrestamo, 
+                    fechaDevolucion: input.fechaDevolucion, 
+                    fechaDevolucionReal: input.fechaDevolucionReal
+                }
+            }
+            let prestamo = await Prestamo.findByIdAndUpdate(id, inputPrestamo);
             return {
                 statusCode: "200",
                 body: null,
@@ -792,13 +812,20 @@ const resolvers = {
         },
 
         async updEjemplar(obj, {id, input}){
-            let documentoBus = await Documento.findById(input.documento)
+            let documentoBus = await Documento.findOne({_id: input.documento})
+            let inputEjemplar
             if (documentoBus == null){
-                return {
-                    statusCode: "400",
-                    body: null,
-                    errorCode: "0",
-                    descriptionError: "Id Erroneo"
+                inputEjemplar = {
+                    estado: input.estado, 
+                    ubicacion: input.ubicacion, estadoTexto: input.estadoTexto, 
+                    codigo: input.codigo
+                }
+            }
+            else{
+                inputEjemplar = {
+                    documento: documentoBus._id, estado: input.estado, 
+                    ubicacion: input.ubicacion, estadoTexto: input.estadoTexto, 
+                    codigo: input.codigo
                 }
             }
             let check = await checkEjemplares(input)
@@ -810,10 +837,9 @@ const resolvers = {
                     descriptionError: `${check[1]} no valido`
                 }
             }
-            let ejemplar = await Ejemplar.findByIdAndUpdate(id, {
-                documento: documentoBus._id, estado: input.estado, 
-                ubicacion: input.ubicacion, estadoTexto: input.estadoTexto, codigo: input.codigo
-            })
+            let ejemplar = await Ejemplar.findByIdAndUpdate(id, 
+                inputEjemplar
+            )
             return {
                 statusCode: "200",
                 body: null,

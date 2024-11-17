@@ -22,6 +22,225 @@
       referrerpolicy="no-referrer"
     />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+
+      // Tener el upd de las solicitudes de prestamo cuando se aprete el boton de confirmar
+
+      let SolicitudesPrestamos
+      async function cargarSolicitudesPrestamo(){
+        let queryGetSolicitudesPrestamo = `
+        query GetSolicitudPrestamosUsuarioPrestamos {
+          getSolicitudPrestamosUsuarioPrestamos {
+            id
+            tipoSolicitud
+            estadoSolicitud
+            fechaSolicitud
+            usuario {
+              id
+              nombres
+              apellidos
+              fechaSancion
+              rut
+            }
+            prestamos {
+              id
+              tipoPrestamo
+              fechaPrestamo
+              fechaDevolucion
+              fechaDevolucionReal
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryGetSolicitudesPrestamo
+          }),
+          success: function(response){
+            let solicitudes = response.data.getSolicitudPrestamosUsuarioPrestamos
+            solicitudes.forEach((solicitud) => trtdSolicitud(solicitud))
+            $(".infoButton").click(function(){
+              let idSolicitud = $(this).attr("solicitud")
+              getInfoSolicitudPrestamos(idSolicitud)
+            })
+          }
+        })
+      }
+
+
+      async function trtdSolicitud(solicitud){
+        let estado = solicitud.estado
+        let idSolicitud = solicitud.id
+        let nombreUsuario = solicitud.usuario.nombres + " " + solicitud.usuario.apellidos
+        let tipoS = solicitud.tipoSolicitud
+        let fechaS = new Date(solicitud.fechaSolicitud)
+        fechaS = fechaS.toLocaleString()
+        if (estado == 1){
+          return
+        }
+
+        let strSolicitud = `
+        <tr>
+          <!-- Casilla de verificación individual -->
+          <td>
+            <input type="checkbox" class="form-check-input select-request"/>
+          </td>
+          <!-- id -->
+          <td>${idSolicitud}</td>
+          <!-- usuario -->
+          <td>${nombreUsuario}</td>
+          <!-- fechaSolicitud -->
+          <td>${fechaS}</td>
+          <!-- tipoSolicitud -->
+          <td>${tipoS}</td>
+          <!-- Botón Info para abrir el modal de más información (solo muestra los libros) -->
+          <td class="btn-actions">
+            <button type="button" class="btn btn-info infoButton" id="${idSolicitud}-boton"
+              solicitud="${idSolicitud}"
+            >
+              Info
+            </button>
+          </td>
+        </tr>
+        `
+
+        let tabla = document.getElementById("tableBody")
+
+        tabla.insertAdjacentHTML("beforeend",strSolicitud)
+      }
+
+
+      async function getInfoSolicitudPrestamos(idSolicitud){
+        const modalBody = document.getElementById("modalTableBody");
+        modalBody.innerHTML= ""
+        let queryGetSolicitudPrestamoByIdPrestamos = `
+          query GetSolicitudPrestamoByIdPrestamos($getSolicitudPrestamoByIdPrestamosId: ID!) {
+            getSolicitudPrestamoByIdPrestamos(id: $getSolicitudPrestamoByIdPrestamosId) {
+              id
+              tipoSolicitud
+              estadoSolicitud
+              fechaSolicitud
+              prestamos {
+                id
+                tipoPrestamo
+                fechaPrestamo
+                fechaDevolucion
+                fechaDevolucionReal
+              }
+            }
+          }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryGetSolicitudPrestamoByIdPrestamos,
+            variables : {
+              getSolicitudPrestamoByIdPrestamosId: idSolicitud
+            }
+          }),
+          success: function(response){
+            console.log(response)
+            let prestamos = response.data.getSolicitudPrestamoByIdPrestamos.prestamos
+            prestamos.forEach((prestamo) => getEjemplarInfo(prestamo))
+          }
+        })
+      }
+
+
+      async function getEjemplarInfo(prestamo){
+        let id = prestamo.id
+        let tipoPrestamo = prestamo.tipo
+        let queryPrestamoEjemplar = `
+        query GetPrestamoByIdEjemplar($getPrestamoByIdEjemplarId: ID!) {
+          getPrestamoByIdEjemplar(id: $getPrestamoByIdEjemplarId) {
+            id
+            tipoPrestamo
+            ejemplar {
+              id
+              ubicacion
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryPrestamoEjemplar,
+            variables : {
+              getPrestamoByIdEjemplarId: id
+            }
+          }),
+          success: function(response){
+            let ejemplar = response.data.getPrestamoByIdEjemplar.ejemplar
+            getInfoEjemplar(ejemplar, tipoPrestamo)
+            $('#infoModal').modal('toggle')
+          }
+        })
+      }
+
+
+      async function getInfoEjemplar(ejemplar, tipo){
+        let id = ejemplar.id
+        console.log("id", ejemplar)
+        let queryEjemplar = `
+        query GetEjemplarByIdDocumento($getEjemplarByIdDocumentoId2: ID!) {
+          getEjemplarByIdDocumento(id: $getEjemplarByIdDocumentoId2) {
+            id
+            codigo
+            estado
+            estadoTexto
+            ubicacion
+            documento {
+              titulo
+              autor
+              id
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryEjemplar,
+            variables : {
+              getEjemplarByIdDocumentoId2: id
+            }
+          }),
+          success: function(response){
+            let ejemplar = response.data.getEjemplarByIdDocumento
+            let titulo = ejemplar.documento.titulo
+            let autor = ejemplar.documento.autor
+            const modalBody = document.getElementById("modalTableBody");
+            let strModalRow = `
+            <tr>
+              <td>${ejemplar.id}</td>
+              <td>${ejemplar.codigo}</td>
+              <td>${titulo}</td>
+              <td>${autor}</td>
+            </tr>
+            `
+            modalBody.insertAdjacentHTML("beforeend",strModalRow)
+          }
+        })
+      }
+
+
+
+    </script>
     <style>
       h1 {
         font-family: "Times New Roman", Times, serif;
@@ -111,7 +330,7 @@
       }
     </style>
   </head>
-  <body>
+  <body onload="cargarSolicitudesPrestamo()">
     <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
@@ -172,69 +391,12 @@
               <th>ID Solicitud</th>
               <th>Nombre de Usuario</th>
               <th>Fecha Solicitada</th>
-              <th>Fecha de Entrega</th>
-              <th>inf</th>
+              <th>Tipo Solicitud</th>
+              <th>Ver Más</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <!-- Casilla de verificación individual -->
-              <td>
-                <input
-                  type="checkbox"
-                  class="form-check-input select-request"
-                />
-              </td>
-              <!-- id -->
-              <td>1</td>
-              <!-- usuario -->
-              <td>Juan Pérez</td>
-              <!-- fechaSolicitud -->
-              <td>2024-10-01</td>
-              <!-- tipoSolicitud -->
-              <td>Sala</td>
-              <!-- Botón Info para abrir el modal de más información (solo muestra los libros) -->
-              <td class="btn-actions">
-                <button
-                  type="button"
-                  class="btn btn-info"
-                  onclick="cargarInfoSolicitud(1)"
-                  data-bs-toggle="modal"
-                  data-bs-target="#infoModal"
-                >
-                  Info
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <!-- Casilla de verificación individual -->
-              <td>
-                <input
-                  type="checkbox"
-                  class="form-check-input select-request"
-                />
-              </td>
-              <!-- id -->
-              <td>2</td>
-              <!-- usuario -->
-              <td>María López</td>
-              <!-- fechaSolicitud -->
-              <td>2024-10-05</td>
-              <!-- tipoSolicitud -->
-              <td>Domicilio</td>
-              <!-- Botón Info para abrir el modal de más información -->
-              <td class="btn-actions">
-                <button
-                  type="button"
-                  class="btn btn-info"
-                  onclick="cargarInfoSolicitud(2)"
-                  data-bs-toggle="modal"
-                  data-bs-target="#infoModal"
-                >
-                  Info
-                </button>
-              </td>
-            </tr>
+          <tbody id="tableBody">
+            
           </tbody>
         </table>
 
@@ -285,7 +447,17 @@
             ></button>
           </div>
           <div class="modal-body">
-            <!-- no borrar esta seccion donde cargan los libros -->
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Codigo</th>
+                  <th>Nombre del Libro</th>
+                  <th>Autor</th>
+                </tr>
+              </thead>
+              <tbody id="modalTableBody">
+              </tbody>
           </div>
           <div class="modal-footer">
             <button
@@ -456,61 +628,6 @@
         }, 5000); // 5000 milisegundos = 5 segundos
       }
 
-      // cargar informacion de los libros del boton "info"
-      function cargarInfoSolicitud(id) {
-        const modalBody = document.querySelector("#infoModal .modal-body");
-        let librosHTML = "";
-
-        if (id === 1) {
-          librosHTML = `
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Nombre del Libro</th>
-              <th>Tipo de Préstamo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>El Quijote</td>
-              <td>Sala</td>
-            </tr>
-            <tr>
-              <td>Cien Años de Soledad</td>
-              <td>Sala</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-        } else if (id === 2) {
-          librosHTML = `
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Nombre del Libro</th>
-              <th>Tipo de Préstamo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Le Parfum</td>
-              <td>Domicilio</td>
-            </tr>
-            <tr>
-              <td>Juan Salvador Gaviota</td>
-              <td>Domicilio</td>
-            </tr>
-            <tr>
-              <td>Silabario Hispanoamericano</td>
-              <td>Domicilio</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-        }
-
-        modalBody.innerHTML = librosHTML;
-      }
     </script>
   </body>
 </html>
