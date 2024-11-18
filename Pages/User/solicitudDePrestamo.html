@@ -144,21 +144,21 @@
           }          
         }
         
-        if (valor == "sala"){
+        if (valor == "Sala"){
           fechaPrestamo = new Date()
           fechaDevolucion = new Date()
           fechaDevolucion.setHours(fechaDevolucion.getHours() + 3);
            
         }
 
-        if (valor == "domicilio"){
+        if (valor == "Domicilio"){
           fechaPrestamo = new Date()
           fechaDevolucion = new Date()
           fechaDevolucion.setDate(fechaDevolucion.getDate() + 14);
 
         }
 
-        if (valor == "reserve"){
+        if (valor == "Reserva"){
            fechaPrestamo = new Date(document.getElementById("fechaPrestamo").value);
            fechaDevolucion = new Date(document.getElementById("fechaDevolucion").value);
         }
@@ -423,7 +423,7 @@
                   type="radio"
                   name="tipoPrestamo"
                   id="prestamoSala"
-                  value="sala"
+                  value="Sala"
                 />
                 <label class="form-check-label" for="prestamoSala">
                   Prestamo en Sala
@@ -435,7 +435,7 @@
                   type="radio"
                   name="tipoPrestamo"
                   id="prestamoDomicilio"
-                  value="domicilio"
+                  value="Domicilio"
                 />
                 <label class="form-check-label" for="prestamoDomicilio">
                   Prestamo a Domicilio
@@ -447,7 +447,7 @@
                   type="radio"
                   name="tipoPrestamo"
                   id="reserve"
-                  value="reserve"
+                  value="Reserva"
                   onclick="toggleDateBox(true)"
                 />
                 <label class="form-check-label" for="reserve">Reserva</label>
@@ -621,7 +621,7 @@
         .forEach((radio) => {
           radio.addEventListener("change", function () {
             // Mostrar las fechas solo si el valor seleccionado es "reserve"
-            toggleDateBox(this.value === "reserve");
+            toggleDateBox(this.value === "Reserva");
           });
         });
     </script>
