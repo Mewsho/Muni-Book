@@ -743,9 +743,9 @@
 
   <!-- El cuelpo del diablo -->
 <body onload="cargarTipoCategoriasDocumentosAndCookie()">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar-catalogo">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      <a class="navbar-brand" href="index.html">
+      <a class="navbar-brand" href="/Pages/index.html">
         <svg
           width="30"
           height="30"
@@ -758,7 +758,7 @@
           <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
         </svg>
       </a>
-<!-- Botones del navbar-->
+      <!-- Botones del navbar-->
       <button
         class="navbar-toggler"
         type="button"
@@ -769,27 +769,32 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-         
-         
-          <li class="nav-item">
-            <a class="nav-link" href="#contact">Contacto</a>
-          </li>
-
           <li class="nav-item">
             <a class="nav-link" href="catalogo.html">Catalogo</a>
           </li>
-          
           <li class="nav-item">
             <a class="nav-link" href="#servicios">Servicios</a>
           </li>
-          
           <li class="nav-item">
             <a class="nav-link" href="#contact">Contacto</a>
+          </li>
+          <!-- "d.none" para oculta como "nav-item d-none"-->
+          <li class="nav-item">
+            <a class="nav-link" href="/Pages/Admin/PanelAdmin.html">Admin</a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="/Pages/Bibliotecario/panelbibliotecario.html"
+              >Bibliotecario</a
+            >
           </li>
         </ul>
       </div>
     </div>
   </nav>
+  
   <div class="container my-5">
     <h1 class="text-center mb-5">Catálogo de Productos</h1>
 
