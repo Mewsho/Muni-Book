@@ -892,8 +892,8 @@
       }
 
       function eliminarEjemplar() {
-        let codigoEje = document.getElementById("ModalejemplarCode").value;
-        console.log(codigoEje)
+        let codigo = document.getElementById("ModalejemplarCode").value;
+        console.log(codigo)
         let querySignIn = `
         mutation DelEjemplar($delEjemplarId: ID!) {
           delEjemplar(id: $delEjemplarId) {
@@ -912,14 +912,14 @@
           data: JSON.stringify({
             query: querySignIn,
             variables: {            
-              delEjemplarId: codigoEje
+                delEjemplarId: codigo
                 },
           }),
           success: function (response) {
-            console.log("eliminar ejemplar:", response);
+            console.log("hoal:");
           },
           error: function (error) {
-            console.error("Error e ejemplar:", error);
+            console.error("chao:");
           },
         });
       }
@@ -1241,7 +1241,7 @@
   </div>
 </div>
 
-<!-- Modal Eliminar Documento -->
+<!-- Modal Eliminar Documento elimina por la id del ejemplar -->
 
 <!-- Primer Modal -->
 <div class="modal fade" id="ModalEliminarDocumento" tabindex="-1" aria-hidden="true">
@@ -1301,7 +1301,7 @@
       <div class="modal-body">
         <form>
           <div class="mb-3">
-            <label for="ModalejemplarCode" class="form-label">Código Ejemplar</label>
+            <label for="ModalejemplarCode" class="form-label">Id del Ejemplar</label>
             <input type="text" class="form-control" id="ModalejemplarCode">
           </div>
         </form>
@@ -1326,7 +1326,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>¿Estás seguro de que quieres eliminar este ejemplar?</p>
+        <p>¿Estás seguro de que quieres eliminar este id de ejemplar?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
