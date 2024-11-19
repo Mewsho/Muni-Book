@@ -958,18 +958,48 @@ const resolvers = {
             return solicitudPrestamo;
         },
         
+
         async updSolicitudPrestamo(obj, {id, input}){
             let ListaFinalPrestamos = []
             let ListaPrestamos = input.prestamos
-            for (PrestamosObjectId of ListaPrestamos){
-                let prestamo = await Prestamo.findById(PrestamosObjectId);
-                ListaFinalPrestamos.push(prestamo._id)
+            if (ListaPrestamos != null){
+                for (PrestamosObjectId of ListaPrestamos){
+                    let prestamo = await Prestamo.findOne({_id: PrestamosObjectId});
+                    ListaFinalPrestamos.push(prestamo._id)
+                }
             }
-            let usuarioBus = await Usuario.findById(input.usuario);
-            let solicitudPrestamo = await SolicitudPrestamo.findByIdAndUpdate(id, {
-                usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, 
-                prestamos: ListaFinalPrestamos, tipoSolicitud: input.tipoSolicitud,
-                estadoSolicitud: input.estadoSolicitud});
+            let usuarioBus = await Usuario.findOne({_id: input.usuario});
+            let inputSolicitud
+            if(ListaFinalPrestamos.length == 0 && usuarioBus == null){
+                inputSolicitud = {
+                    fechaSolicitud: input.fechaSolicitud, 
+                    tipoSolicitud: input.tipoSolicitud,
+                    estadoSolicitud: input.estadoSolicitud
+                }
+            }
+            else if(usuarioBus == null){
+                inputSolicitud = {
+                    fechaSolicitud: input.fechaSolicitud, 
+                    prestamos: ListaFinalPrestamos, tipoSolicitud: input.tipoSolicitud,
+                    estadoSolicitud: input.estadoSolicitud
+                }
+            }
+            else if(ListaFinalPrestamos.length == 0){
+                inputSolicitud = {
+                    usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, 
+                    tipoSolicitud: input.tipoSolicitud,
+                    estadoSolicitud: input.estadoSolicitud
+                }
+            }
+            else{
+                inputSolicitud = {
+                    usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, 
+                    prestamos: ListaFinalPrestamos, tipoSolicitud: input.tipoSolicitud,
+                    estadoSolicitud: input.estadoSolicitud
+                }
+            }
+
+            let solicitudPrestamo = await SolicitudPrestamo.findByIdAndUpdate(id, inputSolicitud);
             return {
                 statusCode: "200",
                 body: null,

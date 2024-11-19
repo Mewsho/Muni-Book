@@ -25,10 +25,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
 
-      // Tener el upd de las solicitudes de prestamo cuando se aprete el boton de confirmar
-
+      
+      let tipoLlamada = ""
+      let tipoSolicitudForEjemplar = ""
       let SolicitudesPrestamos
-      async function cargarSolicitudesPrestamo(){
+      function cargarSolicitudesPrestamo(){
+        const table = document.getElementById("tableBody")
+        table.innerHTML=""
         let queryGetSolicitudesPrestamo = `
         query GetSolicitudPrestamosUsuarioPrestamos {
           getSolicitudPrestamosUsuarioPrestamos {
@@ -66,6 +69,7 @@
             solicitudes.forEach((solicitud) => trtdSolicitud(solicitud))
             $(".infoButton").click(function(){
               let idSolicitud = $(this).attr("solicitud")
+              tipoLlamada = "BotonInfo"
               getInfoSolicitudPrestamos(idSolicitud)
             })
           }
@@ -74,7 +78,7 @@
 
 
       async function trtdSolicitud(solicitud){
-        let estado = solicitud.estado
+        let estado = solicitud.estadoSolicitud
         let idSolicitud = solicitud.id
         let nombreUsuario = solicitud.usuario.nombres + " " + solicitud.usuario.apellidos
         let tipoS = solicitud.tipoSolicitud
@@ -88,7 +92,7 @@
         <tr>
           <!-- Casilla de verificación individual -->
           <td>
-            <input type="checkbox" class="form-check-input select-request"/>
+            <input type="checkbox" class="form-check-input seleccion-solicitud" id="${idSolicitud}-check"/>
           </td>
           <!-- id -->
           <td>${idSolicitud}</td>
@@ -97,7 +101,7 @@
           <!-- fechaSolicitud -->
           <td>${fechaS}</td>
           <!-- tipoSolicitud -->
-          <td>${tipoS}</td>
+          <td id="${idSolicitud}-tipo">${tipoS}</td>
           <!-- Botón Info para abrir el modal de más información (solo muestra los libros) -->
           <td class="btn-actions">
             <button type="button" class="btn btn-info infoButton" id="${idSolicitud}-boton"
@@ -147,7 +151,6 @@
             }
           }),
           success: function(response){
-            console.log(response)
             let prestamos = response.data.getSolicitudPrestamoByIdPrestamos.prestamos
             prestamos.forEach((prestamo) => getEjemplarInfo(prestamo))
           }
@@ -156,8 +159,9 @@
 
 
       async function getEjemplarInfo(prestamo){
+
         let id = prestamo.id
-        let tipoPrestamo = prestamo.tipo
+        let tipoPrestamo = prestamo.tipoPrestamo
         let queryPrestamoEjemplar = `
         query GetPrestamoByIdEjemplar($getPrestamoByIdEjemplarId: ID!) {
           getPrestamoByIdEjemplar(id: $getPrestamoByIdEjemplarId) {
@@ -184,7 +188,9 @@
           success: function(response){
             let ejemplar = response.data.getPrestamoByIdEjemplar.ejemplar
             getInfoEjemplar(ejemplar, tipoPrestamo)
-            $('#infoModal').modal('toggle')
+            if (tipoLlamada == "BotonInfo"){
+              $('#infoModal').modal('toggle')
+            } 
           }
         })
       }
@@ -192,7 +198,6 @@
 
       async function getInfoEjemplar(ejemplar, tipo){
         let id = ejemplar.id
-        console.log("id", ejemplar)
         let queryEjemplar = `
         query GetEjemplarByIdDocumento($getEjemplarByIdDocumentoId2: ID!) {
           getEjemplarByIdDocumento(id: $getEjemplarByIdDocumentoId2) {
@@ -221,24 +226,164 @@
             }
           }),
           success: function(response){
-            let ejemplar = response.data.getEjemplarByIdDocumento
-            let titulo = ejemplar.documento.titulo
-            let autor = ejemplar.documento.autor
-            const modalBody = document.getElementById("modalTableBody");
-            let strModalRow = `
-            <tr>
-              <td>${ejemplar.id}</td>
-              <td>${ejemplar.codigo}</td>
-              <td>${titulo}</td>
-              <td>${autor}</td>
-              <td>${ejemplar.ubicacion}</td>
-            </tr>
-            `
-            modalBody.insertAdjacentHTML("beforeend",strModalRow)
+            if (tipoLlamada == "BotonInfo"){
+              let ejemplar = response.data.getEjemplarByIdDocumento
+              let titulo = ejemplar.documento.titulo
+              let autor = ejemplar.documento.autor
+              const modalBody = document.getElementById("modalTableBody");
+              let strModalRow = `
+              <tr>
+                <td>${ejemplar.id}</td>
+                <td>${ejemplar.codigo}</td>
+                <td>${titulo}</td>
+                <td>${autor}</td>
+                <td>${ejemplar.ubicacion}</td>
+              </tr>
+              `
+              modalBody.insertAdjacentHTML("beforeend",strModalRow)
+            }
+            else if(tipoLlamada == "ConfirmarSolicitud"){
+              let ejemplar = response.data.getEjemplarByIdDocumento
+              updEjemplar(ejemplar, tipo)
+            }
           }
         })
       }
 
+      // Tener el upd de las solicitudes de prestamo cuando se aprete el boton de confirmar
+      // Luego de hacer el upd debe cambiar el estado del ejemplar
+
+      async function confirmarSolicitudes(){
+        let checkboxes = document.getElementsByClassName("seleccion-solicitud");
+        const mensajeDiv = document.getElementById("mensaje");
+        mensajeDiv.style.display = "block";
+        let selected = []
+        for(check of checkboxes){
+          if (check.checked){
+            selected.push(check)
+          }
+        }
+
+        if (selected.length == 0){
+          
+          mensajeDiv.innerHTML =
+            '<div class="alert alert-danger">No hay solicitudes seleccionadas.</div>';
+            // Ocultar el mensaje después de 5 segundos
+          setTimeout(function () {
+            mensajeDiv.style.display = "none"; // Oculta el mensaje
+          }, 5000); // 5000 milisegundos = 5 segundos
+
+        }
+        else {
+          tipoLlamada = "ConfirmarSolicitud"
+          selected.forEach((checkSelected) => confirmarSolicitudPrestamo(checkSelected))
+          
+          mensajeDiv.innerHTML =
+          '<div class="alert alert-success">Solicitud confirmada.</div>';
+
+          setTimeout(function () {
+            cargarSolicitudesPrestamo(); // Oculta el mensaje
+          }, 1000); 
+        }
+      }
+
+      function confirmarSolicitudPrestamo(checkbox){
+
+        let idCheck = checkbox.id
+        let idSolicitud = idCheck.split('-')[0]
+
+        let idTipoSolicitudTd = `${idSolicitud}-tipo`
+        let textTipo = document.getElementById(idTipoSolicitudTd).innerHTML
+
+        
+        getInfoSolicitudPrestamos(idSolicitud)
+        updSolicitudPrestamo(idSolicitud)
+
+
+
+      }
+
+
+
+      async function updEjemplar(ejemplar,tipo){
+        console.log(ejemplar,tipo) 
+        
+        let estadoInt = 0
+        if (tipo == "Sala"){
+          estadoInt = 2
+        }
+        else if(tipo == "Reserva"){
+          estadoInt = 1
+        }
+        else if(tipo == "Domicilio"){
+          estadoInt = 0
+        }
+
+        let queryUpdEjemplar= `
+        mutation UpdEjemplar($updEjemplarId2: ID!, $updEjemplarInput3: EjemplarInput) {
+          updEjemplar(id: $updEjemplarId2, input: $updEjemplarInput3) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryUpdEjemplar,
+            variables : {
+              updEjemplarId2: ejemplar.id,
+              updEjemplarInput3: {
+                codigo: ejemplar.codigo,
+                estado: estadoInt,
+                estadoTexto: tipo,
+                ubicacion: ejemplar.ubicacion,
+                documento: ejemplar.documento.id
+              } 
+            }
+          }),
+          success: function(response){
+            console.log("Ejemplar Actualizado")
+          }
+        })
+      
+      }
+
+      function updSolicitudPrestamo(idSolicitud){
+        let queryUpdSolicitud = `
+        mutation UpdSolicitudPrestamo($updSolicitudPrestamoId2: ID!, $updSolicitudPrestamoInput2: SolicitudPrestamoInput) {
+          updSolicitudPrestamo(id: $updSolicitudPrestamoId2, input: $updSolicitudPrestamoInput2) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryUpdSolicitud,
+            variables : {
+              updSolicitudPrestamoId2: idSolicitud,
+              updSolicitudPrestamoInput2: {
+                estadoSolicitud: 1,
+              } 
+            }
+          }),
+          success: function(response){
+            console.log("Solicitud Actualizada")
+          }
+        })
+      }
 
 
     </script>
@@ -417,7 +562,7 @@
           </div>
 
           <!-- Botones Confirmar y Rechazar -->
-          <button class="btn btn-success me-2" onclick="confirmRequest()">
+          <button class="btn btn-success me-2" onclick="confirmarSolicitudes()">
             Confirmar
           </button>
           <button class="btn btn-danger">Rechazar</button>
@@ -426,7 +571,59 @@
       </div>
     </div>
 
-    <!-- Modal de más información -->
+
+
+    <div>
+        <!-- Footer -->
+      <footer class="bg-dark text-light py-4">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <h5>Muni Book</h5>
+              <ul class="list-unstyled">
+                <li>Tu libreria de confianza</li>
+                <li>Siguenos en redes!</li>
+              </ul>
+            </div>
+            <div class="col-md-3 mb-3">
+              <h5>Explorar</h5>
+              <ul class="list-unstyled">
+                <li><a href="catalogo.html"> Catalogo </a></li>
+                <li><a onclick="loginButton()">Inicia Sesion</a></li>
+              </ul>
+            </div>
+            <div class="col-md-3 mb-3">
+              <h5>Recursos</h5>
+              <ul class="list-unstyled">
+                <li>Sobre nosotros</li>
+                <li>Contactanos</li>
+                <li>Atencion al cliente</li>
+              </ul>
+            </div>
+            <div class="col-md-3 mb-3">
+              <h5>Siguenos</h5>
+              <div class="d-flex">
+                <a href="#" class="text-light me-2">
+                  <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="#" class="text-light me-2">
+                  <i class="fa-brands fa-facebook"></i>
+                </a>
+                <a href="#" class="text-light me-2">
+                  <i class="fa-brands fa-x-twitter"></i>
+                </a>
+                <a href="#" class="text-light">
+                  <i class="fa-brands fa-youtube"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+
+        <!-- Modal de más información -->
     <div
       class="modal fade"
       id="infoModal"
@@ -459,6 +656,7 @@
                 </tr>
               </thead>
               <tbody id="modalTableBody">
+
               </tbody>
           </div>
           <div class="modal-footer">
@@ -474,119 +672,6 @@
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-3 mb-3">
-            <h5>Muni Book</h5>
-            <ul class="list-unstyled">
-              <li>Tu libreria de confianza</li>
-              <li>Siguenos en redes!</li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-3">
-            <h5>Explorar</h5>
-            <ul class="list-unstyled">
-              <li>Catalogo</li>
-              <li>Inicia Sesion</li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-3">
-            <h5>Recursos</h5>
-            <ul class="list-unstyled">
-              <li>Sobre nosotros</li>
-              <li>Contactanos</li>
-              <li>Atencion al cliente</li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-3">
-            <h5>Siguenos</h5>
-            <div class="d-flex">
-              <a href="#" class="text-light me-2">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-              <a href="#" class="text-light me-2">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M23 3C22.1 3.35 21.2 3.58 20.2 3.69C21.2 3.08 22 2.13 22.4 1C21.5 1.55 20.5 1.95 19.4 2.17C18.5 1.23 17.3 0.67 16 0.67C13.5 0.67 11.5 2.67 11.5 5.17C11.5 5.55 11.5 5.92 11.6 6.27C7.8 6.09 4.3 4.29 2 1.5C1.6 2.22 1.4 3.03 1.4 3.89C1.4 5.5 2.2 6.94 3.4 7.79C2.6 7.77 1.8 7.55 1.1 7.19V7.23C1.1 9.43 2.7 11.28 4.8 11.73C4.4 11.83 4 11.88 3.6 11.88C3.3 11.88 3 11.85 2.7 11.79C3.3 13.61 5 14.92 7 14.96C5.4 16.17 3.4 16.89 1.2 16.89C0.8 16.89 0.4 16.87 0 16.82C2 18.12 4.4 18.87 7 18.87C16 18.87 20.7 11.41 20.7 4.95C20.7 4.75 20.7 4.55 20.7 4.35C21.6 3.67 22.4 2.82 23 1.85V3Z"
-                    fill="white"
-                  />
-                </svg>
-              </a>
-              <a href="#" class="text-light me-2">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8V8Z"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M6 9H2V21H6V9Z"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-              <a href="#" class="text-light">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M17 2H7C4.23858 2 2 4.23858 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V7C22 4.23858 19.7614 2 17 2Z"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
 
     <!-- Script para seleccionar o deseleccionar todas las solicitudes -->
     <script>
@@ -597,39 +682,6 @@
           checkbox.checked = selectAllCheckbox.checked;
         });
       }
-
-      // Función para confirmar solicitudes
-      function confirmRequest() {
-        const checkboxes = document.querySelectorAll(".select-request");
-        let anySelected = false;
-        const mensajeDiv = document.getElementById("mensaje");
-
-        // Verifica si alguna casilla está marcada
-        checkboxes.forEach((checkbox) => {
-          if (checkbox.checked) {
-            anySelected = true;
-          }
-        });
-
-        // Mostrar el mensaje de forma predeterminada
-        mensajeDiv.style.display = "block";
-
-        if (anySelected) {
-          // Mostrar mensaje de confirmación
-          mensajeDiv.innerHTML =
-            '<div class="alert alert-success">Solicitud confirmada.</div>';
-        } else {
-          // Mostrar mensaje de error
-          mensajeDiv.innerHTML =
-            '<div class="alert alert-danger">No hay solicitudes seleccionadas.</div>';
-        }
-
-        // Ocultar el mensaje después de 5 segundos
-        setTimeout(function () {
-          mensajeDiv.style.display = "none"; // Oculta el mensaje
-        }, 5000); // 5000 milisegundos = 5 segundos
-      }
-
     </script>
   </body>
 </html>
