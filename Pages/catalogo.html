@@ -890,6 +890,39 @@
           },
         });
       }
+
+      function eliminarEjemplar() {
+        let codigoEje = document.getElementById("ModalejemplarCode").value;
+        console.log(codigoEje)
+        let querySignIn = `
+        mutation DelEjemplar($delEjemplarId: ID!) {
+          delEjemplar(id: $delEjemplarId) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySignIn,
+            variables: {            
+              delEjemplarId: codigoEje
+                },
+          }),
+          success: function (response) {
+            console.log("eliminar ejemplar:", response);
+          },
+          error: function (error) {
+            console.error("Error e ejemplar:", error);
+          },
+        });
+      }
     </script>
     
     <!-- Styles como los del css pero no-->
@@ -1255,6 +1288,54 @@
     </div>
   </div>
 </div>
+<!--modal de eliminar ejemplar-->
+
+<!-- Primer Modal -->
+<div class="modal fade" id="DelEjemplares" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Eliminar Ejemplar</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="ModalejemplarCode" class="form-label">Código Ejemplar</label>
+            <input type="text" class="form-control" id="ModalejemplarCode">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <!-- Botón que muestra el segundo modal -->
+        <button type="button" class="btn btn-primary" data-bs-target="#ModalConfirmarEjemplar" data-bs-toggle="modal" data-bs-dismiss="modal">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Segundo Modal (Confirmación) -->
+<div class="modal fade" id="ModalConfirmarEjemplar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de que quieres eliminar este ejemplar?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" onclick="eliminarEjemplar()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
     <!-- Footer begins here remember to keep your house tidy an you too-->
