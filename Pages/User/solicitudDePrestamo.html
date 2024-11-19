@@ -97,7 +97,7 @@
     let IdEjemplaresGlobales = []
 
 
-      function ActualizarFechaPrestamos(idActual, valor, fechaPrestamo,fechaDevolucion, index){
+      function ActualizarFechaPrestamos(idActual, valor, fechaPrestamo, index){
         
         let listaAuxiliar1 = []
 
@@ -128,7 +128,8 @@
               updPrestamoId: idActual,
               input: {
                 fechaPrestamo: fechaPrestamo,
-                fechaDevolucion: fechaDevolucion,
+                fechaDevolucion: null,
+                fechaDevolucionReal: null,
                 tipoPrestamo: valor,
                 ejemplar: listaAuxiliar1[index]
               }
@@ -151,25 +152,11 @@
           }          
         }
         
-        if (valor == "Sala"){
-          fechaPrestamo = new Date()
-          fechaDevolucion = new Date()
-          fechaDevolucion.setHours(fechaDevolucion.getHours() + 3);
-           
-        }
-
-        if (valor == "Domicilio"){
-          fechaPrestamo = new Date()
-          fechaDevolucion = new Date()
-          fechaDevolucion.setDate(fechaDevolucion.getDate() + 14);
-
-        }
-
         if (valor == "Reserva"){
            fechaPrestamo = new Date(document.getElementById("fechaPrestamo").value);
-           fechaDevolucion = new Date(document.getElementById("fechaDevolucion").value);
         }
-         
+        
+        else{fechaPrestamo = new Date()}
         let listaAuxiliar = []
 
         for (variable of PrestamosGlobal){
@@ -206,7 +193,7 @@
             }
           }),
           success: function(response){
-            listaAuxiliar.forEach((id_prestamo, index) => ActualizarFechaPrestamos(id_prestamo, valor, fechaPrestamo,fechaDevolucion, index))
+            listaAuxiliar.forEach((id_prestamo, index) => ActualizarFechaPrestamos(id_prestamo, valor, fechaPrestamo, index))
           }
         })
       }
@@ -471,20 +458,6 @@
               onchange="calcularFechaDevolucion()"
             />
           </div>
-
-          <!-- fecha devolucion -->
-          <div class="mb-3" id="fechaDevolucionContainer" style="display: none">
-            <label for="fechaDevolucion" class="form-label"
-              >Fecha de Devolucion</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="fechaDevolucion"
-              readonly
-            />
-          </div>
-
           <button
             class="btn btn-success w-100 mt-3"
 
@@ -596,12 +569,6 @@
         const fechaPrestamo = new Date(
           document.getElementById("fechaPrestamo").value
         );
-        if (fechaPrestamo) {
-          fechaPrestamo.setDate(fechaPrestamo.getDate() + 14); // Añadir tiempo estimado (14 días)
-          // Formato ISO (YYYY-MM-DD)
-          document.getElementById("fechaDevolucion").value =
-            fechaPrestamo.toISOString().split("T")[0];
-        }
       }
 
       // Función para confirmar la reserva (puedes agregar la lógica que desees)
@@ -612,9 +579,6 @@
       // Función para mostrar u ocultar los cuadros de fecha
       function toggleDateBox(show) {
         document.getElementById("fechaPrestamoContainer").style.display = show
-          ? "block"
-          : "none";
-        document.getElementById("fechaDevolucionContainer").style.display = show
           ? "block"
           : "none";
       }
