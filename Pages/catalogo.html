@@ -93,9 +93,9 @@
           <button type="button" class="btn btn-primary" data-bs-toggle="modal"
           data-bs-target="#Agregardoc">Agregar Documento</button>
           <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-          data-bs-target="#DelDocumento">Eliminar Documento</button>   
+          data-bs-target="#ModalEliminarDocumento">Eliminar Documento</button>   
           <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-          data-bs-target="#AddEjemplares">Agregar Ejemplar</button>
+          data-bs-target="#ModalAgregarEjemplares">Agregar Ejemplar</button>
           <button type="button" class="btn btn-danger" data-bs-toggle="modal"
           data-bs-target="#DelEjemplares">Eliminar Ejemplar</button>
         </div>
@@ -226,6 +226,14 @@
         );
       }
       
+      let optionFormSelectDocumento = [
+        '<option value="">Selecciona Documento</option>',
+      ];
+      function optionDocumentos(item) {
+        optionFormSelectDocumento.push(
+          '<option value="' + item.id + '">' + item.titulo + "</option>"
+        );
+      }
       // Funciones para optener la lista de tipo y categoria
       async function cargarTipo() {
         let queryTipo = `
@@ -732,6 +740,9 @@
               listCardDocumentos.join("");
             console.log("card agregadas");
             aplicarCambiosCard();
+            response.data.getNDocumentos.forEach(optionDocumentos);
+            document.getElementById("ModalDocumentoEjemplar").innerHTML =
+            optionFormSelectDocumento.join("");
           },
         });
       }
@@ -806,6 +817,79 @@
         });
       }
     
+      function agregarEjemplar() {
+        let codigo = document.getElementById("ModalCodigoEjemplar").value;
+        let ubicacion = document.getElementById("ModalUbicaionEjemplar").value;
+        let idDocumento = document.getElementById("ModalDocumentoEjemplar").value;
+        console.log(codigo, ubicacion, idDocumento)
+        let querySignIn = `
+        mutation AddEjemplar($input: EjemplarInput) {
+          addEjemplar(input: $input) {
+            body
+            descriptionError
+            errorCode
+            statusCode
+          }
+        }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySignIn,
+            variables: {
+                  input: {
+                    codigo: parseInt(codigo, 10),
+                    documento: idDocumento,
+                    estado: 3,
+                    estadoTexto: "Disponible",
+                    ubicacion: ubicacion
+                  }
+                },
+          }),
+          success: function (response) {
+            console.log("Response:", response);
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+
+      function eliminarDocumento() {
+        let codigo = document.getElementById("ModalCodigoEliminar").value;
+        console.log(codigo)
+        let querySignIn = `
+        mutation DelDocumento($delDocumentoId: ID!) {
+          delDocumento(id: $delDocumentoId) {
+            body
+            descriptionError
+            errorCode
+            statusCode
+          }
+        }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySignIn,
+            variables: {            
+                delDocumentoId: codigo
+                },
+          }),
+          success: function (response) {
+            console.log("Response:", response);
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
     </script>
     
     <!-- Styles como los del css pero no-->
@@ -1091,168 +1175,82 @@
       </div>
     </div>
 
-
-
-    <!-- Modal eliminar Documento -->
-
-    <div
-     class="modal fade"
-     id="DelDocumento"
-     tabindex="-1"
-     aria-labelledby="#DelDocumento"
-     aria-hidden="true"
-   >
-   <div class="modal-dialog modal-dialog-centered modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title letra-main" id="exampleModalLabel">Eliminar Documento</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-            
-
-          <label for="exampleDataList" class="form-label mb-2 pb-2">Documentos</label>
-<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
-<datalist id="datalistOptions">
-<option value="San Francisco">
-<option value="New York">
-<option value="Seattle">
-<option value="Los Angeles">
-<option value="Chicago">
-</datalist>
-
-<div class="modal-footer">
-  <button
-    type="button"
-    class="btn btn-secondary"
-    data-bs-dismiss="modal"
-  >
-    Close
-  </button>
-  <button type="button" class="btn btn-primary">Save changes</button>
-</div>
-</div>
-</div>
-</div>
-
-
  <!-- Modal Agregar Ejemplares -->
 
-      <div
-      class="modal fade"
-      id="AddEjemplares"
-      tabindex="-1"
-      aria-labelledby="#DelDocumento"
-      aria-hidden="true"
-      >
-      <div class="modal-dialog modal-dialog-centered modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title letra-main" id="exampleModalLabel">Eliminar Documento</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-              
-
-            <label for="exampleDataList" class="form-label mb-2 pb-2">Documentos</label>
-      <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
-      <datalist id="datalistOptions">
-      <option value="San Francisco">
-      <option value="New York">
-      <option value="Seattle">
-      <option value="Los Angeles">
-      <option value="Chicago">
-      </datalist>
-
+ <div class="modal fade" id="ModalAgregarEjemplares" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar Ejemplares</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="">
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Codigo Ejemplar</label>
+            <input type="text" class="form-control" id="ModalCodigoEjemplar" aria-describedby="emailHelp">
+          </div>
+          <div class="mb-3">
+            <select class="form-select" id="ModalDocumentoEjemplar">
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Ubicacion</label>
+            <input type="text" class="form-control" id="ModalUbicaionEjemplar" aria-describedby="emailHelp">
+          </div>
+        </form>
+      </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Close
-        </button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="agregarEjemplar()">Agregar</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Modal Eliminar Documento -->
 
-<!-- Modal Eliminar Ejemplares -->
-
-      <div
-      class="modal fade"
-      id="DelEjemplares"
-      tabindex="-1"
-      aria-labelledby="#DelDocumento"
-      aria-hidden="true"
-      >
-      <div class="modal-dialog modal-dialog-centered modal">
-      <div class="modal-content">
+<!-- Primer Modal -->
+<div class="modal fade" id="ModalEliminarDocumento" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title letra-main" id="exampleModalLabel">Eliminar Documento</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <h5 class="modal-title">Eliminar Documento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-            
-
-          <label for="exampleDataList" class="form-label mb-2 pb-2">Documentos</label>
-      <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
-      <datalist id="datalistOptions">
-      <option value="San Francisco">
-      <option value="New York">
-      <option value="Seattle">
-      <option value="Los Angeles">
-      <option value="Chicago">
-      </datalist>
-
-      <div> 
-      <div class="container px-4 text-center">
-      <div class="row gx-5">
-      <div class="col">
-        <div class="p-3"></div>
-      </div>
-      <div class="col">
-        <div class="p-3"></div>
-      </div>
-      </div>
-      </div>         
-
-      </div>
-                  <!-- Botones -->
-                  <div class="d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline-danger">Cancelar</button>
-                    <button type="button" class="btn btn-success">Agregar</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="ModalCodigoEliminar" class="form-label">Código Documento</label>
+            <input type="text" class="form-control" id="ModalCodigoEliminar">
           </div>
-        </div>
-      
-      
+        </form>
+      </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Close
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <!-- Botón que muestra el segundo modal -->
+        <button type="button" class="btn btn-primary" data-bs-target="#ModalConfirmarEliminar" data-bs-toggle="modal" data-bs-dismiss="modal">
+          Eliminar
         </button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Segundo Modal (Confirmación) -->
+<div class="modal fade" id="ModalConfirmarEliminar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de que quieres eliminar este documento?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" onclick="eliminarDocumento()">Confirmar</button>
       </div>
     </div>
   </div>
