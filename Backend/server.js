@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const {ApolloServer, gql} = require('apollo-server-express'); //Importar librerias externas
 const { GraphQLDateTime } = require('graphql-iso-date')
-
+const cron = require('node-cron')
 
 const DetalleSolicitudPrestamo = require('./models/detalleSolicitudPrestamo.js');
 const Documento = require('./models/documento');
@@ -14,6 +14,10 @@ const SolicitudPrestamo = require('./models/solicitudPrestamo')
 const Usuario = require('./models/usuario');
 const TipoDocumento = require('./models/tipoDocumento');
 const CategoriaDocumento = require('./models/categoriaDocumento');
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 
 mongoose.connect('mongodb+srv://FcoTorres:hEqGLg4XvhwgO9y5@cluster0.45avn.mongodb.net/BaseBiblioteca',{useNewUrlParser: true, useUnifiedTopology:true});
@@ -221,6 +225,7 @@ const typeDefs = gql`
         getNEjemplaresDisponiblesByDocumentId(documentoId: ID, cantEjemplares: Int): [Ejemplar]
         getSolicitudPrestamoByUsuarioId(usuarioID: ID!): SolicitudPrestamo
         getPrestamoByEjemplarId(ejemplarID: ID!): Prestamo
+        getSolicitudPrestamoUsuarioByPrestamoId(prestamoID: ID!): SolicitudPrestamo
     }
 
     type Mutation{
@@ -248,6 +253,7 @@ const typeDefs = gql`
         addCategoriaDocumento(input: CategoriaDocumentoInput): Response
         updCategoriaDocumento(id: ID!, input: CategoriaDocumentoInput): Response
         delCategoriaDocumento(id: ID!): Response
+        ScheduleUpdEjemplar(id: ID, input: EjemplarInput, minutos: Int): Response
     }
 `;
 
@@ -517,7 +523,7 @@ const resolvers = {
             }
             let documentos = await Documento.find({
                 titulo: {'$regex': titulo, '$options': 'i'}, 
-                autor: {'$regex': autor, '$options': 'i'}, tipoDocumento: tipoId, categoriaDocumento: categoriaId
+                autor: {'$regex': autor, '$options': 'i'}, tipoDocumento: tipoId, categoriaDocumento: { $in: [categoriaId]}
             }).populate('tipoDocumento').populate('categoriaDocumento')
             return documentos
         },
@@ -594,6 +600,12 @@ const resolvers = {
             let prestamo = await Prestamo.findOne({ejemplar: ejemplarID}).populate('ejemplar')
             return prestamo;
         },
+
+
+        async getSolicitudPrestamoUsuarioByPrestamoId(obj, {prestamoID}){
+            let solicitudPrestamo = await SolicitudPrestamo.findOne({prestamos: { $in: [prestamoID]}}).populate('usuario').populate('prestamos')
+            return solicitudPrestamo;
+        }
 
     },
     
@@ -1082,7 +1094,46 @@ const resolvers = {
             };
         },
 
+        async ScheduleUpdEjemplar(obj, {id, input, minutos}){
+
+            let strCron = `*/${minutos} * * * *`
+            let cronCnt = 0
+            let task = cron.schedule(strCron, () =>  {
+                cambiarEjemplar(id,input)
+
+                cronCnt+=1
+            },{
+                scheduled: false
+            });
+
+            (async () => {
+                task.start()
+                while (true) {
+                  if (cronCnt < 1) {
+                    await sleep(2000); 
+                  } else {
+                    task.stop(); 
+                    break;
+                  }
+                }
+            })()
+
+
+            return {
+                statusCode: "200",
+                body: "Scheduled Iniciada",
+                errorCode: "0",
+                descriptionError: ""
+            };
+        }
+
     }
+}
+
+
+async function cambiarEjemplar(id, input){
+    let ejemplar = await Ejemplar.findByIdAndUpdate(id, input)
+    console.log("Actualizado")
 }
 
 async function checkDocumentos(input){

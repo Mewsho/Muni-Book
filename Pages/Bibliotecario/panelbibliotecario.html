@@ -18,13 +18,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
 
-
+      // Se llama cuando se presiona el boton de devolucion
       async function ingresarDevolucion(){
         let modalInput = document.getElementById("codigoLibro")
         let id = modalInput.value
         let queryUpdEjemplar = `
-        mutation UpdEjemplar($updEjemplarId: ID!, $updEjemplarInput2: EjemplarInput) {
-          updEjemplar(id: $updEjemplarId, input: $updEjemplarInput2) {
+        mutation ScheduleUpdEjemplar($scheduleUpdEjemplarId: ID!, $scheduleUpdEjemplarInput2: EjemplarInput, $minutos: Int) {
+          ScheduleUpdEjemplar(id: $scheduleUpdEjemplarId, input: $scheduleUpdEjemplarInput2, minutos: $minutos) {
             statusCode
             body
             errorCode
@@ -40,11 +40,12 @@
           data: JSON.stringify({
             query: queryUpdEjemplar,
             variables: {
-              updEjemplarId: id,
-              updEjemplarInput2: {
+              scheduleUpdEjemplarId: id,
+              scheduleUpdEjemplarInput2: {
                 estado: 3,
-                estadoTexto: "Disponible",
-              }
+                estadoTexto: "Disponible"
+              },
+              minutos: 1
             }
           }),
           success: function(response){
@@ -124,9 +125,19 @@
       }
 
       async function updPrestamo(prestamo){
-        // Hay que revisar si funciona esto realmente
+
         let fechaActual = Date.now()
         fechaActual = new Date(fechaActual)
+
+        // Calcular sancion
+        let fDevolucion = prestamo.fechaDevolucion
+        fDevolucion = new Date(fDevolucion)
+        console.log(fDevolucion)
+        if (fDevolucion < fechaActual){
+          aplicarSancion(prestamo.id)
+        }
+
+
         let queryUpdPrestamo = `
         mutation UpdPrestamo($updPrestamoId: ID!, $updPrestamoInput2: PrestamoInput) {
           updPrestamo(id: $updPrestamoId, input: $updPrestamoInput2) {
@@ -157,6 +168,103 @@
         })
       }
 
+
+      async function aplicarSancion(idPrestamo){
+        getSolicitudPrestamoByPrestamoId(idPrestamo)
+      }
+
+      async function getSolicitudPrestamoUsuarioByPrestamoId(idPrestamo){
+        // Mi objetivo es obtener el usuario
+        // Y luego meterle una sancion
+        let querySolicitud = `
+        query GetSolicitudPrestamoUsuarioByPrestamoId($prestamoId: ID!) {
+          getSolicitudPrestamoUsuarioByPrestamoId(prestamoID: $prestamoId) {
+            id
+            tipoSolicitud
+            estadoSolicitud
+            fechaSolicitud
+            usuario {
+              id
+              rut
+              nombres
+              apellidos
+              direccion
+              telefono
+              activo
+              codigo
+              correo
+              password
+              tipoUsuario
+              fechaSancion
+            }
+            prestamos {
+              id
+              tipoPrestamo
+              fechaPrestamo
+              fechaDevolucion
+              fechaDevolucionReal
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySolicitud,
+            variables: {
+              prestamoId: idPrestamo,
+            }
+          }),
+          success: function(response){
+            let usuario = response.data.getSolicitudPrestamoUsuarioByPrestamoId.usuario
+            updUsuarioSancion(usuario)
+          }
+        })
+      }
+
+      async function updUsuarioSancion(user){
+
+        const actual = new Date()
+        // Agregar 3 dias
+        const sancion = new Date(
+          new Date(actual).setDate(actual.getDate() + 3)
+        )
+        let stringSancion = sancion.toLocaleString()
+
+        let queryUpdSancion = `
+        mutation UpdUsuario($updUsuarioId: ID!) {
+          updUsuario(id: $updUsuarioId) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryUpdSancion,
+            variables: {
+              updUsuarioId: user.id,
+              updUsuarioInput2: {
+                fechaSancion: stringSancion
+              }
+            }
+          }),
+          success: function(response){
+            console.log("Sancion aplicada")
+          }
+        })
+
+      }
 
     </script>
 
