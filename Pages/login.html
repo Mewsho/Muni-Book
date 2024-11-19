@@ -110,32 +110,33 @@
     </style>
     <script>
 
-      function crearCookie(tipo, id){
+      function crearCookie(tipo, id, nombres){
         let ahora = new Date()
         let tiempo = ahora.getTime()
         let expireTime = tiempo + 10000
         ahora.setTime(expireTime)  
         document.cookie = "tipo="+tipo+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
         document.cookie = "id="+id+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
+        document.cookie = "nombres="+nombres+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
       }
 
-      function respuestaLogin(activo, tipo, id){
+      function respuestaLogin(activo, tipo, id, nombres){
         console.log(activo)
         if (!activo){
           alert("Usuario No Activado")
         }
         else {
 
-          crearCookie(tipo, id)
+          crearCookie(tipo, id, nombres)
 
           if (tipo == 0){
-            window.location.href = "vistausuario.html";
+            window.location.href = "index.html";
           }
           if (tipo == 1){
-            window.location.href = "vistabibliotecario.html";
+            window.location.href = "index.html";
           }
           if (tipo == 2){
-            window.location.href = "./Admin/PanelAdmin.html";
+            window.location.href = "index.html";
           }
         }
       }
@@ -176,34 +177,14 @@
             let tipo = response.data.getUsuarioByCorreoAndCheckPassword.tipoUsuario
             let activo = response.data.getUsuarioByCorreoAndCheckPassword.activo
             let id = response.data.getUsuarioByCorreoAndCheckPassword.id
-            respuestaLogin(activo,tipo, id)
+            let nombres = response.data.getUsuarioByCorreoAndCheckPassword.nombres
+            respuestaLogin(activo,tipo, id, nombres)
 
           }
         })
       }
     </script>
   </head>
-
-  <script>
-    function checkCookieExistence(name){
-      if(
-        document.cookie.split(";").some((item) => item.trim().startsWith(`${name}=`))
-      ){
-        const cookieValue = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith(`${name}=`))
-        ?.split("=")[1];
-        console.log(document.cookie)
-        alert(cookieValue)
-      }
-      else{
-        alert("Cookie no encontrada")
-        document.cookie = "user=hola; path=/; Secure"
-      }
-    }
-  </script>
-
-
   <body onload="checkCookieExistence('user')">
     <!-- Header Section -->
 
@@ -264,7 +245,6 @@
           <label for="password">Contraseña</label>
           <input type="password" id="password" placeholder="Contraseña" />
         </div>
-        <button type="button" class="btn btn-secondary" style="font-family: 'Times New Roman', Times, serif;">Crear Cuenta</button>
         <button type="button" class="btn btn-dark" style="font-family: 'Times New Roman', Times, serif;" onclick="login()">Login</button>
       </div>
     </main>
