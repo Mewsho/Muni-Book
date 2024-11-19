@@ -292,7 +292,11 @@
       }
 
       async function ObtenerSolicitudPrestamos(){
-        let idDeUsuario = "671d5f62e7aba670c895dc01"
+        const cookieValue = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith(`id=`))
+        ?.split("=")[1];
+        let idDeUsuario = cookieValue
         let querySolicitudPrestamos = `
           query GetSolicitudPrestamoByUsuarioId($usuarioId: ID!) {
             getSolicitudPrestamoByUsuarioId(usuarioID: $usuarioId) {
