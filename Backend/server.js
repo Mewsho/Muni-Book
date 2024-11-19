@@ -858,7 +858,7 @@ const resolvers = {
         },
 
         async delEjemplar(obj, {id}){
-            await Documento.deleteOne({_id: id});
+            await Ejemplar.deleteOne({_id: id});
             return {
                 statusCode: "200",
                 body: "Ejemplar Eliminado",
