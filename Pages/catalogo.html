@@ -1081,80 +1081,100 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">Informacion
+          <div class="modal-body">
             <form>
+              <!-- Titulo -->
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">AnioSalida</label>
-                <input type="email" class="form-control" id="ModalAnioSalida" aria-describedby="emailHelp">
+                <label for="ModalTitulo" class="form-label">Título</label>
+                <input type="text" class="form-control" id="ModalTitulo" aria-describedby="emailHelp">
               </div>
+    
+              <!-- Año Salida -->
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Autor</label>
-                <input type="email" class="form-control" id="ModalAutor" aria-describedby="emailHelp">
+                <label for="ModalAnioSalida" class="form-label">Año Salida</label>
+                <input type="text" class="form-control" id="ModalAnioSalida" aria-describedby="emailHelp">
               </div>
+    
+              <!-- Autor -->
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Categoria Documento</label>
-                <select id="ModalCategoriaDocumento" class="form-select">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Default checkbox
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Default checkbox
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Default checkbox
-                    </label>
-                  </div>
-                </select>
-
-
+                <label for="ModalAutor" class="form-label">Autor</label>
+                <input type="text" class="form-control" id="ModalAutor" aria-describedby="emailHelp">
+              </div>
+    
+              <!-- Categoría (Multiselect jerárquico) -->
+              <div class="mb-3">
+                <label for="multiSelect" class="form-label">Categoría</label>
                 <div class="dropdown">
-                  <button class="btn btn-primary-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" onclick="ModalGenCheckBox()">
-                      Select an option
+                  <button
+                    class="btn btn-outline-secondary dropdown-toggle w-100"
+                    type="button"
+                    id="multiSelectDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    Seleccionar Categorías
                   </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <div class="row" id="ModalCheckboxCategoria">
-                      <li>
-                          
+                  <div class="dropdown-menu w-100 p-2" aria-labelledby="multiSelectDropdown">
+                    <h6 class="dropdown-header">Electronics</h6>
+                    <label class="dropdown-item">
+                      <input type="checkbox" value="Cámara y Fotografía" class="me-2">
+                      Cámara y Fotografía
+                    </label>
+                    <label class="dropdown-item">
+                      <input type="checkbox" value="Teléfonos Móviles" class="me-2">
+                      Teléfonos Móviles
+                    </label>
+                    <label class="dropdown-item">
+                      <input type="checkbox" value="GPS y Navegación" class="me-2">
+                      GPS y Navegación
+                    </label>
+    
+                    <h6 class="dropdown-header">Smart Home</h6>
+                    <label class="dropdown-item">
+                      <input type="checkbox" value="Enchufes e Interruptores" class="me-2">
+                      Enchufes e Interruptores
+                    </label>
+                    <label class="dropdown-item">
+                      <input type="checkbox" value="Calefacción y Refrigeración" class="me-2">
+                      Calefacción y Refrigeración
+                    </label>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <span id="selectedCategories" class="text-muted">No se han seleccionado categorías.</span>
+                </div>
               </div>
-
-              </div>
+    
+              <!-- Código -->
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Codigo</label>
-                <input type="email" class="form-control" id="ModalCodigo" aria-describedby="emailHelp">
+                <label for="ModalCodigo" class="form-label">Código</label>
+                <input type="text" class="form-control" id="ModalCodigo" aria-describedby="emailHelp">
               </div>
+    
+              <!-- Edición -->
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Edicion</label>
-                <input type="email" class="form-control" id="ModalEdicion" aria-describedby="emailHelp">
+                <label for="ModalEdicion" class="form-label">Edición</label>
+                <input type="text" class="form-control" id="ModalEdicion" aria-describedby="emailHelp">
               </div>
+    
+              <!-- Editorial -->
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Editorial</label>
-                <input type="email" class="form-control" id="ModalEditorial" aria-describedby="emailHelp">
+                <label for="ModalEditorial" class="form-label">Editorial</label>
+                <input type="text" class="form-control" id="ModalEditorial" aria-describedby="emailHelp">
               </div>
+    
+              <!-- Tipo Documento -->
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Tipo Documento</label>
+                <label for="ModalformSelectTipo" class="form-label">Tipo Documento</label>
                 <select id="ModalformSelectTipo" class="form-select"></select>
               </div>
-              <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Titulo</label>
-                <input type="email" class="form-control" id="ModalTitulo" aria-describedby="emailHelp">
-              </div>
-              
-              
-              <!-- Modal AddDocumento Final -->
-              
+    
+              <!-- Botones -->
               <div class="d-flex justify-content-between">
                 <button type="button" class="btn btn-outline-danger">Cancelar</button>
                 <button type="button" class="btn btn-success" onclick="AddDocumento()">Agregar</button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
