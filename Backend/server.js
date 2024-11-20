@@ -57,7 +57,7 @@ const typeDefs = gql`
 
     type Prestamo{
         id: ID!
-        tipoPrestamo: String! #  Sala, Domicilio, Reserva, 0,1,2
+        tipoPrestamo: String! #  Sala, Domicilio, Reserva
         ejemplar: Ejemplar! 
         fechaPrestamo: GraphQLDateTime
         fechaDevolucion: GraphQLDateTime
