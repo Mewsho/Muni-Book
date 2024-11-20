@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ejemplarSchema = mongoose.Schema({
-    codigo: Number,
+    codigo: String,
     estado: Number, 
     estadoTexto: String,
     ubicacion: String,
