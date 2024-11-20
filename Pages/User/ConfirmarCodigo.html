@@ -72,9 +72,10 @@
 
       function findCode() {
         let rut = document.getElementById("rut").value;
+        console.log(rut)
         let queryFind = `
-                query Query($rut: Int!) {
-                    getUsuarioByRut(rut: $rut) {
+                query GetUsuarioByRut($rut: String!) {
+                  getUsuarioByRut(rut: $rut) {
                     id
                     rut
                     nombres
@@ -87,7 +88,7 @@
                     password
                     tipoUsuario
                     fechaSancion
-                    }
+                  }
                 }
                 `;
         $.ajax({
@@ -98,7 +99,7 @@
           data: JSON.stringify({
             query: queryFind,
             variables: {
-              rut: parseInt(rut, 10),
+              rut: rut,
             },
           }),
           success: function (response) {
