@@ -217,6 +217,17 @@
         );
       }
 
+      let optionModalTipoCategoria = [];
+
+      function optionModalCategoria(item) {
+        optionModalTipoCategoria.push(
+          `<label class="dropdown-item">
+                        <input type="checkbox" value="Cámara y Fotografía" class="me-2" />
+                        Cámara y Fotografía
+                      </label>`
+        );
+      }
+
       let optionFormSelectCategoria = [
         '<option value="">Selecciona Categoria</option>',
       ];
@@ -225,6 +236,7 @@
           '<option value="' + item.id + '">' + item.categoria + "</option>"
         );
       }
+      
       
       let optionFormSelectDocumento = [
         '<option value="">Selecciona Documento</option>',
@@ -284,6 +296,9 @@
             response.data.getCategoriaDocumentos.forEach(optionCategoria);
             document.getElementById("formSelectCategoria").innerHTML =
               optionFormSelectCategoria.join("");
+            response.data.getCategoriaDocumentos.forEach(optionModalCategoria);
+            document.getElementById("TipCategoriaModal").innerHTML =
+            optionModalTipoCategoria.join("");
           },
         });
       }
@@ -1172,30 +1187,8 @@
                     >
                       Seleccionar
                     </button>
-                    <div class="dropdown-menu p-2" aria-labelledby="multiSelectDropdown">
-                      <h6 class="dropdown-header">Electronics</h6>
-                      <label class="dropdown-item">
-                        <input type="checkbox" value="Cámara y Fotografía" class="me-2" />
-                        Cámara y Fotografía
-                      </label>
-                      <label class="dropdown-item">
-                        <input type="checkbox" value="Teléfonos Móviles" class="me-2" />
-                        Teléfonos Móviles
-                      </label>
-                      <label class="dropdown-item">
-                        <input type="checkbox" value="GPS y Navegación" class="me-2" />
-                        GPS y Navegación
-                      </label>
-      
-                      <h6 class="dropdown-header">Smart Home</h6>
-                      <label class="dropdown-item">
-                        <input type="checkbox" value="Enchufes e Interruptores" class="me-2" />
-                        Enchufes e Interruptores
-                      </label>
-                      <label class="dropdown-item">
-                        <input type="checkbox" value="Calefacción y Refrigeración" class="me-2" />
-                        Calefacción y Refrigeración
-                      </label>
+                    <div class="dropdown-menu p-2" aria-labelledby="multiSelectDropdown" id = "TipCategoriaModal" >
+                      
                     </div>
                   </div>
                   <div class="mt-2">
@@ -1260,12 +1253,12 @@
 <!-- Modal Eliminar Documento elimina por la id del ejemplar -->
 
 <!-- Primer Modal -->
-<div class="modal fade" id="ModalEliminarDocumento" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="ModalEliminarDocumento" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Eliminar Documento</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <form>
@@ -1287,7 +1280,7 @@
 </div>
 
 <!-- Segundo Modal (Confirmación) -->
-<div class="modal fade" id="ModalConfirmarEliminar" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="ModalConfirmarEliminar" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -1307,7 +1300,7 @@
 <!--modal de eliminar ejemplar-->
 
 <!-- Primer Modal -->
-<div class="modal fade" id="DelEjemplares" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="DelEjemplares" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -1334,7 +1327,7 @@
 </div>
 
 <!-- Segundo Modal (Confirmación) -->
-<div class="modal fade" id="ModalConfirmarEjemplar" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="ModalConfirmarEjemplar" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
