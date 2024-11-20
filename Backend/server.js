@@ -172,7 +172,7 @@ const typeDefs = gql`
     getUsuarios: [Usuario]
     getUsuarioById(id: ID!): Usuario
     getUsuarioByCorreo(correo: String!): Usuario
-    getUsuarioByRut(rut: Int!): Usuario
+    getUsuarioByRut(rut: String!): Usuario
     getPrestamos: [Prestamo]
     getPrestamosEjemplar: [Prestamo]
     getPrestamoById(id: ID!): Prestamo
