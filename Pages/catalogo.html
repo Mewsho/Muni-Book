@@ -209,7 +209,7 @@
 
       // form select de tipo y categoria
       let optionFormSelectTipo = [
-        '<option value="">Selecciona Tipo Documento</option>',
+        '<option value="">Selecciona Tipo</option>',
       ];
       function optionTipo(item) {
         optionFormSelectTipo.push(
@@ -981,6 +981,14 @@
         flex: 1;
       }
 
+      .cat-button {
+        width: 200px;
+      }
+
+      .dropdown-menu {
+        min-width: 300px;
+      }
+
       footer {
         margin-top: auto;
       }
@@ -1103,10 +1111,10 @@
         aria-hidden="true"
       >
 
-      <div class="modal-dialog modal-dialog-centered modal">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title letra-main" id="exampleModalLabel">Agregar Documento</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Agregar Documento</h5>
             <button
               type="button"
               class="btn-close"
@@ -1119,110 +1127,98 @@
               <!-- Titulo -->
               <div class="mb-3">
                 <label for="ModalTitulo" class="form-label">Título</label>
-                <input type="text" class="form-control" id="ModalTitulo" aria-describedby="emailHelp">
+                <input type="text" class="form-control" id="ModalTitulo" />
               </div>
-    
-              <!-- Año Salida -->
-              <div class="mb-3">
-                <label for="ModalAnioSalida" class="form-label">Año Salida</label>
-                <input type="text" class="form-control" id="ModalAnioSalida" aria-describedby="emailHelp">
-              </div>
-    
+
               <!-- Autor -->
               <div class="mb-3">
                 <label for="ModalAutor" class="form-label">Autor</label>
-                <input type="text" class="form-control" id="ModalAutor" aria-describedby="emailHelp">
+                <input type="text" class="form-control" id="ModalAutor" />
               </div>
-    
-              <!-- Categoría (Multiselect jerárquico) -->
-              <div class="mb-3">
-                <label for="multiSelect" class="form-label">Categoría</label>
-                <div class="dropdown">
-                  <button
-                    class="btn btn-outline-secondary dropdown-toggle w-100"
-                    type="button"
-                    id="multiSelectDropdown"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Seleccionar Categorías
-                  </button>
-                  <div class="dropdown-menu w-100 p-2" aria-labelledby="multiSelectDropdown">
-                    <h6 class="dropdown-header">Electronics</h6>
-                    <label class="dropdown-item">
-                      <input type="checkbox" value="Cámara y Fotografía" class="me-2">
-                      Cámara y Fotografía
-                    </label>
-                    <label class="dropdown-item">
-                      <input type="checkbox" value="Teléfonos Móviles" class="me-2">
-                      Teléfonos Móviles
-                    </label>
-                    <label class="dropdown-item">
-                      <input type="checkbox" value="GPS y Navegación" class="me-2">
-                      GPS y Navegación
-                    </label>
-    
-                    <h6 class="dropdown-header">Smart Home</h6>
-                    <label class="dropdown-item">
-                      <input type="checkbox" value="Enchufes e Interruptores" class="me-2">
-                      Enchufes e Interruptores
-                    </label>
-                    <label class="dropdown-item">
-                      <input type="checkbox" value="Calefacción y Refrigeración" class="me-2">
-                      Calefacción y Refrigeración
-                    </label>
-                  </div>
+
+              <div class="row">
+                <!-- Año Salida -->
+                <div class="col-md-4 mb-3">
+                  <label for="ModalAnioSalida" class="form-label">Año Salida</label>
+                  <input type="text" class="form-control" id="ModalAnioSalida" />
                 </div>
-                <div class="mt-2">
-                  <span id="selectedCategories" class="text-muted">No se han seleccionado categorías.</span>
+                <!-- Edición -->
+                <div class="col-md-4 mb-3">
+                  <label for="ModalEdicion" class="form-label">Edición</label>
+                  <input type="text" class="form-control" id="ModalEdicion" />
+                </div>
+                <!-- Editorial -->
+                <div class="col-md-4 mb-3">
+                  <label for="ModalEditorial" class="form-label">Editorial</label>
+                  <input type="text" class="form-control" id="ModalEditorial" />
                 </div>
               </div>
-    
               <!-- Código -->
               <div class="mb-3">
                 <label for="ModalCodigo" class="form-label">Código</label>
                 <input type="text" class="form-control" id="ModalCodigo" aria-describedby="emailHelp">
               </div>
-    
-              <!-- Edición -->
-              <div class="mb-3">
-                <label for="ModalEdicion" class="form-label">Edición</label>
-                <input type="text" class="form-control" id="ModalEdicion" aria-describedby="emailHelp">
-              </div>
-    
-              <!-- Editorial -->
-              <div class="mb-3">
-                <label for="ModalEditorial" class="form-label">Editorial</label>
-                <input type="text" class="form-control" id="ModalEditorial" aria-describedby="emailHelp">
-              </div>
-    
-              <!-- Tipo Documento -->
-              <div class="mb-3">
-                <label for="ModalformSelectTipo" class="form-label">Tipo Documento</label>
-                <select id="ModalformSelectTipo" class="form-select"></select>
-              </div>
-    
-              <!-- Botones -->
-              <div class="d-flex justify-content-between">
-                <button type="button" class="btn btn-outline-danger">Cancelar</button>
-                <button type="button" class="btn btn-success" onclick="AddDocumento()">Agregar</button>
+              <div class="row">
+                <!-- Categoría (Multiselect jerárquico) -->
+                <div class="col-md-6 mb-3">
+                  <label for="multiSelect" class="form-label">Categoría</label>
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-outline-secondary dropdown-toggle cat-button"
+                      type="button"
+                      id="multiSelectDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Seleccionar
+                    </button>
+                    <div class="dropdown-menu p-2" aria-labelledby="multiSelectDropdown">
+                      <h6 class="dropdown-header">Electronics</h6>
+                      <label class="dropdown-item">
+                        <input type="checkbox" value="Cámara y Fotografía" class="me-2" />
+                        Cámara y Fotografía
+                      </label>
+                      <label class="dropdown-item">
+                        <input type="checkbox" value="Teléfonos Móviles" class="me-2" />
+                        Teléfonos Móviles
+                      </label>
+                      <label class="dropdown-item">
+                        <input type="checkbox" value="GPS y Navegación" class="me-2" />
+                        GPS y Navegación
+                      </label>
+      
+                      <h6 class="dropdown-header">Smart Home</h6>
+                      <label class="dropdown-item">
+                        <input type="checkbox" value="Enchufes e Interruptores" class="me-2" />
+                        Enchufes e Interruptores
+                      </label>
+                      <label class="dropdown-item">
+                        <input type="checkbox" value="Calefacción y Refrigeración" class="me-2" />
+                        Calefacción y Refrigeración
+                      </label>
+                    </div>
+                  </div>
+                  <div class="mt-2">
+                    <span id="selectedCategories" class="text-muted">No se han seleccionado categorías.</span>
+                  </div>
+                </div>
+                <!-- Tipo Documento -->
+                <div class="col-md-6 mb-3">
+                  <label for="ModalformSelectTipo" class="form-label">Documento</label>
+                  <select id="ModalformSelectTipo" class="form-select"></select>
+                </div>
               </div>
             </form>
           </div>
-        </div>
-      </div>
-    </div>
-          
-          
           <div class="modal-footer">
             <button
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
             >
-              Close
+              Cancelar
             </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary" onclick="AddDocumento()">Agregar</button>
           </div>
         </div>
       </div>
