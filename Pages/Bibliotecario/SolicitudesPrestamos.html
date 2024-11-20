@@ -93,6 +93,7 @@
 
       // Añade los elementos a la tabla principal
       async function trtdSolicitud(solicitud){
+        console.log(solicitud)
         let estado = solicitud.estadoSolicitud
         let idSolicitud = solicitud.id
         let nombreUsuario = solicitud.usuario.nombres + " " + solicitud.usuario.apellidos
@@ -281,7 +282,7 @@
               console.log(listaTexto)
 
               let ejemplar = response.data.getEjemplarByIdDocumento
-              let ejemplarCodigo = `${ejemplar.codigo}`
+              let ejemplarCodigo = ejemplar.codigo
               console.log(ejemplarCodigo)
               if (!listaTexto.includes(ejemplarCodigo)){
                 const mensajeDiv = document.getElementById("mensajeModal");
@@ -370,7 +371,6 @@
       async function confirmarSolicitud(){
         let rutReal = document.getElementById("modalConfirmacion").getAttribute("rut")
         let rutInput = document.getElementById("usuarioRutModal").value
-        console.log(rutReal,rutInput)
         if (rutReal != rutInput){
           const mensajeDiv = document.getElementById("mensajeModal");
           mensajeDiv.style.display = "block";
