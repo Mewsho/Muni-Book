@@ -28,7 +28,7 @@ const typeDefs = gql`
 
     type Usuario{
         id: ID!
-        rut: Int!
+        rut: String!
         nombres: String!
         apellidos: String!
         direccion: String!
@@ -42,7 +42,7 @@ const typeDefs = gql`
     }
 
     input UsuarioInput{
-        rut: Int!
+        rut: String!
         nombres: String!
         apellidos: String!
         direccion: String!
@@ -75,7 +75,7 @@ const typeDefs = gql`
     # Hay cuatro estados Disponible, En sala, Reserva y  No disponible (3,2,1,0)
     type Ejemplar{
         id: ID!
-        codigo: Int!
+        codigo: String!
         estado: Int! 
         estadoTexto: String!
         ubicacion: String!
@@ -83,7 +83,7 @@ const typeDefs = gql`
     }
 
     input EjemplarInput{
-        codigo: Int
+        codigo: String
         estado: Int
         estadoTexto: String
         ubicacion: String
