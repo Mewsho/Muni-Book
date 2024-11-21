@@ -14,6 +14,7 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -141,8 +142,137 @@
         text-align: end;
       }
     </style>
+    <script>
+      
+      function LoadListaSolicitudes(SolicitudObject){
+        let fechaPrestamo = new Date(SolicitudObject.fechaSolicitud);
+        let fechaDevolucion = new Date(SolicitudObject.prestamos[0].fechaDevolucion);
+        let fechaActual = Date.now();
+
+        if (SolicitudObject.estadoSolicitud == 1 && fechaActual<fechaDevolucion){
+          let strSolicitudesPrestamo = `
+              <table class="table table-bordered">
+                <thead class="table-dark">
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>${SolicitudObject.id}</td>
+                    <td>${SolicitudObject.usuario.nombres} ${SolicitudObject.usuario.apellidos}</td>
+                    <td>${SolicitudObject.prestamos.length}</td>
+                    <td>${fechaPrestamo.toLocaleString()}</td>
+                    <td>${fechaDevolucion.toLocaleString()}</td>
+                    <td>${SolicitudObject.tipoSolicitud}</td>
+                    <!-- Tipo de Préstamo -->
+                    <td class="btn-actions">
+                      <button class="btn btn-danger disabled btn-sm">Enviar Correo</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+          `
+
+          let listaSolicitudes = document.getElementById("listaSolicitudes");
+          listaSolicitudes.insertAdjacentHTML("beforeend", strSolicitudesPrestamo);
+        }
+
+        if (SolicitudObject.estadoSolicitud == 1 && fechaActual>fechaDevolucion){
+          let strSolicitudesPrestamo = `
+              <table class="table table-bordered">
+                <thead class="table-dark">
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>${SolicitudObject.id}</td>
+                    <td>${SolicitudObject.usuario.nombres} ${SolicitudObject.usuario.apellidos}</td>
+                    <td>${SolicitudObject.prestamos.length}</td>
+                    <td>${fechaPrestamo.toLocaleString()}</td>
+                    <td>${fechaDevolucion.toLocaleString()}</td>
+                    <td>${SolicitudObject.tipoSolicitud}</td>
+                    <!-- Tipo de Préstamo -->
+                    <td class="btn-actions">
+                      <button nombres="${SolicitudObject.usuario.nombres}" apellidos="${SolicitudObject.usuario.apellidos}" correo="${SolicitudObject.usuario.correo}" class="btn btn-danger btn-sm correo" >Enviar Correo</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+          `
+
+          let listaSolicitudes = document.getElementById("listaSolicitudes");
+          listaSolicitudes.insertAdjacentHTML("beforeend", strSolicitudesPrestamo);
+          
+        }
+      }
+
+      function GetListaDeSolicitudes(){
+        let queryGetArraySolicitudesPrestamos = `
+          query GetSolicitudPrestamosUsuarioPrestamos {
+            getSolicitudPrestamosUsuarioPrestamos {
+              id
+              tipoSolicitud
+              usuario {
+                nombres
+                apellidos
+                correo
+              }
+              prestamos {
+                fechaPrestamo
+                fechaDevolucion
+              }
+              fechaSolicitud
+              estadoSolicitud
+            }
+          }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryGetArraySolicitudesPrestamos,
+          }),
+          success: function(response){
+            let Array = response.data.getSolicitudPrestamosUsuarioPrestamos
+            Array.forEach((element) => LoadListaSolicitudes(element));
+            sendCorreo()
+
+          }
+        })
+      }
+
+      function sendCorreo(){
+        $(".correo").click(function(){
+            let correo = $(this).attr("correo")
+            let nombres = $(this).attr("nombres")
+            let apellidos = $(this).attr("apellidos")
+            let nombreCompleto = nombres + " " + apellidos
+            let queryGetArraySolicitudesPrestamos = `
+            query Query($correo: String, $nombres: String) {
+              sendEmailRecordatorio(correo: $correo, nombres: $nombres)
+            }
+          `
+          $.ajax({
+            type: "POST",
+            url: "http://localhost:8092/graphql",
+            contentType: "application/json",
+            timeout: 15000,
+            data: JSON.stringify({
+              query: queryGetArraySolicitudesPrestamos,
+              variables: {
+                correo: correo,
+                nombres: nombreCompleto
+              }
+            }),
+            success: function(response){
+              console.log("hola")
+            }
+          })
+        })
+      }
+
+    </script>
   </head>
-  <body>
+  <body onload="GetListaDeSolicitudes()">
     <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
@@ -171,13 +301,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="catalogo.html">Catalogo</a>
+              <a class="nav-link" href="..//catalogo.html">Catalogo</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
             </li>
           </ul>
         </div>
@@ -199,38 +332,15 @@
             <tr>
               <th>ID Solicitud</th>
               <th>Nombre de Usuario</th>
-              <th>Título del Libro</th>
+              <th>Cantidad de Prestamos</th>
               <th>Fecha Solicitada</th>
               <th>Fecha de Entrega</th>
               <th>Tipo de Préstamo</th>
               <th>Acciones</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Juan Pérez</td>
-              <td>El Quijote</td>
-              <td>2024-10-01</td>
-              <td>2024-10-15</td>
-              <td>Sala</td>
-              <!-- Tipo de Préstamo -->
-              <td class="btn-actions">
-                <button class="btn btn-danger btn-sm">Enviar Correo</button>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>María López</td>
-              <td>Cien Años de Soledad</td>
-              <td>2024-10-05</td>
-              <td>2024-10-19</td>
-              <td>Domicilio</td>
-              <!-- Tipo de Préstamo -->
-              <td class="btn-actions">
-                <button class="btn btn-danger btn-sm">Enviar Correo</button>
-              </td>
-            </tr>
+          <tbody id="listaSolicitudes">
+            <!-- Filas se agregarán dinámicamente -->
           </tbody>
         </table>
       </div>

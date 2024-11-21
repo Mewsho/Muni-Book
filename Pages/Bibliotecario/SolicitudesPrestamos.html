@@ -22,6 +22,461 @@
       referrerpolicy="no-referrer"
     />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+
+
+
+
+      // Falta definir el tiempo de devolucion del prestamo
+      // Falta Hacer el comprobande de la devolucion
+
+      let isFirstUpdSolicitud = true
+      let tipoLlamada = ""
+      let tipoSolicitudForEjemplar = ""
+      let SolicitudesPrestamos
+      // Consigue todas las solicitudes y llama trtdSolicitudes
+      async function cargarSolicitudesPrestamo(){
+        const table = document.getElementById("tableBody")
+        table.innerHTML=""
+        let queryGetSolicitudesPrestamo = `
+        query GetSolicitudPrestamosUsuarioPrestamos {
+          getSolicitudPrestamosUsuarioPrestamos {
+            id
+            tipoSolicitud
+            estadoSolicitud
+            fechaSolicitud
+            usuario {
+              id
+              nombres
+              apellidos
+              fechaSancion
+              rut
+            }
+            prestamos {
+              id
+              tipoPrestamo
+              fechaPrestamo
+              fechaDevolucion
+              fechaDevolucionReal
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryGetSolicitudesPrestamo
+          }),
+          success: function(response){
+            let solicitudes = response.data.getSolicitudPrestamosUsuarioPrestamos
+            solicitudes.forEach((solicitud) => trtdSolicitud(solicitud))
+            $(".infoButton").click(function(){
+              let idSolicitud = $(this).attr("solicitud")
+              tipoLlamada = "BotonInfo"
+              getInfoSolicitudPrestamos(idSolicitud)
+            })
+            $(".confirmarButton").click(function(){
+              let idSolicitud = $(this).attr("solicitud")
+              let rut = $(this).attr("rut")
+              showModalConfirmar(idSolicitud,rut)
+            })
+            $(".rechazarButton").click(function(){
+              let idSolicitud = $(this).attr("solicitud")
+            })
+          }
+        })
+      }
+
+      // Añade los elementos a la tabla principal
+      async function trtdSolicitud(solicitud){
+        let estado = solicitud.estadoSolicitud
+        let idSolicitud = solicitud.id
+        let nombreUsuario = solicitud.usuario.nombres + " " + solicitud.usuario.apellidos
+        let rutUsuario = solicitud.usuario.rut
+        let tipoS = solicitud.tipoSolicitud
+        let fechaS = new Date(solicitud.fechaSolicitud)
+        fechaS = fechaS.toLocaleString()
+        if (estado == 1){
+          return
+        }
+        let strSolicitud = `
+        <tr>
+          <!-- id -->
+          <td>${idSolicitud}</td>
+          <!-- usuario -->
+          <td>${nombreUsuario}</td>
+          <!-- fechaSolicitud -->
+          <td>${fechaS}</td>
+          <!-- tipoSolicitud -->
+          <td id="${idSolicitud}-tipo">${tipoS}</td>
+          <!-- Botón Info para abrir el modal de más información (solo muestra los libros) -->
+          <td>
+            <button type="button" class="btn btn-info infoButton" id="${idSolicitud}-boton"
+              solicitud="${idSolicitud}"
+            >
+              Info
+            </button>
+          </td>
+          <td>
+            <button type="button" class="btn btn-success confirmarButton" id="${idSolicitud}-boton-confirmar"
+              solicitud="${idSolicitud}" rut="${rutUsuario}"
+            >
+              Confirmar
+            </button>
+          </td>
+          <td>
+            <button type="button" class="btn btn-danger rechazarButton" id="${idSolicitud}-boton-rechazar"
+              solicitud="${idSolicitud}" 
+            >
+              Rechazar
+            </button>
+          </td>
+        </tr>
+        `
+
+        let tabla = document.getElementById("tableBody")
+
+        tabla.insertAdjacentHTML("beforeend",strSolicitud)
+      }
+
+      // Optiene la solicitud de prestamo y por cada prestamo llama a getEjemplarInfo()
+      async function getInfoSolicitudPrestamos(idSolicitud){
+        console.log(idSolicitud)
+        const modalBody = document.getElementById("modalTableBody");
+        modalBody.innerHTML= ""
+        let queryGetSolicitudPrestamoByIdPrestamos = `
+          query GetSolicitudPrestamoByIdPrestamos($getSolicitudPrestamoByIdPrestamosId: ID!) {
+            getSolicitudPrestamoByIdPrestamos(id: $getSolicitudPrestamoByIdPrestamosId) {
+              id
+              tipoSolicitud
+              estadoSolicitud
+              fechaSolicitud
+              prestamos {
+                id
+                tipoPrestamo
+                fechaPrestamo
+                fechaDevolucion
+                fechaDevolucionReal
+              }
+            }
+          }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryGetSolicitudPrestamoByIdPrestamos,
+            variables : {
+              getSolicitudPrestamoByIdPrestamosId: idSolicitud
+            }
+          }),
+          success: function(response){
+            console.log("getSolicitud")
+            let prestamos = response.data.getSolicitudPrestamoByIdPrestamos.prestamos
+            prestamos.forEach((prestamo) => getPrestamoInfo(prestamo))
+          }
+        })
+      }
+
+      // Optiene la informacion del prestamo, llama a getInfoEjemplar con el ejemplar correspondiente
+      // Muestra el modal si fue el boton de info
+      async function getPrestamoInfo(prestamo){
+        let id = prestamo.id
+        let tipoPrestamo = prestamo.tipoPrestamo
+        let queryPrestamoEjemplar = `
+        query GetPrestamoByIdEjemplar($getPrestamoByIdEjemplarId: ID!) {
+          getPrestamoByIdEjemplar(id: $getPrestamoByIdEjemplarId) {
+            id
+            tipoPrestamo
+            ejemplar {
+              id
+              ubicacion
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryPrestamoEjemplar,
+            variables : {
+              getPrestamoByIdEjemplarId: id
+            }
+          }),
+          success: function(response){
+            let ejemplar = response.data.getPrestamoByIdEjemplar.ejemplar
+            getInfoEjemplar(ejemplar, tipoPrestamo)
+            if (tipoLlamada == "BotonInfo"){
+              $('#infoModal').modal('toggle')
+            } 
+          }
+        })
+      }
+
+      // Obtiene la info del ejemplar y si es del tipo info, rellena el infoModal
+      // Si viene de confirmar revisa los inputs del modal si son los codigos correctos
+      // si lo son llama a updEjemplar
+      async function getInfoEjemplar(ejemplar, tipo){
+        let id = ejemplar.id
+        let queryEjemplar = `
+        query GetEjemplarByIdDocumento($getEjemplarByIdDocumentoId2: ID!) {
+          getEjemplarByIdDocumento(id: $getEjemplarByIdDocumentoId2) {
+            id
+            codigo
+            estado
+            estadoTexto
+            ubicacion
+            documento {
+              titulo
+              autor
+              id
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryEjemplar,
+            variables : {
+              getEjemplarByIdDocumentoId2: id
+            }
+          }),
+          success: function(response){
+            if (tipoLlamada == "BotonInfo"){
+              let ejemplar = response.data.getEjemplarByIdDocumento
+              let titulo = ejemplar.documento.titulo
+              let autor = ejemplar.documento.autor
+              const modalBody = document.getElementById("modalTableBody");
+              let strModalRow = `
+              <tr>
+                <td>${ejemplar.id}</td>
+                <td>${ejemplar.codigo}</td>
+                <td>${titulo}</td>
+                <td>${autor}</td>
+                <td>${ejemplar.ubicacion}</td>
+              </tr>
+              `
+              modalBody.insertAdjacentHTML("beforeend",strModalRow)
+            }
+            else if(tipoLlamada == "ConfirmarSolicitud"){
+
+              let inputs = document.getElementsByClassName("input-codigo")
+              let listaTexto = []
+              for (input of inputs){
+                listaTexto.push(input.value)
+              }
+              console.log(listaTexto)
+
+              let ejemplar = response.data.getEjemplarByIdDocumento
+              let ejemplarCodigo = `${ejemplar.codigo}`
+              console.log(ejemplarCodigo)
+              if (!listaTexto.includes(ejemplarCodigo)){
+                const mensajeDiv = document.getElementById("mensajeModal");
+                mensajeDiv.style.display = "block";
+                mensajeDiv.innerHTML =
+                    '<div class="alert alert-danger">Codigo de Ejemplar Incorrecto</div>';
+                  setTimeout(function () {
+                    mensajeDiv.style.display = "none"; // Oculta el mensaje
+                  }, 2000); 
+                return
+              }
+              updEjemplar(ejemplar, tipo)
+            }
+          }
+        })
+      }
+
+      // Mensaje de exito al terminar la solicitud
+      function showSuccessMessage(){
+
+        if (isFirstUpdSolicitud){
+          isFirstUpdSolicitud = false
+          const mensajeDiv = document.getElementById("mensajeTabla");
+          mensajeDiv.style.display = "block";
+          cargarSolicitudesPrestamo()
+          mensajeDiv.innerHTML =
+              '<div class="alert alert-danger">Solicitud Confirmada</div>';
+          $('#modalConfirmacion').modal('toggle')
+          setTimeout(function () {
+            mensajeDiv.style.display = "none";
+            isFirstUpdSolicitud = true
+          }, 3000);
+        }
+      }
+
+
+
+      // Muestra el modal de confirmar y modifica su interior segun lo requerido
+      async function showModalConfirmar(idSolicitud, rut){
+        let queryGetSolicitudPrestamoByIdPrestamos = `
+        query GetSolicitudPrestamoByIdPrestamos($getSolicitudPrestamoByIdPrestamosId: ID!) {
+          getSolicitudPrestamoByIdPrestamos(id: $getSolicitudPrestamoByIdPrestamosId) {
+            id
+            prestamos {
+              id
+              tipoPrestamo
+              fechaPrestamo
+              fechaDevolucion
+              fechaDevolucionReal
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryGetSolicitudPrestamoByIdPrestamos,
+            variables : {
+              getSolicitudPrestamoByIdPrestamosId: idSolicitud
+            }
+          }),
+          success: function(response){
+            let prestamos = response.data.getSolicitudPrestamoByIdPrestamos.prestamos
+            let cantPrestamos = prestamos.length
+            let elemento = document.getElementById("modalConfirmacionEjemplares")
+            elemento.innerHTML = '<label class="form-label">Codigo Ejemplar(es)</label>'
+            for (let i = 0; i< cantPrestamos; i++){
+              let strInput =`
+              <input type="text" class="form-control mb-2 input-codigo" id="codigo${i}">
+              `
+              elemento.insertAdjacentHTML("beforeend",strInput)
+            }
+            let modal = document.getElementById("modalConfirmacion")
+            modal.setAttribute("solicitud",idSolicitud)
+            modal.setAttribute("rut",rut)
+            $('#modalConfirmacion').modal('toggle')
+          }
+        })
+      }
+
+      // Llamada por el boton de confirmar solicitud
+      // Revisa si el rut es correcto, y llama a getInfoSolicitudPrestamos
+      async function confirmarSolicitud(){
+        let rutReal = document.getElementById("modalConfirmacion").getAttribute("rut")
+        let rutInput = document.getElementById("usuarioRutModal").value
+        console.log(rutReal,rutInput)
+        if (rutReal != rutInput){
+          const mensajeDiv = document.getElementById("mensajeModal");
+          mensajeDiv.style.display = "block";
+          mensajeDiv.innerHTML =
+            '<div class="alert alert-danger">RUT Equivocado</div>';
+          setTimeout(function () {
+            mensajeDiv.style.display = "none"; // Oculta el mensaje
+          }, 2000); 
+          console.log("RUT Equivocado")
+          return
+        }
+
+        let modal = document.getElementById("modalConfirmacion")
+        id = modal.getAttribute("solicitud")
+        tipoLlamada = "ConfirmarSolicitud"
+        getInfoSolicitudPrestamos(id)    
+      }
+
+      // Actualiza el ejemplar para estar en el estado de prestado
+      async function updEjemplar(ejemplar,tipo){
+        console.log(ejemplar,tipo) 
+        
+        let estadoInt = 0
+        if (tipo == "Sala"){
+          estadoInt = 2
+        }
+        else if(tipo == "Reserva"){
+          estadoInt = 1
+        }
+        else if(tipo == "Domicilio"){
+          estadoInt = 0
+        }
+
+        let queryUpdEjemplar= `
+        mutation UpdEjemplar($updEjemplarId2: ID!, $updEjemplarInput3: EjemplarInput) {
+          updEjemplar(id: $updEjemplarId2, input: $updEjemplarInput3) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryUpdEjemplar,
+            variables : {
+              updEjemplarId2: ejemplar.id,
+              updEjemplarInput3: {
+                codigo: ejemplar.codigo,
+                estado: estadoInt,
+                estadoTexto: tipo,
+                ubicacion: ejemplar.ubicacion,
+                documento: ejemplar.documento.id
+              } 
+            }
+          }),
+          success: function(response){
+            console.log("Ejemplar Actualizado")
+            updSolicitudPrestamo()
+          }
+        })
+      
+      }
+
+      let firstUpdSolicitud = false
+      // Actualiza la solicitud de prestamo para ser aprobada
+      function updSolicitudPrestamo(){
+        let modal = document.getElementById("modalConfirmacion")
+        let idSolicitud = modal.getAttribute("solicitud")
+        let queryUpdSolicitud = `
+        mutation UpdSolicitudPrestamo($updSolicitudPrestamoId2: ID!, $updSolicitudPrestamoInput2: SolicitudPrestamoInput) {
+          updSolicitudPrestamo(id: $updSolicitudPrestamoId2, input: $updSolicitudPrestamoInput2) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryUpdSolicitud,
+            variables : {
+              updSolicitudPrestamoId2: idSolicitud,
+              updSolicitudPrestamoInput2: {
+                estadoSolicitud: 1,
+              } 
+            }
+          }),
+          success: function(response){
+            showSuccessMessage()
+          }
+        })
+      }
+
+
+    </script>
     <style>
       h1 {
         font-family: "Times New Roman", Times, serif;
@@ -111,7 +566,7 @@
       }
     </style>
   </head>
-  <body>
+  <body onload="cargarSolicitudesPrestamo()">
     <!-- Header Section -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
@@ -140,13 +595,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="catalogo.html">Catalogo</a>
+              <a class="nav-link" href="..//catalogo.html">Catalogo</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
             </li>
           </ul>
         </div>
@@ -160,7 +618,7 @@
     </div>
 
     <!-- list Section -->
-    <div class="container mt-5">
+    <div class="container">
       <div class="list-container">
         <h2 class="text-center mb-4">Solicitudes de Préstamos</h2>
 
@@ -168,102 +626,104 @@
         <table class="table table-bordered">
           <thead class="table-dark">
             <tr>
-              <th>Seleccionar</th>
               <th>ID Solicitud</th>
               <th>Nombre de Usuario</th>
               <th>Fecha Solicitada</th>
-              <th>Fecha de Entrega</th>
-              <th>inf</th>
+              <th>Tipo Solicitud</th>
+              <th>Ver Más</th>
+              <th>Confirmar</th>
+              <th>Rechazar</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <!-- Casilla de verificación individual -->
-              <td>
-                <input
-                  type="checkbox"
-                  class="form-check-input select-request"
-                />
-              </td>
-              <!-- id -->
-              <td>1</td>
-              <!-- usuario -->
-              <td>Juan Pérez</td>
-              <!-- fechaSolicitud -->
-              <td>2024-10-01</td>
-              <!-- tipoSolicitud -->
-              <td>Sala</td>
-              <!-- Botón Info para abrir el modal de más información (solo muestra los libros) -->
-              <td class="btn-actions">
-                <button
-                  type="button"
-                  class="btn btn-info"
-                  onclick="cargarInfoSolicitud(1)"
-                  data-bs-toggle="modal"
-                  data-bs-target="#infoModal"
-                >
-                  Info
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <!-- Casilla de verificación individual -->
-              <td>
-                <input
-                  type="checkbox"
-                  class="form-check-input select-request"
-                />
-              </td>
-              <!-- id -->
-              <td>2</td>
-              <!-- usuario -->
-              <td>María López</td>
-              <!-- fechaSolicitud -->
-              <td>2024-10-05</td>
-              <!-- tipoSolicitud -->
-              <td>Domicilio</td>
-              <!-- Botón Info para abrir el modal de más información -->
-              <td class="btn-actions">
-                <button
-                  type="button"
-                  class="btn btn-info"
-                  onclick="cargarInfoSolicitud(2)"
-                  data-bs-toggle="modal"
-                  data-bs-target="#infoModal"
-                >
-                  Info
-                </button>
-              </td>
-            </tr>
+          <tbody id="tableBody">
+            
           </tbody>
         </table>
-
-        <!-- Sección de botones de acción -->
-        <div class="d-flex justify-content-center mt-4">
-          <!-- Botón para seleccionar/deseleccionar todas las solicitudes -->
-          <div class="form-check me-3">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              id="selectAll"
-              onclick="toggleSelectAll()"
-            />
-            <label class="form-check-label" for="selectAll"
-              >Seleccionar Todo</label
-            >
-          </div>
-
-          <!-- Botones Confirmar y Rechazar -->
-          <button class="btn btn-success me-2" onclick="confirmRequest()">
-            Confirmar
-          </button>
-          <button class="btn btn-danger">Rechazar</button>
-        </div>
-        <div id="mensaje" class="mt-3" style="display: none"></div>
+        <div id="mensajeTabla" class="mt-3" style="display: none"></div>
       </div>
     </div>
 
-    <!-- Modal de más información -->
+
+    <!-- Modal de Confirmacion -->
+    <div class="modal fade" id="modalConfirmacion" solicitud="" rut="" tabindex="-1"> 
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmar Solicitud?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="usuarioRutModal" class="form-label">RUT</label>
+                <input type="text" class="form-control" id="usuarioRutModal" aria-describedby="rutHelp">
+              </div>
+              <div class="mb-3" id="modalConfirmacionEjemplares">
+                <label class="form-label">Codigo Ejemplar(es)</label>
+              </div>
+            </form>
+            <div id="mensajeModal" class="container mt-3" style="display: none"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-success" onclick="confirmarSolicitud()">Confirmar</button>         
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div>
+        <!-- Footer -->
+      <footer class="bg-dark text-light py-4">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <h5>Muni Book</h5>
+              <ul class="list-unstyled">
+                <li>Tu libreria de confianza</li>
+                <li>Siguenos en redes!</li>
+              </ul>
+            </div>
+            <div class="col-md-3 mb-3">
+              <h5>Explorar</h5>
+              <ul class="list-unstyled">
+                <li><a href="catalogo.html"> Catalogo </a></li>
+                <li><a onclick="loginButton()">Inicia Sesion</a></li>
+              </ul>
+            </div>
+            <div class="col-md-3 mb-3">
+              <h5>Recursos</h5>
+              <ul class="list-unstyled">
+                <li>Sobre nosotros</li>
+                <li>Contactanos</li>
+                <li>Atencion al cliente</li>
+              </ul>
+            </div>
+            <div class="col-md-3 mb-3">
+              <h5>Siguenos</h5>
+              <div class="d-flex">
+                <a href="#" class="text-light me-2">
+                  <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="#" class="text-light me-2">
+                  <i class="fa-brands fa-facebook"></i>
+                </a>
+                <a href="#" class="text-light me-2">
+                  <i class="fa-brands fa-x-twitter"></i>
+                </a>
+                <a href="#" class="text-light">
+                  <i class="fa-brands fa-youtube"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+
+        <!-- Modal de más información -->
     <div
       class="modal fade"
       id="infoModal"
@@ -285,7 +745,19 @@
             ></button>
           </div>
           <div class="modal-body">
-            <!-- no borrar esta seccion donde cargan los libros -->
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Codigo</th>
+                  <th>Nombre del Libro</th>
+                  <th>Autor</th>
+                  <th>Ubicación</th>
+                </tr>
+              </thead>
+              <tbody id="modalTableBody">
+
+              </tbody>
           </div>
           <div class="modal-footer">
             <button
@@ -300,217 +772,6 @@
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-3 mb-3">
-            <h5>Muni Book</h5>
-            <ul class="list-unstyled">
-              <li>Tu libreria de confianza</li>
-              <li>Siguenos en redes!</li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-3">
-            <h5>Explorar</h5>
-            <ul class="list-unstyled">
-              <li>Catalogo</li>
-              <li>Inicia Sesion</li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-3">
-            <h5>Recursos</h5>
-            <ul class="list-unstyled">
-              <li>Sobre nosotros</li>
-              <li>Contactanos</li>
-              <li>Atencion al cliente</li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-3">
-            <h5>Siguenos</h5>
-            <div class="d-flex">
-              <a href="#" class="text-light me-2">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-              <a href="#" class="text-light me-2">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M23 3C22.1 3.35 21.2 3.58 20.2 3.69C21.2 3.08 22 2.13 22.4 1C21.5 1.55 20.5 1.95 19.4 2.17C18.5 1.23 17.3 0.67 16 0.67C13.5 0.67 11.5 2.67 11.5 5.17C11.5 5.55 11.5 5.92 11.6 6.27C7.8 6.09 4.3 4.29 2 1.5C1.6 2.22 1.4 3.03 1.4 3.89C1.4 5.5 2.2 6.94 3.4 7.79C2.6 7.77 1.8 7.55 1.1 7.19V7.23C1.1 9.43 2.7 11.28 4.8 11.73C4.4 11.83 4 11.88 3.6 11.88C3.3 11.88 3 11.85 2.7 11.79C3.3 13.61 5 14.92 7 14.96C5.4 16.17 3.4 16.89 1.2 16.89C0.8 16.89 0.4 16.87 0 16.82C2 18.12 4.4 18.87 7 18.87C16 18.87 20.7 11.41 20.7 4.95C20.7 4.75 20.7 4.55 20.7 4.35C21.6 3.67 22.4 2.82 23 1.85V3Z"
-                    fill="white"
-                  />
-                </svg>
-              </a>
-              <a href="#" class="text-light me-2">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8V8Z"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M6 9H2V21H6V9Z"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-              <a href="#" class="text-light">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M17 2H7C4.23858 2 2 4.23858 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V7C22 4.23858 19.7614 2 17 2Z"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
 
-    <!-- Script para seleccionar o deseleccionar todas las solicitudes -->
-    <script>
-      function toggleSelectAll() {
-        const selectAllCheckbox = document.getElementById("selectAll");
-        const requestCheckboxes = document.querySelectorAll(".select-request");
-        requestCheckboxes.forEach((checkbox) => {
-          checkbox.checked = selectAllCheckbox.checked;
-        });
-      }
-
-      // Función para confirmar solicitudes
-      function confirmRequest() {
-        const checkboxes = document.querySelectorAll(".select-request");
-        let anySelected = false;
-        const mensajeDiv = document.getElementById("mensaje");
-
-        // Verifica si alguna casilla está marcada
-        checkboxes.forEach((checkbox) => {
-          if (checkbox.checked) {
-            anySelected = true;
-          }
-        });
-
-        // Mostrar el mensaje de forma predeterminada
-        mensajeDiv.style.display = "block";
-
-        if (anySelected) {
-          // Mostrar mensaje de confirmación
-          mensajeDiv.innerHTML =
-            '<div class="alert alert-success">Solicitud confirmada.</div>';
-        } else {
-          // Mostrar mensaje de error
-          mensajeDiv.innerHTML =
-            '<div class="alert alert-danger">No hay solicitudes seleccionadas.</div>';
-        }
-
-        // Ocultar el mensaje después de 5 segundos
-        setTimeout(function () {
-          mensajeDiv.style.display = "none"; // Oculta el mensaje
-        }, 5000); // 5000 milisegundos = 5 segundos
-      }
-
-      // cargar informacion de los libros del boton "info"
-      function cargarInfoSolicitud(id) {
-        const modalBody = document.querySelector("#infoModal .modal-body");
-        let librosHTML = "";
-
-        if (id === 1) {
-          librosHTML = `
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Nombre del Libro</th>
-              <th>Tipo de Préstamo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>El Quijote</td>
-              <td>Sala</td>
-            </tr>
-            <tr>
-              <td>Cien Años de Soledad</td>
-              <td>Sala</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-        } else if (id === 2) {
-          librosHTML = `
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Nombre del Libro</th>
-              <th>Tipo de Préstamo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Le Parfum</td>
-              <td>Domicilio</td>
-            </tr>
-            <tr>
-              <td>Juan Salvador Gaviota</td>
-              <td>Domicilio</td>
-            </tr>
-            <tr>
-              <td>Silabario Hispanoamericano</td>
-              <td>Domicilio</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-        }
-
-        modalBody.innerHTML = librosHTML;
-      }
-    </script>
   </body>
 </html>

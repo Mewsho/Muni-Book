@@ -9,12 +9,272 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+
+      // Se llama cuando se presiona el boton de devolucion
+      async function ingresarDevolucion(){
+        let modalInput = document.getElementById("codigoLibro")
+        let id = modalInput.value
+        let queryUpdEjemplar = `
+        mutation ScheduleUpdEjemplar($scheduleUpdEjemplarId: ID!, $scheduleUpdEjemplarInput2: EjemplarInput, $minutos: Int) {
+          ScheduleUpdEjemplar(id: $scheduleUpdEjemplarId, input: $scheduleUpdEjemplarInput2, minutos: $minutos) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryUpdEjemplar,
+            variables: {
+              scheduleUpdEjemplarId: id,
+              scheduleUpdEjemplarInput2: {
+                estado: 3,
+                estadoTexto: "Disponible"
+              },
+              minutos: 1
+            }
+          }),
+          success: function(response){
+            console.log(response)
+            let respuesta = response.data.updEjemplar
+            if (respuesta == null){
+              console.log("error")
+              mostrarError()
+            }
+            else {
+              devolucionExitosa(id)
+            }
+          }
+        })
+      }
+
+      async function mostrarError(){
+        var mensajeDiv = document.getElementById("mensaje");
+        mensajeDiv.style.display = "block";
+        mensajeDiv.innerHTML =
+        '<div class="alert alert-danger">Por favor, ingrese un código de libro válido.</div>';
+        setTimeout(function () {
+          mensajeDiv.style.display = "none"; // Oculta el mensaje
+          document.getElementById("codigoLibro").value = ""; // Limpia el campo de entrada
+        }, 3000); // 5000 milisegundos = 5 segundos
+      }
+
+      async function devolucionExitosa(idEjemplar){
+        var mensajeDiv = document.getElementById("mensaje");
+        mensajeDiv.style.display = "block";
+        mensajeDiv.innerHTML =
+        '<div class="alert alert-success">Devolución registrada con éxito para el código: ' +
+        idEjemplar +
+        ".</div>";
+        setTimeout(function () {
+          mensajeDiv.style.display = "none"; // Oculta el mensaje
+          document.getElementById("codigoLibro").value = ""; // Limpia el campo de entrada
+        }, 3000); // 5000 milisegundos = 5 segundos
+
+        // Aqui hay que modificar los prestamos, necesito el get para obtener el id y luego hacer upd
+        let queryGetPrestamo = `
+        query GetPrestamoByEjemplarId($ejemplarId: ID!) {
+          getPrestamoByEjemplarId(ejemplarID: $ejemplarId) {
+            id
+            tipoPrestamo
+            ejemplar {
+              id
+            }
+            fechaPrestamo
+            fechaDevolucion
+            fechaDevolucionReal
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryGetPrestamo,
+            variables: {
+              ejemplarId: idEjemplar
+            }
+          }),
+          success: function(response){
+            console.log("prestamo", response)
+            let prestamo = response.data.getPrestamoByEjemplarId
+            if (prestamo == null){
+              console.log("Prestamo no existe")
+            }
+            else{
+              updPrestamo(prestamo)
+            }
+          }
+        })
+      }
+
+      async function updPrestamo(prestamo){
+
+        let fechaActual = Date.now()
+        fechaActual = new Date(fechaActual)
+
+        // Calcular sancion
+        let fDevolucion = prestamo.fechaDevolucion
+        fDevolucion = new Date(fDevolucion)
+        console.log(fDevolucion)
+        if (fDevolucion < fechaActual){
+          aplicarSancion(prestamo.id)
+        }
+
+
+        let queryUpdPrestamo = `
+        mutation UpdPrestamo($updPrestamoId: ID!, $updPrestamoInput2: PrestamoInput) {
+          updPrestamo(id: $updPrestamoId, input: $updPrestamoInput2) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryUpdPrestamo,
+            variables: {
+              updPrestamoId: prestamo.id,
+              updPrestamoInput2: {
+                fechaDevolucionReal: fechaActual
+              }
+            }
+          }),
+          success: function(response){
+            console.log("Fecha devolucion prestamo cambiada")
+          }
+        })
+      }
+
+
+      async function aplicarSancion(idPrestamo){
+        getSolicitudPrestamoByPrestamoId(idPrestamo)
+      }
+
+      async function getSolicitudPrestamoUsuarioByPrestamoId(idPrestamo){
+        // Mi objetivo es obtener el usuario
+        // Y luego meterle una sancion
+        let querySolicitud = `
+        query GetSolicitudPrestamoUsuarioByPrestamoId($prestamoId: ID!) {
+          getSolicitudPrestamoUsuarioByPrestamoId(prestamoID: $prestamoId) {
+            id
+            tipoSolicitud
+            estadoSolicitud
+            fechaSolicitud
+            usuario {
+              id
+              rut
+              nombres
+              apellidos
+              direccion
+              telefono
+              activo
+              codigo
+              correo
+              password
+              tipoUsuario
+              fechaSancion
+            }
+            prestamos {
+              id
+              tipoPrestamo
+              fechaPrestamo
+              fechaDevolucion
+              fechaDevolucionReal
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySolicitud,
+            variables: {
+              prestamoId: idPrestamo,
+            }
+          }),
+          success: function(response){
+            let usuario = response.data.getSolicitudPrestamoUsuarioByPrestamoId.usuario
+            updUsuarioSancion(usuario)
+          }
+        })
+      }
+
+      async function updUsuarioSancion(user){
+
+        const actual = new Date()
+        // Agregar 3 dias
+        const sancion = new Date(
+          new Date(actual).setDate(actual.getDate() + 3)
+        )
+        let stringSancion = sancion.toLocaleString()
+
+        let queryUpdSancion = `
+        mutation UpdUsuario($updUsuarioId: ID!) {
+          updUsuario(id: $updUsuarioId) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryUpdSancion,
+            variables: {
+              updUsuarioId: user.id,
+              updUsuarioInput2: {
+                fechaSancion: stringSancion
+              }
+            }
+          }),
+          success: function(response){
+            console.log("Sancion aplicada")
+          }
+        })
+
+      }
+
+    </script>
+
     <style>
       h1 {
         font-family: "Times New Roman", Times, serif;
@@ -122,13 +382,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="catalogo.html">Catalogo</a>
+              <a class="nav-link" href="..//catalogo.html">Catalogo</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
             </li>
           </ul>
         </div>
@@ -194,7 +457,7 @@
                 placeholder="Ingrese el código"
               />
             </div>
-            <button id="btnRegistrar" class="btn btn-primary mt-3">
+            <button id="btnRegistrar" class="btn btn-primary mt-3" onclick="ingresarDevolucion()">
               Registrar Devolución
             </button>
             <div id="mensaje" class="mt-3"></div>
@@ -203,34 +466,6 @@
       </div>
     </div>
 
-    <script>
-      // Evento para el botón "Registrar Devolución"
-      document.getElementById("btnRegistrar").onclick = function () {
-        var codigo = document.getElementById("codigoLibro").value;
-        var mensajeDiv = document.getElementById("mensaje");
-
-        // Mostrar el mensaje de forma predeterminada
-        mensajeDiv.style.display = "block";
-
-        if (codigo) {
-          // Mostrar mensaje de confirmación
-          mensajeDiv.innerHTML =
-            '<div class="alert alert-success">Devolución registrada con éxito para el código: ' +
-            codigo +
-            ".</div>";
-        } else {
-          // Mostrar mensaje de error
-          mensajeDiv.innerHTML =
-            '<div class="alert alert-danger">Por favor, ingrese un código de libro válido.</div>';
-        }
-
-        // Ocultar el mensaje después de 3 segundos
-        setTimeout(function () {
-          mensajeDiv.style.display = "none"; // Oculta el mensaje
-          document.getElementById("codigoLibro").value = ""; // Limpia el campo de entrada
-        }, 5000); // 5000 milisegundos = 5 segundos
-      };
-    </script>
 
     <!-- Footer -->
     <footer class="bg-dark text-light py-4">
