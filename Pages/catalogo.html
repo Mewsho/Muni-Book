@@ -27,7 +27,6 @@
     <title>MuniBook</title>
 
     <script>
-
       let listaDocumentosAgregados = [];
       let listaCantEjemplaresAgregados = [];
       const objectPrestamos = {
@@ -56,7 +55,7 @@
       // Obtencion de cookies y cambios asociados
       async function aplicarVersionUsuario() {}
 
-      async function ModalGenCheckBox(){
+      async function ModalGenCheckBox() {
         let buttonContainer = document.getElementById("ModalCheckboxCategoria");
         let strButtons = `
         <li>
@@ -83,9 +82,6 @@
         buttonContainer.innerHTML = strButtons;
       }
 
-
-      
-
       async function aplicarVersionBibliotecario() {
         let buttonContainer = document.getElementById("contaniner-bb-buttons");
         let strButtons = `
@@ -106,23 +102,16 @@
       function AddDocumento() {
         let ModalAnioSalida = document.getElementById("ModalAnioSalida").value;
         let ModalAutor = document.getElementById("ModalAutor").value;
-        let ModalCategoriaDocumento = document.getElementById("TipCategoriaModal");
+        let ModalCategoriaDocumento =
+          document.getElementById("TipCategoriaModal");
         let CategoriasHijos = [];
-        for(child of ModalCategoriaDocumento.children){
-          for(child2 of child.children){
-            if(child2.checked){
-              CategoriasHijos.push(child2.value)
-              
+        for (child of ModalCategoriaDocumento.children) {
+          for (child2 of child.children) {
+            if (child2.checked) {
+              CategoriasHijos.push(child2.value);
             }
           }
         }
-
-
-
-
-
-
-
 
         let ModalCodigo = document.getElementById("ModalCodigo").value;
         let ModalEdicion = document.getElementById("ModalEdicion").value;
@@ -131,7 +120,7 @@
         let ModalTitulo = document.getElementById("ModalTitulo").value;
         let Modal = document.getElementById("Agregardoc");
         let tipo = document.getElementById("ModalformSelectTipo").value;
-        console.log(tipo)
+        console.log(tipo);
 
         let queryAddDocumento = `
           mutation AddDocumento($input: DocumentoInput) {
@@ -152,14 +141,14 @@
             query: queryAddDocumento,
             variables: {
               input: {
-                  anioSalida: parseInt(ModalAnioSalida,10),
-                  autor: ModalAutor,
-                  categoriaDocumento: CategoriasHijos,
-                  codigo: ModalCodigo,
-                  edicion: parseInt(ModalEdicion,10),
-                  editorial: ModalEditorial,
-                  tipoDocumento: tipo,
-                  titulo: ModalTitulo
+                anioSalida: parseInt(ModalAnioSalida, 10),
+                autor: ModalAutor,
+                categoriaDocumento: CategoriasHijos,
+                codigo: ModalCodigo,
+                edicion: parseInt(ModalEdicion, 10),
+                editorial: ModalEditorial,
+                tipoDocumento: tipo,
+                titulo: ModalTitulo,
               },
             },
           }),
@@ -171,8 +160,6 @@
           },
         });
       }
-
-
 
       async function aplicarVersionNotUsuario() {}
 
@@ -225,9 +212,7 @@
       }
 
       // form select de tipo y categoria
-      let optionFormSelectTipo = [
-        '<option value="">Selecciona Tipo</option>',
-      ];
+      let optionFormSelectTipo = ['<option value="">Selecciona Tipo</option>'];
       function optionTipo(item) {
         optionFormSelectTipo.push(
           '<option value="' + item.id + '">' + item.tipo + "</option>"
@@ -241,7 +226,6 @@
                         <input type="checkbox" value="${item.id}" class="me-2"/>
                         ${item.categoria}
                       </label>`
-                      
         );
       }
 
@@ -253,8 +237,7 @@
           '<option value="' + item.id + '">' + item.categoria + "</option>"
         );
       }
-      
-      
+
       let optionFormSelectDocumento = [
         '<option value="">Selecciona Documento</option>',
       ];
@@ -287,7 +270,7 @@
               optionFormSelectTipo.join("");
 
             document.getElementById("ModalformSelectTipo").innerHTML =
-            optionFormSelectTipo.join("");  
+              optionFormSelectTipo.join("");
           },
         });
       }
@@ -315,7 +298,7 @@
               optionFormSelectCategoria.join("");
             response.data.getCategoriaDocumentos.forEach(optionModalCategoria);
             document.getElementById("TipCategoriaModal").innerHTML =
-            optionModalTipoCategoria.join("");
+              optionModalTipoCategoria.join("");
           },
         });
       }
@@ -695,7 +678,7 @@
 
         let stringCard = `
         <div class="col-md-4 mb-4">
-          <div class="card" id=${
+          <div class="card border-secondary mb-3" style="min-height: 12rem;" id=${
             item.id
           } categoria=${listCategoriaDocumentosId} tipoDocumento=${
           item.tipoDocumento.id
@@ -708,7 +691,9 @@
           item.anioSalida
         }, ${item.editorial}, ${item.tipoDocumento.tipo},</p>
                 <div class="d-flex justify-content-center">
-                  <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#${item.id}-collapse">
+                  <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#${
+                    item.id
+                  }-collapse">
                     Ver más información
                   </button>
                 </div>
@@ -774,7 +759,7 @@
             aplicarCambiosCard();
             response.data.getNDocumentos.forEach(optionDocumentos);
             document.getElementById("ModalDocumentoEjemplar").innerHTML =
-            optionFormSelectDocumento.join("");
+              optionFormSelectDocumento.join("");
           },
         });
       }
@@ -848,12 +833,14 @@
           },
         });
       }
-    
+
       function agregarEjemplar() {
         let codigo = document.getElementById("ModalCodigoEjemplar").value;
         let ubicacion = document.getElementById("ModalUbicaionEjemplar").value;
-        let idDocumento = document.getElementById("ModalDocumentoEjemplar").value;
-        console.log(codigo, ubicacion, idDocumento)
+        let idDocumento = document.getElementById(
+          "ModalDocumentoEjemplar"
+        ).value;
+        console.log(codigo, ubicacion, idDocumento);
         let querySignIn = `
         mutation AddEjemplar($input: EjemplarInput) {
           addEjemplar(input: $input) {
@@ -872,14 +859,14 @@
           data: JSON.stringify({
             query: querySignIn,
             variables: {
-                  input: {
-                    codigo: parseInt(codigo, 10),
-                    documento: idDocumento,
-                    estado: 3,
-                    estadoTexto: "Disponible",
-                    ubicacion: ubicacion
-                  }
-                },
+              input: {
+                codigo: parseInt(codigo, 10),
+                documento: idDocumento,
+                estado: 3,
+                estadoTexto: "Disponible",
+                ubicacion: ubicacion,
+              },
+            },
           }),
           success: function (response) {
             console.log("Response:", response);
@@ -892,7 +879,7 @@
 
       function eliminarDocumento() {
         let codigo = document.getElementById("ModalCodigoEliminar").value;
-        console.log(codigo)
+        console.log(codigo);
         let querySignIn = `
         mutation DelDocumento($delDocumentoId: ID!) {
           delDocumento(id: $delDocumentoId) {
@@ -910,9 +897,9 @@
           timeout: 15000,
           data: JSON.stringify({
             query: querySignIn,
-            variables: {            
-                delDocumentoId: codigo
-                },
+            variables: {
+              delDocumentoId: codigo,
+            },
           }),
           success: function (response) {
             console.log("Response:", response);
@@ -925,7 +912,7 @@
 
       function eliminarEjemplar() {
         let codigo = document.getElementById("ModalejemplarCode").value;
-        console.log(codigo)
+        console.log(codigo);
         let querySignIn = `
         mutation DelEjemplar($delEjemplarId: ID!) {
           delEjemplar(id: $delEjemplarId) {
@@ -943,9 +930,9 @@
           timeout: 15000,
           data: JSON.stringify({
             query: querySignIn,
-            variables: {            
-                delEjemplarId: codigo
-                },
+            variables: {
+              delEjemplarId: codigo,
+            },
           }),
           success: function (response) {
             console.log("hoal:");
@@ -956,12 +943,11 @@
         });
       }
     </script>
-    
-    <!-- Styles como los del css pero no-->
-    
-    <style>
 
-      .enlarge-modal{
+    <!-- Styles como los del css pero no-->
+
+    <style>
+      .enlarge-modal {
         min-width: 1600px;
         width: 900px;
       }
@@ -976,8 +962,8 @@
         font-size: 400%;
       }
 
-      .letra-main{
-        font-family: 'Times New Roman', Times, serif;
+      .letra-main {
+        font-family: "Times New Roman", Times, serif;
       }
 
       .features-section {
@@ -1021,13 +1007,35 @@
         min-width: 300px;
       }
 
-      .footer {
+      .dropdown-check {
+        color: #ec1010;
+      }
+
+      footer {
         text-align: left;
       }
+
+      .footer-link {
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .footer-link:hover {
+        text-decoration: underline;
+        color: inherit;
+      }
+
       .btn-custom-width {
         width: auto;
         min-width: 400px; /* Ajusta según el tamaño que desees para que no se estiren */
         padding: 0.5rem 1rem; /* Espaciado interno para darle un aspecto más compacto */
+      }
+
+      .scrollable-menu {
+        height: auto;
+        max-height: 200px;
+        overflow-x: hidden;
       }
     </style>
   </head>
@@ -1123,26 +1131,27 @@
         </div>
         <div class="container" id="contaniner-bb-buttons"></div>
       </div>
-    
+    </div>
     <div class="container my-5">
       <!-- Contenedor de tarjetas -->
       <div class="row" id="catalogContainer">
         <!-- Ejemplo de tarjeta -->
       </div>
-    
+    </div>
     <!-- Modal Agregar Documentos -->
-      <div
-        class="modal fade"
-        id="Agregardoc"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-
+    <div
+      class="modal fade"
+      id="Agregardoc"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Agregar Documento</h5>
+            <h5 class="modal-title" id="exampleModalLabel">
+              Agregar Documento
+            </h5>
             <button
               type="button"
               class="btn-close"
@@ -1167,8 +1176,14 @@
               <div class="row">
                 <!-- Año Salida -->
                 <div class="col-md-4 mb-3">
-                  <label for="ModalAnioSalida" class="form-label">Año Salida</label>
-                  <input type="text" class="form-control" id="ModalAnioSalida" />
+                  <label for="ModalAnioSalida" class="form-label"
+                    >Año Salida</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="ModalAnioSalida"
+                  />
                 </div>
                 <!-- Edición -->
                 <div class="col-md-4 mb-3">
@@ -1177,14 +1192,21 @@
                 </div>
                 <!-- Editorial -->
                 <div class="col-md-4 mb-3">
-                  <label for="ModalEditorial" class="form-label">Editorial</label>
+                  <label for="ModalEditorial" class="form-label"
+                    >Editorial</label
+                  >
                   <input type="text" class="form-control" id="ModalEditorial" />
                 </div>
               </div>
               <!-- Código -->
               <div class="mb-3">
                 <label for="ModalCodigo" class="form-label">Código</label>
-                <input type="text" class="form-control" id="ModalCodigo" aria-describedby="emailHelp">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ModalCodigo"
+                  aria-describedby="emailHelp"
+                />
               </div>
               <div class="row">
                 <!-- Categoría (Multiselect jerárquico) -->
@@ -1200,17 +1222,23 @@
                     >
                       Seleccionar
                     </button>
-                    <div class="dropdown-menu p-2" aria-labelledby="multiSelectDropdown" id = "TipCategoriaModal" >
-                      
-                    </div>
+                    <div
+                      class="dropdown-menu p-2 scrollable-menu"
+                      aria-labelledby="multiSelectDropdown"
+                      id="TipCategoriaModal"
+                    ></div>
                   </div>
                   <div class="mt-2">
-                    <span id="selectedCategories" class="text-muted">No se han seleccionado categorías.</span>
+                    <span id="selectedCategories" class="dropdown-check"
+                      >No se han seleccionado categorías.</span
+                    >
                   </div>
                 </div>
                 <!-- Tipo Documento -->
                 <div class="col-md-6 mb-3">
-                  <label for="ModalformSelectTipo" class="form-label">Documento</label>
+                  <label for="ModalformSelectTipo" class="form-label"
+                    >Documento</label
+                  >
                   <select id="ModalformSelectTipo" class="form-select"></select>
                 </div>
               </div>
@@ -1224,141 +1252,256 @@
             >
               Cancelar
             </button>
-            <button type="button" class="btn btn-primary" onclick="AddDocumento()">Agregar</button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="AddDocumento()"
+            >
+              Agregar
+            </button>
           </div>
         </div>
       </div>
     </div>
 
- <!-- Modal Agregar Ejemplares -->
+    <!-- Modal Agregar Ejemplares -->
 
- <div class="modal fade" id="ModalAgregarEjemplares" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Agregar Ejemplares</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="">
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Codigo Ejemplar</label>
-            <input type="text" class="form-control" id="ModalCodigoEjemplar" aria-describedby="emailHelp">
+    <div class="modal fade" id="ModalAgregarEjemplares" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Agregar Ejemplares</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
-          <div class="mb-3">
-            <select class="form-select" id="ModalDocumentoEjemplar">
-            </select>
+          <div class="modal-body">
+            <form action="">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label"
+                  >Codigo Ejemplar</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ModalCodigoEjemplar"
+                  aria-describedby="emailHelp"
+                />
+              </div>
+              <div class="mb-3">
+                <select
+                  class="form-select"
+                  id="ModalDocumentoEjemplar"
+                ></select>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label"
+                  >Ubicacion</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ModalUbicaionEjemplar"
+                  aria-describedby="emailHelp"
+                />
+              </div>
+            </form>
           </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Ubicacion</label>
-            <input type="text" class="form-control" id="ModalUbicaionEjemplar" aria-describedby="emailHelp">
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="agregarEjemplar()"
+            >
+              Agregar
+            </button>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="agregarEjemplar()">Agregar</button>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Modal Eliminar Documento elimina por la id del ejemplar -->
+    <!-- Modal Eliminar Documento elimina por la id del ejemplar -->
 
-<!-- Primer Modal -->
-<div class="modal fade" id="ModalEliminarDocumento" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Eliminar Documento</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="ModalCodigoEliminar" class="form-label">Código Documento</label>
-            <input type="text" class="form-control" id="ModalCodigoEliminar">
+    <!-- Primer Modal -->
+    <div class="modal fade" id="ModalEliminarDocumento" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Eliminar Documento</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <!-- Botón que muestra el segundo modal -->
-        <button type="button" class="btn btn-primary" data-bs-target="#ModalConfirmarEliminar" data-bs-toggle="modal" data-bs-dismiss="modal">
-          Eliminar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Segundo Modal (Confirmación) -->
-<div class="modal fade" id="ModalConfirmarEliminar" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Confirmación</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>¿Estás seguro de que quieres eliminar este documento?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" onclick="eliminarDocumento()">Confirmar</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!--modal de eliminar ejemplar-->
-
-<!-- Primer Modal -->
-<div class="modal fade" id="DelEjemplares" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Eliminar Ejemplar</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="ModalejemplarCode" class="form-label">Id del Ejemplar</label>
-            <input type="text" class="form-control" id="ModalejemplarCode">
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="ModalCodigoEliminar" class="form-label"
+                  >Código Documento</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ModalCodigoEliminar"
+                />
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <!-- Botón que muestra el segundo modal -->
-        <button type="button" class="btn btn-primary" data-bs-target="#ModalConfirmarEjemplar" data-bs-toggle="modal" data-bs-dismiss="modal">
-          Eliminar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Segundo Modal (Confirmación) -->
-<div class="modal fade" id="ModalConfirmarEjemplar" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Confirmación</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>¿Estás seguro de que quieres eliminar este id de ejemplar?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" onclick="eliminarEjemplar()">Confirmar</button>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <!-- Botón que muestra el segundo modal -->
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-target="#ModalConfirmarEliminar"
+              data-bs-toggle="modal"
+              data-bs-dismiss="modal"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
+    <!-- Segundo Modal (Confirmación) -->
+    <div class="modal fade" id="ModalConfirmarEliminar" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmación</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Estás seguro de que quieres eliminar este documento?</p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="eliminarDocumento()"
+            >
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--modal de eliminar ejemplar-->
+    <!-- Primer Modal -->
+    <div class="modal fade" id="DelEjemplares" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Eliminar Ejemplar</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="ModalejemplarCode" class="form-label"
+                  >Id del Ejemplar</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ModalejemplarCode"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <!-- Botón que muestra el segundo modal -->
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-target="#ModalConfirmarEjemplar"
+              data-bs-toggle="modal"
+              data-bs-dismiss="modal"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- Segundo Modal (Confirmación) -->
+    <div class="modal fade" id="ModalConfirmarEjemplar" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmación</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Estás seguro de que quieres eliminar este id de ejemplar?</p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="eliminarEjemplar()"
+            >
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Footer begins here remember to keep your house tidy an you too-->
 
@@ -1375,7 +1518,9 @@
           <div class="col-md-3 mb-3">
             <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li><a href="catalogo.html"> Catalogo </a></li>
+              <li>
+                <a class="footer-link" href="catalogo.html"> Catalogo </a>
+              </li>
               <a onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
