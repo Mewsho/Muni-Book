@@ -15,7 +15,10 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -207,11 +210,9 @@
               console.log("NotUsuario")
               */
           }
-
         } else {
           console.log("NotUsuario");
           aplicarVersionNotUsuario();
-
         }
       }
 
@@ -222,7 +223,6 @@
         optionFormSelectTipo.push(
           '<option value="' + item.id + '">' + item.tipo + "</option>"
         );
-
       }
 
       let optionModalTipoCategoria = [];
@@ -244,7 +244,6 @@
         );
       }
 
-
       let optionFormSelectDocumento = [
         '<option value="">Selecciona Documento</option>',
       ];
@@ -255,7 +254,6 @@
       }
       // Funciones para optener la lista de tipo y categoria
       async function cargarTipo() {
-
         let queryTipo = `
         query GetTipoDocumentos {
           getTipoDocumentos {
@@ -283,9 +281,7 @@
         });
       }
 
-
       async function cargarCategoria() {
-
         let queryCategoria = `
         query GetCategoriaDocumentos {
           getCategoriaDocumentos {
@@ -348,7 +344,6 @@
               });
             }
             crearSolicitudInicial();
-
           }
         }
       }
@@ -358,7 +353,6 @@
         result.setDate(result.getDate() + days);
         return result;
       }
-
 
       async function addPrestamoToSolicitud(idDocumentoDelBoton) {
         let inputNumberDocumento = document.getElementById(
@@ -731,7 +725,6 @@
 
       // Cargar documentos inicial
       async function cargarDocumentos() {
-
         let queryDocumentos = `
         query GetNDocumentos($numero: Int) {
           getNDocumentos(numero: $numero) {
@@ -792,15 +785,13 @@
         let aut = document.getElementById("searchBarAuthor").value;
         let tipo = document.getElementById("formSelectTipo").value;
         let categoria = document.getElementById("formSelectCategoria").value;
+      }
+      if (categoria == "") {
+        categoria = null;
+      }
+      console.log(title, aut, tipo, categoria);
 
-
-        }
-        if (categoria == "") {
-          categoria = null;
-        }
-        console.log(title, aut, tipo, categoria);
-
-        let queryDocumentos = `
+      let queryDocumentos = `
         query GetDocumentosByTituloAndAutorAndTipoAndCategoria($titulo: String, $autor: String, $tipoId: ID, $categoriaId: ID) {
           getDocumentosByTituloAndAutorAndTipoAndCategoria(titulo: $titulo, autor: $autor, tipoId: $tipoId, categoriaId: $categoriaId) {
             id
@@ -821,31 +812,35 @@
           }
         }
         `;
-        $.ajax({
-          type: "POST",
-          url: "http://localhost:8092/graphql",
-          contentType: "application/json",
-          timeout: 15000,
-          data: JSON.stringify({
-            query: queryDocumentos,
-            variables: {
-              titulo: title,
-              autor: aut,
-              tipoId: tipo,
-              categoriaId: categoria,
-            },
-          }),
-
-          success: function (response) {
-            response.data.getDocumentosByTituloAndAutorAndTipoAndCategoria.forEach(
-              cardDocumentos
-            );
-            document.getElementById("catalogContainer").innerHTML =
-              listCardDocumentos.join("");
-            console.log("card agregadas");
-            aplicarCambiosCard();
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:8092/graphql",
+        contentType: "application/json",
+        timeout: 15000,
+        data: JSON.stringify({
+          query: queryDocumentos,
+          variables: {
+            titulo: title,
+            autor: aut,
+            tipoId: tipo,
+            categoriaId: categoria,
           },
+<<<<<<< Updated upstream
         });
+=======
+        }),
+
+        success: function (response) {
+          response.data.getDocumentosByTituloAndAutorAndTipoAndCategoria.forEach(
+            cardDocumentos
+          );
+          document.getElementById("catalogContainer").innerHTML =
+            listCardDocumentos.join("");
+          console.log("card agregadas");
+          aplicarCambiosCard();
+        },
+      });
+>>>>>>> Stashed changes
 
       function agregarEjemplar() {
         let codigo = document.getElementById("ModalCodigoEjemplar").value;
@@ -954,7 +949,6 @@
             console.error("chao:");
           },
         });
-
       }
     </script>
 
@@ -1000,7 +994,6 @@
       .card:hover {
         transform: scale(1.03);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-
       }
 
       body {
@@ -1104,7 +1097,6 @@
     </nav>
     <div class="container my-5">
       <h1 class="text-center mb-5">Catálogo de Productos</h1>
-
 
       <!-- Barra de búsqueda y filtros -->
       <div class="row g-3 mb-4">
@@ -1521,7 +1513,6 @@
     </div>
 
     <!-- Footer begins here remember to keep your house tidy an you too-->
-
 
     <footer class="bg-dark text-light py-4">
       <div class="container">

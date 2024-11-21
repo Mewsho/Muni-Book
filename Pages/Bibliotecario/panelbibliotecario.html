@@ -31,11 +31,10 @@
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
-
       // Se llama cuando se presiona el boton de devolucion
-      async function ingresarDevolucion(){
-        let modalInput = document.getElementById("codigoLibro")
-        let id = modalInput.value
+      async function ingresarDevolucion() {
+        let modalInput = document.getElementById("codigoLibro");
+        let id = modalInput.value;
         let queryUpdEjemplar = `
         mutation ScheduleUpdEjemplar($scheduleUpdEjemplarId: ID!, $scheduleUpdEjemplarInput2: EjemplarInput, $minutos: Int) {
           ScheduleUpdEjemplar(id: $scheduleUpdEjemplarId, input: $scheduleUpdEjemplarInput2, minutos: $minutos) {
@@ -45,7 +44,7 @@
             descriptionError
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -57,43 +56,42 @@
               scheduleUpdEjemplarId: id,
               scheduleUpdEjemplarInput2: {
                 estado: 3,
-                estadoTexto: "Disponible"
+                estadoTexto: "Disponible",
               },
-              minutos: 1
-            }
+              minutos: 1,
+            },
           }),
-          success: function(response){
-            console.log(response)
-            let respuesta = response.data.updEjemplar
-            if (respuesta == null){
-              console.log("error")
-              mostrarError()
+          success: function (response) {
+            console.log(response);
+            let respuesta = response.data.updEjemplar;
+            if (respuesta == null) {
+              console.log("error");
+              mostrarError();
+            } else {
+              devolucionExitosa(id);
             }
-            else {
-              devolucionExitosa(id)
-            }
-          }
-        })
+          },
+        });
       }
 
-      async function mostrarError(){
+      async function mostrarError() {
         var mensajeDiv = document.getElementById("mensaje");
         mensajeDiv.style.display = "block";
         mensajeDiv.innerHTML =
-        '<div class="alert alert-danger">Por favor, ingrese un código de libro válido.</div>';
+          '<div class="alert alert-danger">Por favor, ingrese un código de libro válido.</div>';
         setTimeout(function () {
           mensajeDiv.style.display = "none"; // Oculta el mensaje
           document.getElementById("codigoLibro").value = ""; // Limpia el campo de entrada
         }, 3000); // 5000 milisegundos = 5 segundos
       }
 
-      async function devolucionExitosa(idEjemplar){
+      async function devolucionExitosa(idEjemplar) {
         var mensajeDiv = document.getElementById("mensaje");
         mensajeDiv.style.display = "block";
         mensajeDiv.innerHTML =
-        '<div class="alert alert-success">Devolución registrada con éxito para el código: ' +
-        idEjemplar +
-        ".</div>";
+          '<div class="alert alert-success">Devolución registrada con éxito para el código: ' +
+          idEjemplar +
+          ".</div>";
         setTimeout(function () {
           mensajeDiv.style.display = "none"; // Oculta el mensaje
           document.getElementById("codigoLibro").value = ""; // Limpia el campo de entrada
@@ -113,7 +111,7 @@
             fechaDevolucionReal
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -122,35 +120,32 @@
           data: JSON.stringify({
             query: queryGetPrestamo,
             variables: {
-              ejemplarId: idEjemplar
-            }
+              ejemplarId: idEjemplar,
+            },
           }),
-          success: function(response){
-            console.log("prestamo", response)
-            let prestamo = response.data.getPrestamoByEjemplarId
-            if (prestamo == null){
-              console.log("Prestamo no existe")
+          success: function (response) {
+            console.log("prestamo", response);
+            let prestamo = response.data.getPrestamoByEjemplarId;
+            if (prestamo == null) {
+              console.log("Prestamo no existe");
+            } else {
+              updPrestamo(prestamo);
             }
-            else{
-              updPrestamo(prestamo)
-            }
-          }
-        })
+          },
+        });
       }
 
-      async function updPrestamo(prestamo){
-
-        let fechaActual = Date.now()
-        fechaActual = new Date(fechaActual)
+      async function updPrestamo(prestamo) {
+        let fechaActual = Date.now();
+        fechaActual = new Date(fechaActual);
 
         // Calcular sancion
-        let fDevolucion = prestamo.fechaDevolucion
-        fDevolucion = new Date(fDevolucion)
-        console.log(fDevolucion)
-        if (fDevolucion < fechaActual){
-          aplicarSancion(prestamo.id)
+        let fDevolucion = prestamo.fechaDevolucion;
+        fDevolucion = new Date(fDevolucion);
+        console.log(fDevolucion);
+        if (fDevolucion < fechaActual) {
+          aplicarSancion(prestamo.id);
         }
-
 
         let queryUpdPrestamo = `
         mutation UpdPrestamo($updPrestamoId: ID!, $updPrestamoInput2: PrestamoInput) {
@@ -161,7 +156,7 @@
             descriptionError
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -172,22 +167,21 @@
             variables: {
               updPrestamoId: prestamo.id,
               updPrestamoInput2: {
-                fechaDevolucionReal: fechaActual
-              }
-            }
+                fechaDevolucionReal: fechaActual,
+              },
+            },
           }),
-          success: function(response){
-            console.log("Fecha devolucion prestamo cambiada")
-          }
-        })
+          success: function (response) {
+            console.log("Fecha devolucion prestamo cambiada");
+          },
+        });
       }
 
-
-      async function aplicarSancion(idPrestamo){
-        getSolicitudPrestamoByPrestamoId(idPrestamo)
+      async function aplicarSancion(idPrestamo) {
+        getSolicitudPrestamoByPrestamoId(idPrestamo);
       }
 
-      async function getSolicitudPrestamoUsuarioByPrestamoId(idPrestamo){
+      async function getSolicitudPrestamoUsuarioByPrestamoId(idPrestamo) {
         // Mi objetivo es obtener el usuario
         // Y luego meterle una sancion
         let querySolicitud = `
@@ -220,7 +214,7 @@
             }
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -230,23 +224,23 @@
             query: querySolicitud,
             variables: {
               prestamoId: idPrestamo,
-            }
+            },
           }),
-          success: function(response){
-            let usuario = response.data.getSolicitudPrestamoUsuarioByPrestamoId.usuario
-            updUsuarioSancion(usuario)
-          }
-        })
+          success: function (response) {
+            let usuario =
+              response.data.getSolicitudPrestamoUsuarioByPrestamoId.usuario;
+            updUsuarioSancion(usuario);
+          },
+        });
       }
 
-      async function updUsuarioSancion(user){
-
-        const actual = new Date()
+      async function updUsuarioSancion(user) {
+        const actual = new Date();
         // Agregar 3 dias
         const sancion = new Date(
           new Date(actual).setDate(actual.getDate() + 3)
-        )
-        let stringSancion = sancion.toLocaleString()
+        );
+        let stringSancion = sancion.toLocaleString();
 
         let queryUpdSancion = `
         mutation UpdUsuario($updUsuarioId: ID!) {
@@ -257,7 +251,7 @@
             descriptionError
           }
         }
-        `
+        `;
 
         $.ajax({
           type: "POST",
@@ -269,17 +263,15 @@
             variables: {
               updUsuarioId: user.id,
               updUsuarioInput2: {
-                fechaSancion: stringSancion
-              }
-            }
+                fechaSancion: stringSancion,
+              },
+            },
           }),
-          success: function(response){
-            console.log("Sancion aplicada")
-          }
-        })
-
+          success: function (response) {
+            console.log("Sancion aplicada");
+          },
+        });
       }
-
     </script>
 
     <style>
@@ -312,8 +304,7 @@
         margin-bottom: 3px;
         font-size: 250%;
       }
-
-      .filter-buttons {
+      button .filter-buttons {
         margin-bottom: 30px;
       }
 
@@ -416,7 +407,9 @@
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="..//User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
+                ><i class="fa-solid fa-cart-shopping"></i
+              ></a>
             </li>
           </ul>
         </div>
@@ -484,7 +477,11 @@
                 placeholder="Ingrese el código"
               />
             </div>
-            <button id="btnRegistrar" class="btn btn-primary mt-3" onclick="ingresarDevolucion()">
+            <button
+              id="btnRegistrar"
+              class="btn btn-primary mt-3"
+              onclick="ingresarDevolucion()"
+            >
               Registrar Devolución
             </button>
             <div id="mensaje" class="mt-3"></div>
@@ -492,7 +489,6 @@
         </div>
       </div>
     </div>
-
 
     <!-- Footer -->
     <footer class="bg-dark text-custom py-4 mt-4">
