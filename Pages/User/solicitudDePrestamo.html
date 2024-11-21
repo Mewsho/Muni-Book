@@ -27,16 +27,18 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        background-color: #c5c3b8;
       }
       .container {
         flex-grow: 1;
       }
       .cart-section {
-        margin-top: 30px;
+        margin-top: 3%;
+        margin-bottom: 5%;
         border: 1px solid #ddd;
         padding: 20px;
         border-radius: 10px;
-        background-color: #f9f9f9;
+        background-color: #f7f6f5;
       }
       /* Botón de confirmación */
       .confirm-btn {
@@ -73,7 +75,7 @@
         text-decoration: none;
         cursor: pointer;
       }
-      
+
       .footer-link:hover {
         text-decoration: underline;
         color: inherit;
@@ -101,24 +103,26 @@
       }
     </style>
     <script>
+      let PrestamosGlobal = [];
+      let SolicitudPrestamosGlobal = "";
+      let IdUsuarioGlobal = "";
+      let IdEjemplaresGlobales = [];
 
-    let PrestamosGlobal = []
-    let SolicitudPrestamosGlobal = ""
-    let IdUsuarioGlobal = ""
-    let IdEjemplaresGlobales = []
+      function ActualizarFechaPrestamos(
+        idActual,
+        valor,
+        fechaPrestamo,
+        fechaDevolucion,
+        index
+      ) {
+        let listaAuxiliar1 = [];
 
-
-
-      function ActualizarFechaPrestamos(idActual, valor, fechaPrestamo,fechaDevolucion, index){
-  
-        let listaAuxiliar1 = []
-
-        for (variable of IdEjemplaresGlobales){
-          listaAuxiliar1.push(variable.id)
+        for (variable of IdEjemplaresGlobales) {
+          listaAuxiliar1.push(variable.id);
         }
 
-        console.log(idActual)
-        console.log(index)
+        console.log(idActual);
+        console.log(index);
         let queryActualizarPrestamos = `
           mutation UpdPrestamo($updPrestamoId: ID!, $input: PrestamoInput) {
             updPrestamo(id: $updPrestamoId, input: $input) {
@@ -128,7 +132,7 @@
               descriptionError
             }
           }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -144,55 +148,54 @@
                 fechaDevolucion: fechaDevolucion,
 
                 tipoPrestamo: valor,
-                ejemplar: listaAuxiliar1[index]
-              }
-            }
+                ejemplar: listaAuxiliar1[index],
+              },
+            },
           }),
-          success: function(response){
-          }
-        })
+          success: function (response) {},
+        });
       }
 
-      function ObtenerEleccion(){
-        let radio1 = document.getElementsByClassName('form-check-input');
-        let fechaPrestamo = null
-        let fechaDevolucion = null
-        
+      function ObtenerEleccion() {
+        let radio1 = document.getElementsByClassName("form-check-input");
+        let fechaPrestamo = null;
+        let fechaDevolucion = null;
+
         let valor;
         for (let button of radio1) {
           if (button.checked) {
             valor = button.value;
-          }          
+          }
         }
-        
 
-        if (valor == "sala"){
-          fechaPrestamo = new Date()
-          fechaDevolucion = new Date()
+        if (valor == "sala") {
+          fechaPrestamo = new Date();
+          fechaDevolucion = new Date();
           fechaDevolucion.setHours(fechaDevolucion.getHours() + 3);
-           
         }
 
-        if (valor == "domicilio"){
-          fechaPrestamo = new Date()
-          fechaDevolucion = new Date()
+        if (valor == "domicilio") {
+          fechaPrestamo = new Date();
+          fechaDevolucion = new Date();
           fechaDevolucion.setDate(fechaDevolucion.getDate() + 14);
-
         }
 
-        if (valor == "reserve"){
-           fechaPrestamo = new Date(document.getElementById("fechaPrestamo").value);
-           fechaDevolucion = new Date(document.getElementById("fechaDevolucion").value);
-        }
-         
-
-        let listaAuxiliar = []
-
-        for (variable of PrestamosGlobal){
-          listaAuxiliar.push(variable.id)
+        if (valor == "reserve") {
+          fechaPrestamo = new Date(
+            document.getElementById("fechaPrestamo").value
+          );
+          fechaDevolucion = new Date(
+            document.getElementById("fechaDevolucion").value
+          );
         }
 
-        console.log(IdEjemplaresGlobales)
+        let listaAuxiliar = [];
+
+        for (variable of PrestamosGlobal) {
+          listaAuxiliar.push(variable.id);
+        }
+
+        console.log(IdEjemplaresGlobales);
 
         let queryActualizarSolicitudPrestamo = `
           mutation UpdSolicitudPrestamo($updSolicitudPrestamoId: ID!, $input: SolicitudPrestamoInput) {
@@ -203,7 +206,7 @@
               descriptionError
             }
           }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -217,18 +220,23 @@
                 fechaSolicitud: fechaPrestamo,
                 prestamos: listaAuxiliar,
                 tipoSolicitud: valor,
-                usuario: IdUsuarioGlobal
-              }
-            }
+                usuario: IdUsuarioGlobal,
+              },
+            },
           }),
-          success: function(response){
-
-            listaAuxiliar.forEach((id_prestamo, index) => ActualizarFechaPrestamos(id_prestamo, valor, fechaPrestamo,fechaDevolucion, index))
-
-          }
-        })
+          success: function (response) {
+            listaAuxiliar.forEach((id_prestamo, index) =>
+              ActualizarFechaPrestamos(
+                id_prestamo,
+                valor,
+                fechaPrestamo,
+                fechaDevolucion,
+                index
+              )
+            );
+          },
+        });
       }
-
 
       function cargarPrestamo12(prestamo) {
         let elemento = document.getElementById(prestamo.titulo);
@@ -244,7 +252,9 @@
           let listaCarrito = document.getElementById("listaPrestamos");
           listaCarrito.insertAdjacentHTML("beforeend", strPrestamo);
         } else {
-          let cantidadElemento = document.getElementById(`cantidad-${prestamo.titulo}`);
+          let cantidadElemento = document.getElementById(
+            `cantidad-${prestamo.titulo}`
+          );
           let valorActual = parseInt(cantidadElemento.innerHTML, 10);
           cantidadElemento.innerHTML = valorActual + 1;
           console.log(cantidadElemento, valorActual);
@@ -255,14 +265,14 @@
         let cantidadElemento = document.getElementById(`cantidad-${id}`);
         let valorActual = parseInt(cantidadElemento.innerHTML, 10);
         let nuevoValor = valorActual + cantidad;
-        if (nuevoValor >= 1) { // Evita que la cantidad sea menor que 1
+        if (nuevoValor >= 1) {
+          // Evita que la cantidad sea menor que 1
           cantidadElemento.innerHTML = nuevoValor;
         }
       }
 
-
-      function ObtenerIdDocumentoOfEjemplar(ejemplar){
-        let idEjemplar = ejemplar.id
+      function ObtenerIdDocumentoOfEjemplar(ejemplar) {
+        let idEjemplar = ejemplar.id;
         let queryEjemplares = `
           query GetEjemplarByIdDocumento($getEjemplarByIdDocumentoId: ID!) {
             getEjemplarByIdDocumento(id: $getEjemplarByIdDocumentoId) {
@@ -273,7 +283,7 @@
               }
             }
           }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -282,18 +292,19 @@
           data: JSON.stringify({
             query: queryEjemplares,
             variables: {
-              getEjemplarByIdDocumentoId: idEjemplar
-            }
+              getEjemplarByIdDocumentoId: idEjemplar,
+            },
           }),
-          success: function(response){
-            let documentoActual = response.data.getEjemplarByIdDocumento.documento
-            cargarPrestamo12(documentoActual)
-          }
-        })
+          success: function (response) {
+            let documentoActual =
+              response.data.getEjemplarByIdDocumento.documento;
+            cargarPrestamo12(documentoActual);
+          },
+        });
       }
 
-      function ObtenerIdEjemplaresofPrestamos(prestamo){
-        let idPrestamo = prestamo.id
+      function ObtenerIdEjemplaresofPrestamos(prestamo) {
+        let idPrestamo = prestamo.id;
         let queryPrestamos = `
           query GetPrestamoById($getPrestamoByIdEjemplarId: ID!) {
             getPrestamoByIdEjemplar(id: $getPrestamoByIdEjemplarId) {
@@ -302,7 +313,7 @@
               }
             }
           }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -311,24 +322,23 @@
           data: JSON.stringify({
             query: queryPrestamos,
             variables: {
-              getPrestamoByIdEjemplarId: idPrestamo
-            }
+              getPrestamoByIdEjemplarId: idPrestamo,
+            },
           }),
-          success: function(response){
-            let EjemplarActual = response.data.getPrestamoByIdEjemplar.ejemplar
-            IdEjemplaresGlobales.push(EjemplarActual)
-            ObtenerIdDocumentoOfEjemplar(EjemplarActual)
-          }
-        })
+          success: function (response) {
+            let EjemplarActual = response.data.getPrestamoByIdEjemplar.ejemplar;
+            IdEjemplaresGlobales.push(EjemplarActual);
+            ObtenerIdDocumentoOfEjemplar(EjemplarActual);
+          },
+        });
       }
 
-      async function ObtenerSolicitudPrestamos(){
-
+      async function ObtenerSolicitudPrestamos() {
         const cookieValue = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith(`id=`))
-        ?.split("=")[1];
-        let idDeUsuario = cookieValue
+          .split("; ")
+          .find((row) => row.startsWith(`id=`))
+          ?.split("=")[1];
+        let idDeUsuario = cookieValue;
 
         let querySolicitudPrestamos = `
           query GetSolicitudPrestamoByUsuarioId($usuarioId: ID!) {
@@ -342,7 +352,7 @@
               }
             }
           }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -351,22 +361,25 @@
           data: JSON.stringify({
             query: querySolicitudPrestamos,
             variables: {
-              usuarioId: idDeUsuario
-            }
+              usuarioId: idDeUsuario,
+            },
           }),
-          success: function(response){
-            let arrayPrestamos = response.data.getSolicitudPrestamoByUsuarioId.prestamos
-            let solicitudPrestamoActualId = response.data.getSolicitudPrestamoByUsuarioId.id
-            let cantidadTotalLibros = document.getElementById("cantidadLibros").value = arrayPrestamos.length
-            arrayPrestamos.forEach(ObtenerIdEjemplaresofPrestamos)
-            SolicitudPrestamosGlobal = solicitudPrestamoActualId
-            PrestamosGlobal = arrayPrestamos
-            IdUsuarioGlobal = idDeUsuario 
-          }
-        }) 
+          success: function (response) {
+            let arrayPrestamos =
+              response.data.getSolicitudPrestamoByUsuarioId.prestamos;
+            let solicitudPrestamoActualId =
+              response.data.getSolicitudPrestamoByUsuarioId.id;
+            let cantidadTotalLibros = (document.getElementById(
+              "cantidadLibros"
+            ).value = arrayPrestamos.length);
+            arrayPrestamos.forEach(ObtenerIdEjemplaresofPrestamos);
+            SolicitudPrestamosGlobal = solicitudPrestamoActualId;
+            PrestamosGlobal = arrayPrestamos;
+            IdUsuarioGlobal = idDeUsuario;
+          },
+        });
       }
     </script>
-
   </head>
   <body onload="ObtenerSolicitudPrestamos()">
     <!-- Header Section -->
@@ -407,7 +420,9 @@
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="..//User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
+                ><i class="fa-solid fa-cart-shopping"></i
+              ></a>
             </li>
           </ul>
         </div>
@@ -420,9 +435,7 @@
         <!-- Lista de libros (span 8) -->
         <div class="col-md-8">
           <h3>Lista de Libros</h3>
-          <ul class="list-group mb-3" id="listaPrestamos">
-
-          </ul>
+          <ul class="list-group mb-3" id="listaPrestamos"></ul>
         </div>
 
         <!-- Opciones de préstamo y detalles (span 4) -->
@@ -497,7 +510,6 @@
           </div>
           <button
             class="btn btn-success w-100 mt-3"
-
             onclick="ObtenerEleccion()"
           >
             Confirmar solicitud
@@ -565,19 +577,29 @@
           <div class="col-md-3 mb-3">
             <h5>Explorar</h5>
             <ul class="list-unstyled">
+              <li>
+                <a class="footer-link" href="/Pages/catalogo.html">
+                  Catalogo
+                </a>
+              </li>
 
-
-              <li><a class="footer-link" href="catalogo.html"> Catalogo </a></li>
-
-              <a onclick="loginButton()">Inicia Sesion</a>
+              <a class="footer-link" onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
-              <li>Sobre nosotros</li>
-              <li>Contactanos</li>
-              <li>Atencion al cliente</li>
+              <li>
+                <a class="footer-link" href="/Pages/ContactoMas.html">
+                  Sobre nosotros
+                </a>
+              </li>
+              <li>
+                <a class="footer-link" href="#">Contactanos</a>
+              </li>
+              <li>
+                <a class="footer-link" href="#">Atencion al cliente</a>
+              </li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
@@ -602,7 +624,6 @@
     </footer>
 
     <script>
-
       // Función para calcular la fecha de devolución, aproximadamente 2 semanas después de la fecha de préstamo
       function calcularFechaDevolucion() {
         const fechaPrestamo = new Date(
@@ -612,10 +633,10 @@
         if (fechaPrestamo) {
           fechaPrestamo.setDate(fechaPrestamo.getDate() + 14); // Añadir tiempo estimado (14 días)
           // Formato ISO (YYYY-MM-DD)
-          document.getElementById("fechaDevolucion").value =
-            fechaPrestamo.toISOString().split("T")[0];
+          document.getElementById("fechaDevolucion").value = fechaPrestamo
+            .toISOString()
+            .split("T")[0];
         }
-
       }
 
       // Función para confirmar la reserva (puedes agregar la lógica que desees)
@@ -640,6 +661,5 @@
           });
         });
     </script>
-
   </body>
 </html>
