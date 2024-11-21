@@ -9,6 +9,13 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       crossorigin="anonymous"
@@ -101,8 +108,9 @@
     let IdEjemplaresGlobales = []
 
 
+
       function ActualizarFechaPrestamos(idActual, valor, fechaPrestamo,fechaDevolucion, index){
-        
+  
         let listaAuxiliar1 = []
 
         for (variable of IdEjemplaresGlobales){
@@ -132,7 +140,9 @@
               updPrestamoId: idActual,
               input: {
                 fechaPrestamo: fechaPrestamo,
+
                 fechaDevolucion: fechaDevolucion,
+
                 tipoPrestamo: valor,
                 ejemplar: listaAuxiliar1[index]
               }
@@ -155,6 +165,7 @@
           }          
         }
         
+
         if (valor == "sala"){
           fechaPrestamo = new Date()
           fechaDevolucion = new Date()
@@ -174,6 +185,7 @@
            fechaDevolucion = new Date(document.getElementById("fechaDevolucion").value);
         }
          
+
         let listaAuxiliar = []
 
         for (variable of PrestamosGlobal){
@@ -210,7 +222,9 @@
             }
           }),
           success: function(response){
+
             listaAuxiliar.forEach((id_prestamo, index) => ActualizarFechaPrestamos(id_prestamo, valor, fechaPrestamo,fechaDevolucion, index))
+
           }
         })
       }
@@ -309,7 +323,13 @@
       }
 
       async function ObtenerSolicitudPrestamos(){
-        let idDeUsuario = "671d5f62e7aba670c895dc01"
+
+        const cookieValue = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith(`id=`))
+        ?.split("=")[1];
+        let idDeUsuario = cookieValue
+
         let querySolicitudPrestamos = `
           query GetSolicitudPrestamoByUsuarioId($usuarioId: ID!) {
             getSolicitudPrestamoByUsuarioId(usuarioID: $usuarioId) {
@@ -346,12 +366,11 @@
         }) 
       }
     </script>
-  </head>
 
   </head>
   <body onload="ObtenerSolicitudPrestamos()">
-
     <!-- Header Section -->
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
         <a class="navbar-brand" href="/Pages/index.html">
@@ -367,6 +386,7 @@
             <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
           </svg>
         </a>
+        <!-- Botones del navbar-->
         <button
           class="navbar-toggler"
           type="button"
@@ -378,19 +398,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="#products">Productos</a>
+              <a class="nav-link" href="..//catalogo.html">Catalogo</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#solutions">Soluciones</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#community">Comunidad</a>
+              <a class="nav-link" href="#servicios">Servicios</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="perfilusuario.html">perfil</a>
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
             </li>
           </ul>
         </div>
@@ -434,7 +451,7 @@
                   type="radio"
                   name="tipoPrestamo"
                   id="prestamoSala"
-                  value="sala"
+                  value="Sala"
                 />
                 <label class="form-check-label" for="prestamoSala">
                   Prestamo en Sala
@@ -446,7 +463,7 @@
                   type="radio"
                   name="tipoPrestamo"
                   id="prestamoDomicilio"
-                  value="domicilio"
+                  value="Domicilio"
                 />
                 <label class="form-check-label" for="prestamoDomicilio">
                   Prestamo a Domicilio
@@ -458,7 +475,7 @@
                   type="radio"
                   name="tipoPrestamo"
                   id="reserve"
-                  value="reserve"
+                  value="Reserva"
                   onclick="toggleDateBox(true)"
                 />
                 <label class="form-check-label" for="reserve">Reserva</label>
@@ -478,20 +495,6 @@
               onchange="calcularFechaDevolucion()"
             />
           </div>
-
-          <!-- fecha devolucion -->
-          <div class="mb-3" id="fechaDevolucionContainer" style="display: none">
-            <label for="fechaDevolucion" class="form-label"
-              >Fecha de Devolucion</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="fechaDevolucion"
-              readonly
-            />
-          </div>
-
           <button
             class="btn btn-success w-100 mt-3"
 
@@ -563,7 +566,9 @@
             <h5>Explorar</h5>
             <ul class="list-unstyled">
 
+
               <li><a class="footer-link" href="catalogo.html"> Catalogo </a></li>
+
               <a onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
@@ -603,12 +608,14 @@
         const fechaPrestamo = new Date(
           document.getElementById("fechaPrestamo").value
         );
+
         if (fechaPrestamo) {
           fechaPrestamo.setDate(fechaPrestamo.getDate() + 14); // Añadir tiempo estimado (14 días)
           // Formato ISO (YYYY-MM-DD)
           document.getElementById("fechaDevolucion").value =
             fechaPrestamo.toISOString().split("T")[0];
         }
+
       }
 
       // Función para confirmar la reserva (puedes agregar la lógica que desees)
@@ -621,9 +628,6 @@
         document.getElementById("fechaPrestamoContainer").style.display = show
           ? "block"
           : "none";
-        document.getElementById("fechaDevolucionContainer").style.display = show
-          ? "block"
-          : "none";
       }
 
       // Configurar el evento para mostrar/ocultar los cuadros de fecha según el tipo de préstamo
@@ -632,7 +636,7 @@
         .forEach((radio) => {
           radio.addEventListener("change", function () {
             // Mostrar las fechas solo si el valor seleccionado es "reserve"
-            toggleDateBox(this.value === "reserve");
+            toggleDateBox(this.value === "Reserva");
           });
         });
     </script>

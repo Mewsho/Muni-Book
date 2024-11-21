@@ -133,15 +133,29 @@
   <script>
     console.log(document.cookie);
 
-    function aplicarVersionUsuario() {}
-
-    function aplicarVersionBibliotecario() {
-      console.log();
+    function aplicarVersionUsuario(){
+        let elemento = document.getElementById("NavbarAdmin");
+        elemento.classList.add("d-none");
+        let elemento1 = document.getElementById("navbarBibliotecario");
+        elemento1.classList.add("d-none");
     }
 
-    function aplicarVersionNotUsuario() {}
+    function aplicarVersionBibliotecario() {
+        let elemento = document.getElementById("NavbarAdmin");
+        elemento.classList.add("d-none");
+    }
 
-    function aplicarVersionAdministrador() {}
+    function aplicarVersionNotUsuario() {
+        let elemento = document.getElementById("NavbarAdmin");
+        elemento.classList.add("d-none");
+        let elemento1 = document.getElementById("navbarBibliotecario");
+        elemento1.classList.add("d-none");
+    }
+
+    function aplicarVersionAdministrador() {
+      let elemento1 = document.getElementById("navbarBibliotecario");
+      elemento1.classList.add("d-none");
+    }
 
     function loginButton() {
       let tipoCookie = document.cookie
@@ -163,6 +177,18 @@
       }
     }
 
+    function logoutButton(){
+      delete_cookie("user")
+      delete_cookie("id")
+      delete_cookie("nombres")
+      delete_cookie("tipo")
+      window.location.href = "login.html";
+    }
+
+    function delete_cookie(name) {
+      document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+
     // Revisa la exitencia de la cookie, obteniendo el tipo y aplicando los cambios respectivos
     function checkCookieExistence(name) {
       if (
@@ -175,7 +201,7 @@
           .find((row) => row.startsWith(`tipo=`))
           ?.split("=")[1];
 
-        switch (tipoCookie) {
+        switch (parseInt(tipoCookie, 10)) {
           case 0:
             aplicarVersionUsuario();
             console.log("Usuario");
@@ -195,14 +221,21 @@
             console.log("NotUsuario")
             */
         }
+
+        let elemento = document.getElementById("botonLogin");
+        elemento.classList.add("d-none");
+
       } else {
         aplicarVersionNotUsuario();
+        let elemento = document.getElementById("botonLogout");
+        elemento.classList.add("d-none");
         console.log("NotUsuario");
       }
     }
   </script>
 
   <!-- El cuelpo del diablo -->
+
 
   <body onload="checkCookieExistence('tipo')">
     <nav class="navbar navbar-expand-lg bg-dark navbar-light">
@@ -243,26 +276,22 @@
             </li>
             <!-- "d.none" para oculta como "nav-item d-none"-->
             <li class="nav-item">
-              <a class="nav-link" href="/Pages/Admin/PanelAdmin.html">admin</a>
+              <a class="nav-link" href="/Pages/Admin/PanelAdmin.html">Admin</a>
             </li>
 
             <li class="nav-item">
               <a
                 class="nav-link"
                 href="/Pages/Bibliotecario/panelbibliotecario.html"
-                >bibliotecario</a
-              >
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="/Pages/User/panelusuario.html"
-                >usuario</a
+                >Bibliotecario</a
               >
             </li>
           </ul>
         </div>
+
       </div>
-    </nav>
+    </div>
+  </nav>
 
     <!-- Texto central de landing -->
 
@@ -272,7 +301,8 @@
 
         <p class="textobajotitulo">Librería Municipal</p>
         <div class="mt-4">
-          <a onclick="loginButton()" class="btn btn-dark">Acceder</a>
+          <a onclick="loginButton()" class="btn btn-dark" id="botonLogin">Acceder</a>
+          <a onclick="logoutButton()" class="btn btn-dark" id="botonLogout">Cerrar Sesion</a>
         </div>
       </div>
     </section>

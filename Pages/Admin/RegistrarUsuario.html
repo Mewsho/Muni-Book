@@ -103,6 +103,34 @@
           },
         });
       }
+
+      function sendMail(nombreVerficar, correoVerificar, codigoVerificar) {
+        let querySignIn = `
+          query Query($correo: String, $codigoVerificador: Int, $nombres: String) {
+            sendEmail(correo: $correo, codigoVerificador: $codigoVerificador, nombres: $nombres)
+          }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySignIn,
+            variables: {
+              correo: correoVerificar,
+              codigoVerificador: codigoVerificar,
+              nombres: nombreVerficar,
+            },
+          }),
+          success: function (response) {
+            console.log("Response:", response);
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
     </script>
     <style>
       h2 {
@@ -213,13 +241,18 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="catalogo.html">Catalogo</a>
+              <a class="nav-link" href="..//catalogo.html">Catalogo</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
+                ><i class="fa-solid fa-cart-shopping"></i
+              ></a>
             </li>
           </ul>
         </div>
@@ -322,7 +355,7 @@
           </div>
         </div>
         <!--boton guardar-->
-        <div class="col-md-12">
+        <div class="col-md-12 text-end">
           <button type="button" class="btn btn-success mt-4" onclick="signIn()">
             Guardar cambios
           </button>
