@@ -10,8 +10,8 @@
       rel="stylesheet"
     />
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
       integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
@@ -23,11 +23,11 @@
     ></script>
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <style>
-      /* Asi se comenta en Css*/
+      /* Letra H1 */
       h1 {
         font-family: "Times New Roman", Times, serif;
       }
-
+      /* Cuerpo del html */
       body {
         font-family: "Times New Roman", Times, serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
@@ -35,17 +35,22 @@
         flex-direction: column;
         background-color: #c5c3b8;
       }
-
+      /* Modificador para el titulo de la pagina Munibook gigante */
+      .display-4 {
+        font-size: 1000%;
+        font-family: "Times New Roman", Times, serif;
+      }
+      /* Modificador del container */
       .container {
         flex-grow: 1; /* Se expande para ocupar el espacio disponible */
       }
-
+      /* Titulo de Munibook */
       .hero-title {
         margin-top: 150px;
         text-align: center;
         font-size: 1000%;
       }
-
+      /* Sub texto del titulo */
       .hero-subtitle {
         text-align: center;
         color: #666;
@@ -56,32 +61,36 @@
         margin-bottom: 30px;
       }
 
-      .filter-buttons {
-        margin-bottom: 30px;
-      }
-
-      .filter-buttons .btn {
-        margin-right: 10px;
-        margin-bottom: 10px;
-      }
-
-      .hero-section {
-        background-color: #f8f9fa;
-        padding: 4rem 0;
-      }
-      .features-section {
-        padding: 4rem 0;
-      }
-      .display-4 {
-        font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
-      }
       .nav-link {
         align-items: center;
         font-family: "Times New Roman", Times, serif;
         align-content: center;
         text-align: end;
         color: #efeae4;
+      }
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+      }
+      .navbar-toggler {
+        border-color: white; /* Cambia el borde del toggler a blanco */
+      }
+      
+      .hero-section {
+        background-color: #f8f9fa;
+        padding: 4rem 0;
+      }
+
+      .filter-buttons {
+        margin-bottom: 30px;
+      }
+      
+      .filter-buttons .btn {
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .features-section {
+        padding: 4rem 0;
       }
 
       .panel-container {
@@ -108,12 +117,6 @@
       .footer-link:hover {
         text-decoration: underline;
         color: inherit;
-      }
-      .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
-      }
-      .navbar-toggler {
-        border-color: white; /* Cambia el borde del toggler a blanco */
       }
     </style>
   </head>
