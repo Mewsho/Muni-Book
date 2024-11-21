@@ -339,7 +339,7 @@ const resolvers = {
             return solicitudPrestamo;
         },
         
-        async  getSolicitudPrestamoByIdUsuarioPrestamos(obj){
+        async  getSolicitudPrestamoByIdUsuarioPrestamos(obj, {id}){
             let solicitudPrestamo = await SolicitudPrestamo.findById(id).populate('usuario').populate('prestamos');
             return solicitudPrestamo;
         },
