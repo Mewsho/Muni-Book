@@ -115,28 +115,34 @@
   </head>
   <body>
     <div class="container mt-5">
-      <h1 class="text-center mb-4">Confirmar Código</h1>
-      <form id="registrationForm" class="mx-auto" style="max-width: 500px;">
-        <div class="mb-3">
-          <label for="rut" class="form-label">Rut</label>
-          <input
-            type="text"
-            class="form-control"
-            id="rut"
-            placeholder="Ingrese el rut del usuario"
-            required
-          />
+      <div class="card mx-auto" style="max-width: 500px">
+        <div class="card-body">
+          <h1 class="text-center mb-4">Confirmar Código</h1>
+          <form id="registrationForm">
+            <div class="mb-3">
+              <label for="rut" class="form-label">RUT</label>
+              <input
+                type="text"
+                class="form-control"
+                id="rut"
+                placeholder="Ingrese el rut del usuario"
+                required
+              />
+            </div>
+            <div class="d-flex justify-content-center">
+              <button
+                type="button"
+                class="btn btn-secondary w-100"
+                onclick="findCode()"
+              >
+                Aceptar
+              </button>
+            </div>
+          </form>
         </div>
-        <div class="d-flex justify-content-center">
-        <button
-          type="button"
-          class="btn btn-secondary w-100"
-          onclick="findCode()"
-        >
-          Aceptar
-        </button>
-      </form>
+      </div>
     </div>
+    
 
     <!-- Modal para código de verificación -->
     <div
@@ -146,44 +152,131 @@
       aria-labelledby="codigoModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="codigoModalLabel">
-              Código de Verificación
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <label for="codigo" class="form-label"
-              >Ingrese el código de verificación</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="codigo"
-              placeholder="Código"
-              required
+    <!-- Modal -->
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- Header del modal -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="codigoModalLabel">Código de Verificación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <!-- Cuerpo del modal -->
+        <div class="modal-body">
+          <!-- Campo: Código de Verificación -->
+          <label for="codigo" class="form-label">Ingrese el código de verificación</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="codigo" 
+            placeholder="Código" 
+            required 
+          />
+
+          <!-- Campo: Contraseña -->
+          <label for="password" class="form-label mt-3">Contraseña</label>
+          <div class="input-group">
+            <input 
+              type="password" 
+              class="form-control" 
+              id="password" 
+              placeholder="Ingrese su contraseña" 
+              required 
             />
+            <span class="input-group-text" id="togglePassword">
+              <i class="bi bi-eye-slash"></i>
+            </span>
           </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              onclick="validateCode()"
-            >
-              Confirmar
-            </button>
+
+          <!-- Campo: Confirmar Contraseña -->
+          <label for="confirmPassword" class="form-label mt-3">Confirmar Contraseña</label>
+          <div class="input-group">
+            <input 
+              type="password" 
+              class="form-control" 
+              id="confirmPassword" 
+              placeholder="Confirme su contraseña" 
+              required 
+            />
+            <span class="input-group-text" id="toggleConfirmPassword">
+              <i class="bi bi-eye-slash"></i>
+            </span>
           </div>
+
+          <!-- Mensaje de validación -->
+          <div id="mensaje" style="display: none;" class="mt-3"></div>
+        </div>
+
+        <!-- Footer del modal -->
+        <div class="modal-footer">
+          <button 
+            type="button" 
+            class="btn btn-primary" 
+            id="btnConfirmar"
+          >
+            Confirmar
+          </button>
         </div>
       </div>
     </div>
 
+<!-- Scripts y estilos necesarios -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Función para mostrar/ocultar la contraseña
+  const togglePasswordVisibility = (inputId, iconId) => {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId).querySelector("i");
+    const isPasswordVisible = input.type === "text";
+
+    input.type = isPasswordVisible ? "password" : "text";
+    icon.classList.toggle("bi-eye", !isPasswordVisible);
+    icon.classList.toggle("bi-eye-slash", isPasswordVisible);
+  };
+
+  // Event listeners para los iconos
+  document
+    .getElementById("togglePassword")
+    .addEventListener("click", () => {
+      togglePasswordVisibility("password", "togglePassword");
+    });
+  document
+    .getElementById("toggleConfirmPassword")
+    .addEventListener("click", () => {
+      togglePasswordVisibility("confirmPassword", "toggleConfirmPassword");
+    });
+
+  // Evento para el botón "Confirmar"
+  document.getElementById("btnConfirmar").onclick = function () {
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const mensajeDiv = document.getElementById("mensaje");
+
+    // Mostrar el mensaje de forma predeterminada
+    mensajeDiv.style.display = "block";
+
+    if (password === confirmPassword && password !== "") {
+      // Mostrar mensaje de confirmación
+      mensajeDiv.innerHTML =
+        '<div class="alert alert-success">Las contraseñas coinciden. Cuenta creada con éxito.</div>';
+    } else {
+      // Mostrar mensaje de error
+      mensajeDiv.innerHTML =
+        '<div class="alert alert-danger">Las contraseñas no coinciden. Intente de nuevo.</div>';
+    }
+
+    // Ocultar el mensaje después de 5 segundos
+    setTimeout(function () {
+      mensajeDiv.style.display = "none"; // Oculta el mensaje
+      document.getElementById("password").value = ""; // Limpia el campo de entrada de la contraseña
+      document.getElementById("confirmPassword").value = ""; // Limpia el campo de entrada de confirmación
+    }, 5000); // 5000 milisegundos = 5 segundos
+  };
+</script>
+<link 
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" 
+  rel="stylesheet"
+/>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
