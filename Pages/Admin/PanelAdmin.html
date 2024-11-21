@@ -71,10 +71,30 @@
         text-align: end;
       }
 
+      .panel-container {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: auto;
+        margin-top: 1%;
+        margin-bottom: 5%;
+      }
+
       footer {
         background-color: #000;
         color: #fff;
         padding: 20px 0;
+      }
+      .footer-link {
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .footer-link:hover {
+        text-decoration: underline;
+        color: inherit;
       }
     </style>
   </head>
@@ -133,22 +153,26 @@
     </div>
 
     <!-- Filter Buttons -->
-    <div class="container text-center">
-      <div class="mb-3">
-        <a
-          href="PrestamosVencidos.html"
-          class="btn btn-outline-secondary btn-lg w-100"
-        >
-          Revisar Préstamos Vencidos
-        </a>
-      </div>
-      <div>
-        <a
-          href="RegistrarUsuario.html"
-          class="btn btn-outline-secondary btn-lg w-100"
-        >
-          Registrar Ficha de Usuario
-        </a>
+
+    <div class="container mt-5">
+      <div class="panel-container">
+        <h2 class="text-center mb-4">panel administrador</h2>
+        <div class="mb-3">
+          <a
+            href="PrestamosVencidos.html"
+            class="btn btn-outline-secondary btn-lg w-100"
+          >
+            Revisar Préstamos Vencidos
+          </a>
+        </div>
+        <div>
+          <a
+            href="RegistrarUsuario.html"
+            class="btn btn-outline-secondary btn-lg w-100"
+          >
+            Registrar Ficha de Usuario
+          </a>
+        </div>
       </div>
     </div>
 
@@ -166,7 +190,9 @@
           <div class="col-md-3 mb-3">
             <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li><a href="catalogo.html"> Catalogo </a></li>
+              <li>
+                <a class="footer-link" href="catalogo.html"> Catalogo </a>
+              </li>
               <a onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
