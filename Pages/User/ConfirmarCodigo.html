@@ -170,7 +170,10 @@
       function validateCode() {
         let inputCodigo = document.getElementById("codigo").value;
         inputCodigo = parseInt(inputCodigo, 10);
-        if (userData.codigo == inputCodigo) {
+        let pass1 = document.getElementById("password").value
+        let pass2 = document.getElementById("confirmPassword").value
+        console.log(pass1)
+        if (userData.codigo == inputCodigo && pass1 == pass2) {
           let queryFind = `
                 mutation Mutation($updUsuarioId: ID!, $input: UsuarioInput) {
                     updUsuario(id: $updUsuarioId, input: $input) {
@@ -199,7 +202,7 @@
                   activo: true,
                   codigo: 0,
                   correo: userData.correo,
-                  password: userData.password,
+                  password: pass1,
                   tipoUsuario: userData.tipoUsuario,
                 },
               },
@@ -409,7 +412,7 @@
     mensajeDiv.style.display = "block";
 
     if (password === confirmPassword && password !== "") {
-      // Mostrar mensaje de confirmación
+      validateCode()
       mensajeDiv.innerHTML =
         '<div class="alert alert-success">Las contraseñas coinciden. Cuenta creada con éxito.</div>';
     } else {
