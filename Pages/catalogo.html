@@ -27,6 +27,7 @@
 
     <title>MuniBook</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       let listaDocumentosAgregados = [];
       let listaCantEjemplaresAgregados = [];
@@ -154,10 +155,24 @@
             },
           }),
           success: function (response) {
-            console.log("Response:", response);
+            let mensajeDiv = document.getElementById("mensajeAddDocumento");
+            mensajeDiv.style.display = 'block'
+            mensajeDiv.innerHTML =
+                '<div class="alert alert-success">Documento Agregado con éxito.</div>';
+            
+            setTimeout(function () {
+              mensajeDiv.style.display = "none"; 
+            }, 2000);
           },
           error: function (error) {
-            console.error("Error:", error);
+            let mensajeDiv = document.getElementById("mensajeAddDocumento");
+            mensajeDiv.style.display = 'block'
+            mensajeDiv.innerHTML =
+                '<div class="alert alert-danger">No ha sido posible agregar el documento, rellene los campos faltantes.</div>';
+            
+            setTimeout(function () {
+              mensajeDiv.style.display = "none"; 
+            }, 2000);
           },
         });
       }
@@ -883,6 +898,20 @@
           }),
           success: function (response) {
             console.log("Response:", response);
+            let mensajeDiv = document.getElementById("mensajeAddEjemplar");
+            mensajeDiv.style.display = 'block'
+            if (idDocumento == ""){
+              mensajeDiv.innerHTML =
+                '<div class="alert alert-danger">No ha sido posible agregar el ejemplar.</div>';
+            }
+            else{
+              mensajeDiv.innerHTML =
+                '<div class="alert alert-success">Ejemplar Agregado con éxito.</div>';
+            }
+            
+            setTimeout(function () {
+              mensajeDiv.style.display = "none"; 
+            }, 2000);
           },
           error: function (error) {
             console.error("Error:", error);
@@ -948,7 +977,7 @@
             },
           }),
           success: function (response) {
-            console.log("hoal:");
+            console.log("hola:");
           },
           error: function (error) {
             console.error("chao:");
@@ -1260,6 +1289,7 @@
                 </div>
               </div>
             </form>
+            <div id="mensajeAddDocumento"></div>
           </div>
           <div class="modal-footer">
             <button
@@ -1326,6 +1356,7 @@
                 />
               </div>
             </form>
+            <div id="mensajeAddEjemplar"></div>
           </div>
           <div class="modal-footer">
             <button
@@ -1500,6 +1531,7 @@
           <div class="modal-body">
             <p>¿Estás seguro de que quieres eliminar este id de ejemplar?</p>
           </div>
+          <div id="mensajeEliminarEjemplar"></div>
           <div class="modal-footer">
             <button
               type="button"
@@ -1572,3 +1604,4 @@
     </footer>
   </body>
 </html>
+
