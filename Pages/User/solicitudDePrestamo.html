@@ -68,6 +68,17 @@
         padding: 20px 0;
       }
 
+      .footer-link {
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      
+      .footer-link:hover {
+        text-decoration: underline;
+        color: inherit;
+      }
+
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
@@ -97,8 +108,9 @@
     let IdEjemplaresGlobales = []
 
 
-      function ActualizarFechaPrestamos(idActual, valor, fechaPrestamo, index){
-        
+
+      function ActualizarFechaPrestamos(idActual, valor, fechaPrestamo,fechaDevolucion, index){
+  
         let listaAuxiliar1 = []
 
         for (variable of IdEjemplaresGlobales){
@@ -128,8 +140,9 @@
               updPrestamoId: idActual,
               input: {
                 fechaPrestamo: fechaPrestamo,
-                fechaDevolucion: null,
-                fechaDevolucionReal: null,
+
+                fechaDevolucion: fechaDevolucion,
+
                 tipoPrestamo: valor,
                 ejemplar: listaAuxiliar1[index]
               }
@@ -152,11 +165,27 @@
           }          
         }
         
-        if (valor == "Reserva"){
-           fechaPrestamo = new Date(document.getElementById("fechaPrestamo").value);
+
+        if (valor == "sala"){
+          fechaPrestamo = new Date()
+          fechaDevolucion = new Date()
+          fechaDevolucion.setHours(fechaDevolucion.getHours() + 3);
+           
         }
-        
-        else{fechaPrestamo = new Date()}
+
+        if (valor == "domicilio"){
+          fechaPrestamo = new Date()
+          fechaDevolucion = new Date()
+          fechaDevolucion.setDate(fechaDevolucion.getDate() + 14);
+
+        }
+
+        if (valor == "reserve"){
+           fechaPrestamo = new Date(document.getElementById("fechaPrestamo").value);
+           fechaDevolucion = new Date(document.getElementById("fechaDevolucion").value);
+        }
+         
+
         let listaAuxiliar = []
 
         for (variable of PrestamosGlobal){
@@ -193,7 +222,9 @@
             }
           }),
           success: function(response){
-            listaAuxiliar.forEach((id_prestamo, index) => ActualizarFechaPrestamos(id_prestamo, valor, fechaPrestamo, index))
+
+            listaAuxiliar.forEach((id_prestamo, index) => ActualizarFechaPrestamos(id_prestamo, valor, fechaPrestamo,fechaDevolucion, index))
+
           }
         })
       }
@@ -292,11 +323,13 @@
       }
 
       async function ObtenerSolicitudPrestamos(){
+
         const cookieValue = document.cookie
         .split("; ")
         .find((row) => row.startsWith(`id=`))
         ?.split("=")[1];
         let idDeUsuario = cookieValue
+
         let querySolicitudPrestamos = `
           query GetSolicitudPrestamoByUsuarioId($usuarioId: ID!) {
             getSolicitudPrestamoByUsuarioId(usuarioID: $usuarioId) {
@@ -333,10 +366,10 @@
         }) 
       }
     </script>
-  </head>
 
   </head>
   <body onload="ObtenerSolicitudPrestamos()">
+    <!-- Header Section -->
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
@@ -533,7 +566,9 @@
             <h5>Explorar</h5>
             <ul class="list-unstyled">
 
-              <li><a href="catalogo.html"> Catalogo </a></li>
+
+              <li><a class="footer-link" href="catalogo.html"> Catalogo </a></li>
+
               <a onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
@@ -573,6 +608,14 @@
         const fechaPrestamo = new Date(
           document.getElementById("fechaPrestamo").value
         );
+
+        if (fechaPrestamo) {
+          fechaPrestamo.setDate(fechaPrestamo.getDate() + 14); // Añadir tiempo estimado (14 días)
+          // Formato ISO (YYYY-MM-DD)
+          document.getElementById("fechaDevolucion").value =
+            fechaPrestamo.toISOString().split("T")[0];
+        }
+
       }
 
       // Función para confirmar la reserva (puedes agregar la lógica que desees)

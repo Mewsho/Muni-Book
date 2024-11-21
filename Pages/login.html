@@ -41,8 +41,7 @@
         margin-top: 3%;
       }
       body {
-        font-family: Arial, sans-serif;
-        
+        font-family: "Times New Roman", Times, serif; 
         padding: 0;
         display: flex;
         flex-direction: column;
@@ -106,6 +105,21 @@
       }
       label{
         font-family: 'Times New Roman', Times, serif;
+      }
+
+      .footer {
+        text-align: left;
+      }
+
+      .footer-link {
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      
+      .footer-link:hover {
+        text-decoration: underline;
+        color: inherit;
       }
     </style>
     <script>
@@ -264,7 +278,7 @@
           <div class="col-md-3 mb-3">
             <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li><a href="catalogo.html"> Catalogo </a> </li>
+              <li><a class="footer-link" href="catalogo.html"> Catalogo </a> </li>
               <a onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>

@@ -28,83 +28,177 @@
     <title>MuniBook</title>
 
     <script>
-      let listaDocumentosAgregados = []
-      let listaCantEjemplaresAgregados = []
+      let listaDocumentosAgregados = [];
+      let listaCantEjemplaresAgregados = [];
       const objectPrestamos = {
-        MapPrestamos: new Map()
+        MapPrestamos: new Map(),
+      };
+
+      Object.defineProperty(objectPrestamos, "setter", {
+        set: function (input) {
+          let idDocumento = input[0];
+          let Prestamo = input[1];
+
+          if (this.MapPrestamos.has(idDocumento)) {
+            let list = this.MapPrestamos.get(idDocumento);
+            list.push(Prestamo);
+            this.MapPrestamos.set(idDocumento, list);
+          } else {
+            this.MapPrestamos.set(idDocumento, [Prestamo]);
+          }
+          console.log(this.MapPrestamos);
+          let list = this.MapPrestamos.get(idDocumento);
+          updSolicitudPrestamo(list);
+        },
+      });
+
+      let usuarioIdGeneral = "";
+      // Obtencion de cookies y cambios asociados
+      async function aplicarVersionUsuario() {}
+
+      async function ModalGenCheckBox() {
+        let buttonContainer = document.getElementById("ModalCheckboxCategoria");
+        let strButtons = `
+        <li>
+        <label class="dropdown-item">
+          <input type="checkbox" value="option1"> Opción 1
+        </label>
+        </li>
+      <li>
+        <label class="dropdown-item">
+          <input type="checkbox" value="option2"> Opción 2
+        </label>
+      </li>
+      <li>
+        <label class="dropdown-item">
+          <input type="checkbox" value="option3"> Opción 3
+        </label>
+      </li>
+      <li>
+        <label class="dropdown-item">
+          <input type="checkbox" value="option4"> Opción 4
+        </label>
+      </li>
+        `;
+        buttonContainer.innerHTML = strButtons;
       }
 
-      Object.defineProperty(objectPrestamos, "setter",{
-        set: function(input) {
-          let idDocumento = input[0]
-          let Prestamo = input[1]
-
-          if (this.MapPrestamos.has(idDocumento)){
-            let list = this.MapPrestamos.get(idDocumento)
-            list.push(Prestamo)
-            this.MapPrestamos.set(idDocumento, list)
-
-          }
-          else{
-            this.MapPrestamos.set(idDocumento, [Prestamo])
-          }  
-          console.log(this.MapPrestamos)
-          let list = this.MapPrestamos.get(idDocumento)
-          updSolicitudPrestamo(list)
-        }
-      })
-
-      let usuarioIdGeneral = ""
-      // Obtencion de cookies y cambios asociados
-      async function aplicarVersionUsuario(){}
-
-      async function aplicarVersionBibliotecario(){
-        let buttonContainer = document.getElementById("contaniner-bb-buttons")
+      async function aplicarVersionBibliotecario() {
+        let buttonContainer = document.getElementById("contaniner-bb-buttons");
         let strButtons = `
         <div class="d-grid gap-2 d-md-flex justify-content-md-center my-4 mx-3">
-          <button type="button" class="btn btn-primary">Agregar Documento</button>
-          <button type="button" class="btn btn-danger">Eliminar Documento</button>   
-          <button type="button" class="btn btn-primary">Agregar Ejemplar</button>
-          <button type="button" class="btn btn-danger">Eliminar Ejemplar</button>
+          <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal"
+          data-bs-target="#Agregardoc">Agregar Documento</button>
+          <button type="button" class="btn btn-info btn-rounded" data-bs-toggle="modal"
+          data-bs-target="#ModalEliminarDocumento">Eliminar Documento</button>   
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+          data-bs-target="#ModalAgregarEjemplares">Agregar Ejemplar</button>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+          data-bs-target="#DelEjemplares">Eliminar Ejemplar</button>
         </div>
-        `
-        buttonContainer.innerHTML = strButtons
+        `;
+        buttonContainer.innerHTML = strButtons;
       }
 
-      async function aplicarVersionNotUsuario(){}
-    
-      async function aplicarVersionAdministrador(){}
+      function AddDocumento() {
+        let ModalAnioSalida = document.getElementById("ModalAnioSalida").value;
+        let ModalAutor = document.getElementById("ModalAutor").value;
+        let ModalCategoriaDocumento =
+          document.getElementById("TipCategoriaModal");
+        let CategoriasHijos = [];
+        for (child of ModalCategoriaDocumento.children) {
+          for (child2 of child.children) {
+            if (child2.checked) {
+              CategoriasHijos.push(child2.value);
+            }
+          }
+        }
 
-      function checkCookieExistence(name){
-        console.log(document.cookie)
-        if(
-          document.cookie.split(";").some((item) => item.trim().startsWith(`${name}=`))
-        ){
+        let ModalCodigo = document.getElementById("ModalCodigo").value;
+        let ModalEdicion = document.getElementById("ModalEdicion").value;
+        let ModalEditorial = document.getElementById("ModalEditorial").value;
+        //let ModalTipoDocumento = document.getElementById("ModalTipoDocumento").value;
+        let ModalTitulo = document.getElementById("ModalTitulo").value;
+        let Modal = document.getElementById("Agregardoc");
+        let tipo = document.getElementById("ModalformSelectTipo").value;
+        console.log(tipo);
+
+        let queryAddDocumento = `
+          mutation AddDocumento($input: DocumentoInput) {
+          addDocumento(input: $input) {
+          body
+          descriptionError
+          errorCode
+          statusCode
+          }
+        }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryAddDocumento,
+            variables: {
+              input: {
+                anioSalida: parseInt(ModalAnioSalida, 10),
+                autor: ModalAutor,
+                categoriaDocumento: CategoriasHijos,
+                codigo: ModalCodigo,
+                edicion: parseInt(ModalEdicion, 10),
+                editorial: ModalEditorial,
+                tipoDocumento: tipo,
+                titulo: ModalTitulo,
+              },
+            },
+          }),
+          success: function (response) {
+            console.log("Response:", response);
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+
+      async function aplicarVersionNotUsuario() {}
+
+      async function aplicarVersionAdministrador() {}
+
+      function checkCookieExistence(name) {
+        console.log(document.cookie);
+        if (
+          document.cookie
+            .split(";")
+            .some((item) => item.trim().startsWith(`${name}=`))
+        ) {
           let tipoCookie = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith(`${name}=`))
-          ?.split("=")[1];
+            .split("; ")
+            .find((row) => row.startsWith(`${name}=`))
+            ?.split("=")[1];
           let UsuarioIdCookie = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith(`id=`))
-          ?.split("=")[1];
-          
-          usuarioIdGeneral = UsuarioIdCookie
+            .split("; ")
+            .find((row) => row.startsWith(`id=`))
+            ?.split("=")[1];
 
-          tipoCookie = parseInt(tipoCookie,10)
+          usuarioIdGeneral = UsuarioIdCookie;
+
+          tipoCookie = parseInt(tipoCookie, 10);
 
           switch (tipoCookie) {
             case 0:
-              console.log("Usuario")
-              aplicarVersionUsuario()
+              console.log("Usuario");
+              aplicarVersionUsuario();
               break;
             case 1:
-              console.log("Bibliotecario")
-              aplicarVersionBibliotecario()
+              console.log("Bibliotecario");
+              aplicarVersionBibliotecario();
               break;
             case 2:
-              console.log("Administrador")
-              aplicarVersionAdministrador()
+              console.log("Administrador");
+              aplicarVersionAdministrador();
+
               break;
             /*  
             default:
@@ -113,18 +207,32 @@
               console.log("NotUsuario")
               */
           }
-        }
-        else{
-          console.log("NotUsuario")
-          aplicarVersionNotUsuario()
+
+        } else {
+          console.log("NotUsuario");
+          aplicarVersionNotUsuario();
+
         }
       }
 
       // form select de tipo y categoria
-      let optionFormSelectTipo = ['<option value="">Selecciona Tipo Documento</option>']
-      function optionTipo(item){
-        optionFormSelectTipo.push('<option value="'+item.id+'">'+item.tipo+'</option>')
 
+      let optionFormSelectTipo = ['<option value="">Selecciona Tipo</option>'];
+      function optionTipo(item) {
+        optionFormSelectTipo.push(
+          '<option value="' + item.id + '">' + item.tipo + "</option>"
+        );
+
+      }
+
+      let optionModalTipoCategoria = [];
+      function optionModalCategoria(item) {
+        optionModalTipoCategoria.push(
+          `<label class="dropdown-item">
+                        <input type="checkbox" value="${item.id}" class="me-2"/>
+                        ${item.categoria}
+                      </label>`
+        );
       }
 
       let optionFormSelectCategoria = [
@@ -136,8 +244,18 @@
         );
       }
 
+
+      let optionFormSelectDocumento = [
+        '<option value="">Selecciona Documento</option>',
+      ];
+      function optionDocumentos(item) {
+        optionFormSelectDocumento.push(
+          '<option value="' + item.id + '">' + item.titulo + "</option>"
+        );
+      }
       // Funciones para optener la lista de tipo y categoria
-      async function cargarTipo(){
+      async function cargarTipo() {
+
         let queryTipo = `
         query GetTipoDocumentos {
           getTipoDocumentos {
@@ -158,11 +276,16 @@
             response.data.getTipoDocumentos.forEach(optionTipo);
             document.getElementById("formSelectTipo").innerHTML =
               optionFormSelectTipo.join("");
+
+            document.getElementById("ModalformSelectTipo").innerHTML =
+              optionFormSelectTipo.join("");
           },
         });
       }
 
-      async function cargarCategoria(){
+
+      async function cargarCategoria() {
+
         let queryCategoria = `
         query GetCategoriaDocumentos {
           getCategoriaDocumentos {
@@ -183,46 +306,49 @@
             response.data.getCategoriaDocumentos.forEach(optionCategoria);
             document.getElementById("formSelectCategoria").innerHTML =
               optionFormSelectCategoria.join("");
+            response.data.getCategoriaDocumentos.forEach(optionModalCategoria);
+            document.getElementById("TipCategoriaModal").innerHTML =
+              optionModalTipoCategoria.join("");
           },
         });
       }
 
-      function aplicarCambiosCard(){
-        if(
-          document.cookie.split(";").some((item) => item.trim().startsWith(`tipo=`))
-        ){
+      function aplicarCambiosCard() {
+        if (
+          document.cookie
+            .split(";")
+            .some((item) => item.trim().startsWith(`tipo=`))
+        ) {
           let tipoCookie = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith(`tipo=`))
-          ?.split("=")[1];
+            .split("; ")
+            .find((row) => row.startsWith(`tipo=`))
+            ?.split("=")[1];
 
-          tipoCookie = parseInt(tipoCookie,10)
+          tipoCookie = parseInt(tipoCookie, 10);
 
-          if (tipoCookie == 2){
-            let inputGroupList = document.getElementsByClassName("input-group")
-            for (inputGroup of inputGroupList){
-              inputGroup.classList.add("d-none")
+          if (tipoCookie == 2) {
+            let inputGroupList = document.getElementsByClassName("input-group");
+            for (inputGroup of inputGroupList) {
+              inputGroup.classList.add("d-none");
             }
-          }
-          else if (tipoCookie == 1){
-
-          }
-          else if (tipoCookie == 0){
-            let collapseList = document.getElementsByClassName("collapse-card")
-            for (collapse of collapseList){
-              let idDocumentoCollapse = collapse.id
-              let idDocumento = idDocumentoCollapse.split('-')[0]
+          } else if (tipoCookie == 1) {
+          } else if (tipoCookie == 0) {
+            let collapseList = document.getElementsByClassName("collapse-card");
+            for (collapse of collapseList) {
+              let idDocumentoCollapse = collapse.id;
+              let idDocumento = idDocumentoCollapse.split("-")[0];
               let strButton = `<button type="button" class="btn btn-success" 
               id="${idDocumento}-addButton">
               Agregar a Solicitud</button>
-              `
-              collapse.insertAdjacentHTML("beforeend", strButton)
+              `;
+              collapse.insertAdjacentHTML("beforeend", strButton);
 
-              $(`#${idDocumento}-addButton`).click(function(){
-                addPrestamoToSolicitud(idDocumento)
-              })
+              $(`#${idDocumento}-addButton`).click(function () {
+                addPrestamoToSolicitud(idDocumento);
+              });
             }
-            crearSolicitudInicial()
+            crearSolicitudInicial();
+
           }
         }
       }
@@ -233,26 +359,33 @@
         return result;
       }
 
-      async function addPrestamoToSolicitud(idDocumentoDelBoton){
-        let inputNumberDocumento = document.getElementById(`${idDocumentoDelBoton}-input`)
-        let cantEjemplares = parseInt(inputNumberDocumento.value, 10)
-        if (cantEjemplares == 0){
-          let prestamosAnteriores = objectPrestamos.MapPrestamos.get(idDocumentoDelBoton)
-          prestamosAnteriores.forEach((prestamo) => eliminarPrestamo(prestamo))
-          objectPrestamos.MapPrestamos.set(idDocumentoDelBoton, [])
-          return
+
+      async function addPrestamoToSolicitud(idDocumentoDelBoton) {
+        let inputNumberDocumento = document.getElementById(
+          `${idDocumentoDelBoton}-input`
+        );
+        let cantEjemplares = parseInt(inputNumberDocumento.value, 10);
+        if (cantEjemplares == 0) {
+          let prestamosAnteriores =
+            objectPrestamos.MapPrestamos.get(idDocumentoDelBoton);
+          prestamosAnteriores.forEach((prestamo) => eliminarPrestamo(prestamo));
+          objectPrestamos.MapPrestamos.set(idDocumentoDelBoton, []);
+          return;
         }
-        if (objectPrestamos.MapPrestamos.has(idDocumentoDelBoton)){
-          let prestamosAnteriores = objectPrestamos.MapPrestamos.get(idDocumentoDelBoton)
-          prestamosAnteriores.forEach((prestamo) => eliminarPrestamo(prestamo))
-          objectPrestamos.MapPrestamos.set(idDocumentoDelBoton, [])
+        if (objectPrestamos.MapPrestamos.has(idDocumentoDelBoton)) {
+          let prestamosAnteriores =
+            objectPrestamos.MapPrestamos.get(idDocumentoDelBoton);
+          prestamosAnteriores.forEach((prestamo) => eliminarPrestamo(prestamo));
+          objectPrestamos.MapPrestamos.set(idDocumentoDelBoton, []);
         }
-        let arrayEjemplares = await getNEjemplaresByDocumentId(idDocumentoDelBoton, cantEjemplares)
+        let arrayEjemplares = await getNEjemplaresByDocumentId(
+          idDocumentoDelBoton,
+          cantEjemplares
+        );
       }
 
-
-      function eliminarPrestamo(prestamo){
-        let idPrestamo = prestamo.id
+      function eliminarPrestamo(prestamo) {
+        let idPrestamo = prestamo.id;
         let queryDelPrestamo = `
         mutation DelPrestamo($delPrestamoId: ID!) {
           delPrestamo(id: $delPrestamoId) {
@@ -262,7 +395,7 @@
             descriptionError
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -271,17 +404,17 @@
           data: JSON.stringify({
             query: queryDelPrestamo,
             variables: {
-              delPrestamoId: idPrestamo
-            }
+              delPrestamoId: idPrestamo,
+            },
           }),
-          success: function(response){
-            console.log("Prestamo eliminado")
-          }
-        })
+          success: function (response) {
+            console.log("Prestamo eliminado");
+          },
+        });
       }
 
-      function addPrestamo(ejemplarParametro, idDocumento){
-        let idEjemplar = ejemplarParametro.id
+      function addPrestamo(ejemplarParametro, idDocumento) {
+        let idEjemplar = ejemplarParametro.id;
         let queryAddPrestamo = `
         mutation AddPrestamo($input: PrestamoInput) {
           addPrestamo(input: $input) {
@@ -292,10 +425,10 @@
             fechaDevolucionReal
           }
         }
-        `
+        `;
         // Por default el prestamo sera en sala y la fecha es la actual
-        let fechaActual = Date.now()
-        let fechaDevolucion = addDays(fechaActual, 7).toISOString()
+        let fechaActual = Date.now();
+        let fechaDevolucion = addDays(fechaActual, 7).toISOString();
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -309,20 +442,20 @@
                 ejemplar: idEjemplar,
                 fechaPrestamo: fechaActual,
                 fechaDevolucion: fechaDevolucion,
-                fechaDevolucionReal: null
-              }
-            } 
+                fechaDevolucionReal: null,
+              },
+            },
           }),
-          success: function(response){
-            let prestamo = response.data.addPrestamo
-            console.log(idDocumento,prestamo)
-            objectPrestamos.setter = [idDocumento, prestamo]
-          }
-        })
+          success: function (response) {
+            let prestamo = response.data.addPrestamo;
+            console.log(idDocumento, prestamo);
+            objectPrestamos.setter = [idDocumento, prestamo];
+          },
+        });
       }
 
-      function getNEjemplaresByDocumentId(idDocumento, cantEjemplares){
-        let queryEjemplares= `
+      function getNEjemplaresByDocumentId(idDocumento, cantEjemplares) {
+        let queryEjemplares = `
         query GetNEjemplaresDisponiblesByDocumentId($documentoId: ID, $cantEjemplares: Int) {
           getNEjemplaresDisponiblesByDocumentId(documentoId: $documentoId, cantEjemplares: $cantEjemplares) {
             id
@@ -332,7 +465,7 @@
             ubicacion
           }
         }
-        ` 
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -342,28 +475,28 @@
             query: queryEjemplares,
             variables: {
               documentoId: idDocumento,
-              cantEjemplares: cantEjemplares
-            }
+              cantEjemplares: cantEjemplares,
+            },
           }),
-          success: function(response){
-            let Ejemplares = response.data.getNEjemplaresDisponiblesByDocumentId
-            Ejemplares.forEach((item) => addPrestamo(item, idDocumento))
-            console.log(Ejemplares)
-          }
-        })
+          success: function (response) {
+            let Ejemplares =
+              response.data.getNEjemplaresDisponiblesByDocumentId;
+            Ejemplares.forEach((item) => addPrestamo(item, idDocumento));
+            console.log(Ejemplares);
+          },
+        });
       }
 
-
-      async function crearSolicitudInicial(){
+      async function crearSolicitudInicial() {
         let hasSolicitudCookie = document.cookie
           .split("; ")
           .find((row) => row.startsWith(`hasSolicitud=`))
           ?.split("=")[1];
-        if (hasSolicitudCookie){
-          return
+        if (hasSolicitudCookie) {
+          return;
         }
-        let usuarioId = usuarioIdGeneral
-        let listaPrestamos = []
+        let usuarioId = usuarioIdGeneral;
+        let listaPrestamos = [];
         let queryAddSolicitudPrestamo = `
         mutation AddSolicitudPrestamo($addSolicitudPrestamoInput2: SolicitudPrestamoInput) {
           addSolicitudPrestamo(input: $addSolicitudPrestamoInput2) {
@@ -373,11 +506,11 @@
             fechaSolicitud
           }
         }
-        `
+        `;
         // Los defaults de la Solicitud
-        let fechaActual = Date.now()
-        let tipo = "Sala"
-        let estado = 0
+        let fechaActual = Date.now();
+        let tipo = "Sala";
+        let estado = 0;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -391,38 +524,47 @@
                 estadoSolicitud: estado,
                 fechaSolicitud: fechaActual,
                 usuario: usuarioId,
-                prestamos: []
-              }
-            }   
+                prestamos: [],
+              },
+            },
           }),
-          success: function(response){
-            let ahora = new Date()
-            let tiempo = ahora.getTime()
-            let expireTime = tiempo + 900000 
-            ahora.setTime(expireTime)
-            let solicitud = response.data.addSolicitudPrestamo
-            document.cookie = "hasSolicitud="+true+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
-            document.cookie = "solicitudID="+solicitud.id+";expires="+ahora.toUTCString+"; path=/; SameSite=lax; Secure"
-          }
-        })
+          success: function (response) {
+            let ahora = new Date();
+            let tiempo = ahora.getTime();
+            let expireTime = tiempo + 900000;
+            ahora.setTime(expireTime);
+            let solicitud = response.data.addSolicitudPrestamo;
+            document.cookie =
+              "hasSolicitud=" +
+              true +
+              ";expires=" +
+              ahora.toUTCString +
+              "; path=/; SameSite=lax; Secure";
+            document.cookie =
+              "solicitudID=" +
+              solicitud.id +
+              ";expires=" +
+              ahora.toUTCString +
+              "; path=/; SameSite=lax; Secure";
+          },
+        });
       }
 
-
-      function updSolicitudPrestamo(listaPrestamos){
+      function updSolicitudPrestamo(listaPrestamos) {
         let idSolicitudCookie = document.cookie
           .split("; ")
           .find((row) => row.startsWith(`solicitudID=`))
           ?.split("=")[1];
-        let listaIDPrestamos = []
-        for (prestamo of listaPrestamos){
-          listaIDPrestamos.push(prestamo.id)
+        let listaIDPrestamos = [];
+        for (prestamo of listaPrestamos) {
+          listaIDPrestamos.push(prestamo.id);
         }
-        console.log(listaIDPrestamos)
-        let fechaActual = Date.now()
-        let tipo = "Sala"
-        let estado = 0
-        let usuarioId = usuarioIdGeneral
-        let queryupdSolicitud=`
+        console.log(listaIDPrestamos);
+        let fechaActual = Date.now();
+        let tipo = "Sala";
+        let estado = 0;
+        let usuarioId = usuarioIdGeneral;
+        let queryupdSolicitud = `
         mutation UpdSolicitudPrestamo($updSolicitudPrestamoId: ID!, $updSolicitudPrestamoInput2: SolicitudPrestamoInput) {
           updSolicitudPrestamo(id: $updSolicitudPrestamoId, input: $updSolicitudPrestamoInput2) {
             statusCode
@@ -431,7 +573,7 @@
             descriptionError
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -446,26 +588,26 @@
                 estadoSolicitud: estado,
                 fechaSolicitud: fechaActual,
                 usuario: usuarioId,
-                prestamos: listaIDPrestamos
-              }
-            }   
+                prestamos: listaIDPrestamos,
+              },
+            },
           }),
-          success: function(response){
-            console.log(response)
-          }
-        })
+          success: function (response) {
+            console.log(response);
+          },
+        });
       }
 
-      let cantEjemplaresDisponible = 0
-      let cantEjemplaresSala = 0
+      let cantEjemplaresDisponible = 0;
+      let cantEjemplaresSala = 0;
       // Obtener los ejemplares y crear el inner html
-      function getEjemplares(documentoId, estado, estadoTexto){
-        console.log("Obteniendo Ejemplares")
+      function getEjemplares(documentoId, estado, estadoTexto) {
+        console.log("Obteniendo Ejemplares");
         let queryCantEjemplares = `
         query Query($documentoId: ID!, $estado: Int) {
           getCantEjemplaresByDocumentoAndEstado(documentoId: $documentoId, estado: $estado)
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -475,91 +617,105 @@
             query: queryCantEjemplares,
             variables: {
               documentoId: documentoId,
-              estado: estado
-            }
+              estado: estado,
+            },
           }),
-          success: function(response){
-            console.log("Ejemplares obtenidos")
-            let cant = response.data.getCantEjemplaresByDocumentoAndEstado
-            if (estado == 3){
-              cantEjemplaresDisponible = response.data.getCantEjemplaresByDocumentoAndEstado
+          success: function (response) {
+            console.log("Ejemplares obtenidos");
+            let cant = response.data.getCantEjemplaresByDocumentoAndEstado;
+            if (estado == 3) {
+              cantEjemplaresDisponible =
+                response.data.getCantEjemplaresByDocumentoAndEstado;
               let strInputGroup = `
               <button class="btn btn-outline-secondary btn-number-${documentoId}" type="button" id="${documentoId}-button-minus" documentId="${documentoId}" data-type="minus">-</button>
               <input type="text" class="form-control input-number" value="0" min="0" max="${cantEjemplaresDisponible}" id="${documentoId}-input">
               <button class="btn btn-outline-secondary btn-number-${documentoId}" type="button" id="${documentoId}-button-plus" documentId="${documentoId}" data-type="plus">+</button>
-              `
-              document.getElementById(`${documentoId}-inputGroup`).innerHTML = strInputGroup
+              `;
+              document.getElementById(`${documentoId}-inputGroup`).innerHTML =
+                strInputGroup;
 
-              $(`.btn-number-${documentoId}`).click(function(){
-                let tipo = $(this).attr("data-type")
+              $(`.btn-number-${documentoId}`).click(function () {
+                let tipo = $(this).attr("data-type");
                 let documentId = $(this).attr("documentId");
                 let input = $(`#${documentoId}-input`);
                 let currentValue = parseInt(input.val());
-                if(!isNaN(currentValue)){
-                  if (tipo == "minus"){
-                    if(currentValue > input.attr('min')) {
+                if (!isNaN(currentValue)) {
+                  if (tipo == "minus") {
+                    if (currentValue > input.attr("min")) {
                       input.val(currentValue - 1).change();
-                    } 
-                    if(parseInt(input.val()) == input.attr('min')) {
-                      $(this).attr('disabled', false);
                     }
-                  }
-                  else {
-                    if(currentValue < input.attr('max')) {
+                    if (parseInt(input.val()) == input.attr("min")) {
+                      $(this).attr("disabled", false);
+                    }
+                  } else {
+                    if (currentValue < input.attr("max")) {
                       input.val(currentValue + 1).change();
                     }
-                    if(parseInt(input.val()) == input.attr('max')) {
-                        $(this).attr('disabled', false);
+                    if (parseInt(input.val()) == input.attr("max")) {
+                      $(this).attr("disabled", false);
                     }
                   }
-                }
-                else {
-                  input.val(0)
+                } else {
+                  input.val(0);
                 }
               });
-    
             }
-            if (estado == 2){
-              cantEjemplaresSala = response.data.getCantEjemplaresByDocumentoAndEstado
+            if (estado == 2) {
+              cantEjemplaresSala =
+                response.data.getCantEjemplaresByDocumentoAndEstado;
             }
 
-            let elementoCantEjemplares = document.getElementById(`${documentoId}.${estadoTexto}`)
-            elementoCantEjemplares.innerHTML = `${estadoTexto}: ${cant}`
-            elementoCantEjemplares.setAttribute("valor", cant)
-          }
-        })
+            let elementoCantEjemplares = document.getElementById(
+              `${documentoId}.${estadoTexto}`
+            );
+            elementoCantEjemplares.innerHTML = `${estadoTexto}: ${cant}`;
+            elementoCantEjemplares.setAttribute("valor", cant);
+          },
+        });
       }
 
       // Definir la card para cada elemento del catalogo, obteniendo los ejemplares y preparando la informacion
-      let listCardDocumentos = []
-      function cardDocumentos(item){
-        let listCategoriaDocumentosId = []
-        let listCategoriaDocumentosNombre = []
-        
-        for (categoria of item.categoriaDocumento){
-          listCategoriaDocumentosId.push(categoria.id)
-          listCategoriaDocumentosNombre.push(categoria.categoria)
+      let listCardDocumentos = [];
+      function cardDocumentos(item) {
+        let listCategoriaDocumentosId = [];
+        let listCategoriaDocumentosNombre = [];
 
+        for (categoria of item.categoriaDocumento) {
+          listCategoriaDocumentosId.push(categoria.id);
+          listCategoriaDocumentosNombre.push(categoria.categoria);
         }
 
-        getEjemplares(item.id, 3, "Disponible")
-        getEjemplares(item.id, 2, "En Sala")
-        
-        
+        getEjemplares(item.id, 3, "Disponible");
+        getEjemplares(item.id, 2, "En Sala");
+
         let stringCard = `
         <div class="col-md-4 mb-4">
-          <div class="card" id=${item.id} categoria=${listCategoriaDocumentosId} tipoDocumento=${item.tipoDocumento.id}>
+          <div class="card border-secondary mb-3" id=${
+            item.id
+          } categoria=${listCategoriaDocumentosId} tipoDocumento=${
+          item.tipoDocumento.id
+        }>
               <div class="card-body" id=${item.id}>
                 <h5 class="card-title">${item.titulo}</h5>
-                <p class="card-text" id="card-text" autor="${item.autor}" tipoDocumento="${item.tipoDocumento.tipo}">${item.autor}, ${item.anioSalida}, ${item.editorial}, ${item.tipoDocumento.tipo},</p>
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#${item.id}-collapse">
-                  Ver más información</button>
+                <p class="card-text" id="card-text" autor="${
+                  item.autor
+                }" tipoDocumento="${item.tipoDocumento.tipo}">${item.autor}, ${
+          item.anioSalida
+        }, ${item.editorial}, ${item.tipoDocumento.tipo},</p>
+                <div class="d-flex justify-content-center">
+                  <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#${
+                    item.id
+                  }-collapse">
+                    Ver más información
+                  </button>
+                </div>
                 <div class="collapse collapse-card" id="${item.id}-collapse">
                   <div class="container my-3">
                     <p class="card-text my-1">${item.edicion}a Edición</p>
                     <p class="card-text my-1">Categorias: ${listCategoriaDocumentosNombre.toString()}</p>
-                    <p class="card-text my-1" id="${item.id}.Disponible">Disponible: </p>
+                    <p class="card-text my-1" id="${
+                      item.id
+                    }.Disponible">Disponible: </p>
                     <p class="card-text my-1" id="${item.id}.En Sala">Sala: </p>
                     <div class="input-group my-1" id="${item.id}-inputGroup">
                       
@@ -574,7 +730,8 @@
       }
 
       // Cargar documentos inicial
-      async function cargarDocumentos(){
+      async function cargarDocumentos() {
+
         let queryDocumentos = `
         query GetNDocumentos($numero: Int) {
           getNDocumentos(numero: $numero) {
@@ -607,33 +764,35 @@
               numero: 100,
             },
           }),
-          success: function(response){
-            response.data.getNDocumentos.forEach(cardDocumentos)
-            document.getElementById("catalogContainer").innerHTML = listCardDocumentos.join("")
-            console.log("card agregadas")
-            aplicarCambiosCard()
-            
-          }
-        })
+
+          success: function (response) {
+            response.data.getNDocumentos.forEach(cardDocumentos);
+            document.getElementById("catalogContainer").innerHTML =
+              listCardDocumentos.join("");
+            console.log("card agregadas");
+            aplicarCambiosCard();
+            response.data.getNDocumentos.forEach(optionDocumentos);
+            document.getElementById("ModalDocumentoEjemplar").innerHTML =
+              optionFormSelectDocumento.join("");
+          },
+        });
       }
       // Llamar todas las cosas
-      function cargarTipoCategoriasDocumentosAndCookie(){
-        cargarTipo()
-        cargarCategoria()
-        cargarDocumentos()
-        checkCookieExistence("tipo")
+      function cargarTipoCategoriasDocumentosAndCookie() {
+        cargarTipo();
+        cargarCategoria();
+        cargarDocumentos();
+        checkCookieExistence("tipo");
       }
 
       // La funcion para el query con los filtros
-      function getDocumentosByTituloAndAutorAndTipoAndCategoria(){
-        listCardDocumentos = []
-        let title = document.getElementById("searchBarTitle").value
-        let aut = document.getElementById("searchBarAuthor").value
-        let tipo = document.getElementById("formSelectTipo").value
-        let categoria = document.getElementById("formSelectCategoria").value
-        
-        if (tipo == ""){
-          tipo = null
+      function getDocumentosByTituloAndAutorAndTipoAndCategoria() {
+        listCardDocumentos = [];
+        let title = document.getElementById("searchBarTitle").value;
+        let aut = document.getElementById("searchBarAuthor").value;
+        let tipo = document.getElementById("formSelectTipo").value;
+        let categoria = document.getElementById("formSelectCategoria").value;
+
 
         }
         if (categoria == "") {
@@ -676,18 +835,136 @@
               categoriaId: categoria,
             },
           }),
-          success: function(response){
-            response.data.getDocumentosByTituloAndAutorAndTipoAndCategoria.forEach(cardDocumentos)
-            document.getElementById("catalogContainer").innerHTML = listCardDocumentos.join("")
-            console.log("card agregadas")
-            aplicarCambiosCard()
+
+          success: function (response) {
+            response.data.getDocumentosByTituloAndAutorAndTipoAndCategoria.forEach(
+              cardDocumentos
+            );
+            document.getElementById("catalogContainer").innerHTML =
+              listCardDocumentos.join("");
+            console.log("card agregadas");
+            aplicarCambiosCard();
+          },
+        });
+
+      function agregarEjemplar() {
+        let codigo = document.getElementById("ModalCodigoEjemplar").value;
+        let ubicacion = document.getElementById("ModalUbicaionEjemplar").value;
+        let idDocumento = document.getElementById(
+          "ModalDocumentoEjemplar"
+        ).value;
+        console.log(codigo, ubicacion, idDocumento);
+        let querySignIn = `
+        mutation AddEjemplar($input: EjemplarInput) {
+          addEjemplar(input: $input) {
+            body
+            descriptionError
+            errorCode
+            statusCode
           }
-        })
+        }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySignIn,
+            variables: {
+              input: {
+                codigo: parseInt(codigo, 10),
+                documento: idDocumento,
+                estado: 3,
+                estadoTexto: "Disponible",
+                ubicacion: ubicacion,
+              },
+            },
+          }),
+          success: function (response) {
+            console.log("Response:", response);
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+
+      function eliminarDocumento() {
+        let codigo = document.getElementById("ModalCodigoEliminar").value;
+        console.log(codigo);
+        let querySignIn = `
+        mutation DelDocumento($delDocumentoId: ID!) {
+          delDocumento(id: $delDocumentoId) {
+            body
+            descriptionError
+            errorCode
+            statusCode
+          }
+        }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySignIn,
+            variables: {
+              delDocumentoId: codigo,
+            },
+          }),
+          success: function (response) {
+            console.log("Response:", response);
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+
+      function eliminarEjemplar() {
+        let codigo = document.getElementById("ModalejemplarCode").value;
+        console.log(codigo);
+        let querySignIn = `
+        mutation DelEjemplar($delEjemplarId: ID!) {
+          delEjemplar(id: $delEjemplarId) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `;
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: querySignIn,
+            variables: {
+              delEjemplarId: codigo,
+            },
+          }),
+          success: function (response) {
+            console.log("hoal:");
+          },
+          error: function (error) {
+            console.error("chao:");
+          },
+        });
 
       }
     </script>
+
     <!-- Styles como los del css pero no-->
+
     <style>
+      .enlarge-modal {
+        min-width: 1600px;
+        width: 900px;
+      }
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
@@ -698,6 +975,11 @@
         font-weight: 500;
         font-size: 400%;
       }
+
+      .letra-main {
+        font-family: "Times New Roman", Times, serif;
+      }
+
       .features-section {
         padding: 4rem 0;
       }
@@ -716,12 +998,13 @@
         transition: transform 0.2s, box-shadow 0.2s;
       }
       .card:hover {
-          transform: scale(1.03);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.03);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
       }
 
       body {
+        font-family: "Times New Roman", Times, serif;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -731,75 +1014,97 @@
         flex: 1;
       }
 
-      footer {
-        margin-top: auto;
+      .cat-button {
+        width: 200px;
       }
+
+      .dropdown-menu {
+        min-width: 300px;
+      }
+
+      .dropdown-check {
+        color: #ec1010;
+      }
+
+      footer {
+        text-align: left;
+      }
+
+      .footer-link {
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .footer-link:hover {
+        text-decoration: underline;
+        color: inherit;
+      }
+
       .btn-custom-width {
         width: auto;
         min-width: 400px; /* Ajusta según el tamaño que desees para que no se estiren */
         padding: 0.5rem 1rem; /* Espaciado interno para darle un aspecto más compacto */
       }
+
+      .scrollable-menu {
+        height: auto;
+        max-height: 200px;
+        overflow-x: hidden;
+      }
     </style>
   </head>
 
   <!-- El cuelpo del diablo -->
-<body onload="cargarTipoCategoriasDocumentosAndCookie()">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-      <a class="navbar-brand" href="/Pages/index.html">
-        <svg
-          width="30"
-          height="30"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+
+  <body onload="cargarTipoCategoriasDocumentosAndCookie()">
+    <nav
+      class="navbar navbar-expand-lg navbar-light bg-light"
+      id="navbar-catalogo"
+    >
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="24" height="24" fill="white" />
+            <path d="M4 4H20V20H4V4Z" stroke="black" stroke-width="2" />
+            <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
+          </svg>
+        </a>
+        <!-- Botones del navbar-->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
         >
-          <rect width="24" height="24" fill="white" />
-          <path d="M4 4H20V20H4V4Z" stroke="black" stroke-width="2" />
-          <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
-        </svg>
-      </a>
-      <!-- Botones del navbar-->
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="catalogo.html">Catalogo</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#servicios">Servicios</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#contact">Contacto</a>
-          </li>
-          <!-- "d.none" para oculta como "nav-item d-none"-->
-          <li class="nav-item">
-            <a class="nav-link" href="/Pages/Admin/PanelAdmin.html">Admin</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              href="/Pages/Bibliotecario/panelbibliotecario.html"
-              >Bibliotecario</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
-          </li>
-        </ul>
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contacto</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="catalogo.html">Catalogo</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="#servicios">Servicios</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
-  
-  <div class="container my-5">
-    <h1 class="text-center mb-5">Catálogo de Productos</h1>
+    </nav>
+    <div class="container my-5">
+      <h1 class="text-center mb-5">Catálogo de Productos</h1>
+
 
       <!-- Barra de búsqueda y filtros -->
       <div class="row g-3 mb-4">
@@ -841,23 +1146,381 @@
             onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()"
           ></select>
         </div>
+        <div class="container" id="contaniner-bb-buttons"></div>
       </div>
-
-  <div class="container my-5">
-    <!-- Contenedor de tarjetas -->
-    <div class="row" id="catalogContainer">
-      <!-- Ejemplo de tarjeta -->
     </div>
-  </div>  
-  </div>
-  <div class="container" id="contaniner-bb-buttons">
+    <div class="container my-5">
+      <!-- Contenedor de tarjetas -->
+      <div class="row" id="catalogContainer">
+        <!-- Ejemplo de tarjeta -->
+      </div>
+    </div>
+    <!-- Modal Agregar Documentos -->
+    <div
+      class="modal fade"
+      id="Agregardoc"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Agregar Documento
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <!-- Titulo -->
+              <div class="mb-3">
+                <label for="ModalTitulo" class="form-label">Título</label>
+                <input type="text" class="form-control" id="ModalTitulo" />
+              </div>
 
-  </div>
-  
+              <!-- Autor -->
+              <div class="mb-3">
+                <label for="ModalAutor" class="form-label">Autor</label>
+                <input type="text" class="form-control" id="ModalAutor" />
+              </div>
 
+              <div class="row">
+                <!-- Año Salida -->
+                <div class="col-md-4 mb-3">
+                  <label for="ModalAnioSalida" class="form-label"
+                    >Año Salida</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="ModalAnioSalida"
+                  />
+                </div>
+                <!-- Edición -->
+                <div class="col-md-4 mb-3">
+                  <label for="ModalEdicion" class="form-label">Edición</label>
+                  <input type="text" class="form-control" id="ModalEdicion" />
+                </div>
+                <!-- Editorial -->
+                <div class="col-md-4 mb-3">
+                  <label for="ModalEditorial" class="form-label"
+                    >Editorial</label
+                  >
+                  <input type="text" class="form-control" id="ModalEditorial" />
+                </div>
+              </div>
+              <!-- Código -->
+              <div class="mb-3">
+                <label for="ModalCodigo" class="form-label">Código</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ModalCodigo"
+                  aria-describedby="emailHelp"
+                />
+              </div>
+              <div class="row">
+                <!-- Categoría (Multiselect jerárquico) -->
+                <div class="col-md-6 mb-3">
+                  <label for="multiSelect" class="form-label">Categoría</label>
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-outline-secondary dropdown-toggle cat-button"
+                      type="button"
+                      id="multiSelectDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Seleccionar
+                    </button>
+                    <div
+                      class="dropdown-menu p-2 scrollable-menu"
+                      aria-labelledby="multiSelectDropdown"
+                      id="TipCategoriaModal"
+                    ></div>
+                  </div>
+                  <div class="mt-2">
+                    <span id="selectedCategories" class="dropdown-check"
+                      >No se han seleccionado categorías.</span
+                    >
+                  </div>
+                </div>
+                <!-- Tipo Documento -->
+                <div class="col-md-6 mb-3">
+                  <label for="ModalformSelectTipo" class="form-label"
+                    >Documento</label
+                  >
+                  <select id="ModalformSelectTipo" class="form-select"></select>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="AddDocumento()"
+            >
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<!-- Footer begins here remember to keep your house tidy an you too-->
+    <!-- Modal Agregar Ejemplares -->
 
+    <div class="modal fade" id="ModalAgregarEjemplares" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Agregar Ejemplares</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form action="">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label"
+                  >Codigo Ejemplar</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ModalCodigoEjemplar"
+                  aria-describedby="emailHelp"
+                />
+              </div>
+              <div class="mb-3">
+                <select
+                  class="form-select"
+                  id="ModalDocumentoEjemplar"
+                ></select>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label"
+                  >Ubicacion</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ModalUbicaionEjemplar"
+                  aria-describedby="emailHelp"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="agregarEjemplar()"
+            >
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Eliminar Documento elimina por la id del ejemplar -->
+
+    <!-- Primer Modal -->
+    <div class="modal fade" id="ModalEliminarDocumento" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Eliminar Documento</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="ModalCodigoEliminar" class="form-label"
+                  >Código Documento</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ModalCodigoEliminar"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <!-- Botón que muestra el segundo modal -->
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-target="#ModalConfirmarEliminar"
+              data-bs-toggle="modal"
+              data-bs-dismiss="modal"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segundo Modal (Confirmación) -->
+    <div class="modal fade" id="ModalConfirmarEliminar" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmación</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Estás seguro de que quieres eliminar este documento?</p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="eliminarDocumento()"
+            >
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--modal de eliminar ejemplar-->
+    <!-- Primer Modal -->
+    <div class="modal fade" id="DelEjemplares" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Eliminar Ejemplar</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="ModalejemplarCode" class="form-label"
+                  >Id del Ejemplar</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ModalejemplarCode"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <!-- Botón que muestra el segundo modal -->
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-target="#ModalConfirmarEjemplar"
+              data-bs-toggle="modal"
+              data-bs-dismiss="modal"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segundo Modal (Confirmación) -->
+    <div class="modal fade" id="ModalConfirmarEjemplar" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmación</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Estás seguro de que quieres eliminar este id de ejemplar?</p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="eliminarEjemplar()"
+            >
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer begins here remember to keep your house tidy an you too-->
 
 
     <footer class="bg-dark text-light py-4">
@@ -873,7 +1536,9 @@
           <div class="col-md-3 mb-3">
             <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li><a href="catalogo.html"> Catalogo </a> </li>
+              <li>
+                <a class="footer-link" href="catalogo.html"> Catalogo </a>
+              </li>
               <a onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
@@ -881,8 +1546,8 @@
             <h5>Recursos</h5>
             <ul class="list-unstyled">
               <li>Sobre nosotros</li>
-                           <li>Contactanos</li>
-                           <li>Atencion al cliente</li>
+              <li>Contactanos</li>
+              <li>Atencion al cliente</li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
@@ -899,7 +1564,6 @@
               </a>
               <a href="#" class="text-light">
                 <i class="fa-brands fa-youtube"></i>
-
               </a>
             </div>
           </div>
