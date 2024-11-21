@@ -90,13 +90,13 @@
         let buttonContainer = document.getElementById("contaniner-bb-buttons");
         let strButtons = `
         <div class="d-grid gap-2 d-md-flex justify-content-md-center my-4 mx-3">
-          <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal"
+          <button type="button" class="btn btn-dark btn-rounded cat-button" data-bs-toggle="modal"
           data-bs-target="#Agregardoc">Agregar Documento</button>
-          <button type="button" class="btn btn-info btn-rounded" data-bs-toggle="modal"
+          <button type="button" class="btn btn-info btn-rounded cat-button" data-bs-toggle="modal"
           data-bs-target="#ModalEliminarDocumento">Eliminar Documento</button>   
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+          <button type="button" class="btn btn-primary cat-button" data-bs-toggle="modal"
           data-bs-target="#ModalAgregarEjemplares">Agregar Ejemplar</button>
-          <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+          <button type="button" class="btn btn-danger cat-button" data-bs-toggle="modal"
           data-bs-target="#DelEjemplares">Eliminar Ejemplar</button>
         </div>
         `;
@@ -957,7 +957,7 @@
       }
       .hero-section {
         background-color: #908d7e;
-        padding: 4rem 0;
+        padding: 2rem 0;
       }
       h1 {
         font-family: "Times New Roman", Times, serif;
@@ -1009,9 +1009,10 @@
       .container {
         flex: 1;
       }
-
       .cat-button {
         width: 200px;
+        text-align: center;
+        display: inline-block;
       }
 
       .bg-custom {
@@ -1026,9 +1027,7 @@
         color: #ec1010;
       }
       .color-container {
-        padding: 2rem;
-        border-radius: 10px;
-        background-color: #908d7e;
+        background-color: #ffd500; /* 908d7e */
       }
 
       footer {
@@ -1108,8 +1107,8 @@
       </div>
     </nav>
     <div class="hero-section">
-      <div class="container my-5 color-container">
-        <h1 class="text-center mb-5">Catálogo de Productos</h1>
+      <div class="container col-md-8 color-container">
+        <h1 class="text-center">Catálogo de Productos</h1>
 
         <!-- Barra de búsqueda y filtros -->
         <div class="row g-3 mb-4">
@@ -1151,8 +1150,8 @@
               onchange="getDocumentosByTituloAndAutorAndTipoAndCategoria()"
             ></select>
           </div>
-          <div class="container" id="contaniner-bb-buttons"></div>
         </div>
+        <div class="container" id="contaniner-bb-buttons"></div>
       </div>
     </div>
 
