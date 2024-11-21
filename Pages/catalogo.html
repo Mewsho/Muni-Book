@@ -1027,6 +1027,12 @@
         min-width: 400px; /* Ajusta según el tamaño que desees para que no se estiren */
         padding: 0.5rem 1rem; /* Espaciado interno para darle un aspecto más compacto */
       }
+
+      .scrollable-menu {
+        height: auto;
+        max-height: 200px;
+        overflow-x: hidden;
+      }
     </style>
   </head>
 
@@ -1217,7 +1223,7 @@
                       Seleccionar
                     </button>
                     <div
-                      class="dropdown-menu p-2"
+                      class="dropdown-menu p-2 scrollable-menu"
                       aria-labelledby="multiSelectDropdown"
                       id="TipCategoriaModal"
                     ></div>
