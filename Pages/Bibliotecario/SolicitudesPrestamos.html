@@ -29,18 +29,16 @@
     <script>
 
 
-      // Falta Hacer el comprobande de la devolucion
-
-      
-
+      let direcc = `https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo-shadow.png`
       let parameters = {
         outputType: "save",
         returnJsPDFDocObject: true,
         fileName: "Invoice 2022",
         orientationLandscape: true,
         compress: true,
+        
         logo: {
-            src: "https://raw.githubusercontent.com/edisonneza/jspdf-invoice-template/demo/images/logo.png",
+            src: direcc,
             width: 53.33, //aspect ratio = width/height
             height: 26.66,
             margin: {
@@ -123,11 +121,11 @@
         additionalRows: [{
                 }],
             
-            invDescLabel: "Invoice Note",
-            invDesc: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary.",
+            invDescLabel: "Nota de Préstamo",
+            invDesc: "Comprobante de Solicitud de Préstamo, atrasos en la devolución de los ejemplares implicaran sanciones en la cuenta registrada en este comprobante.",
         },
         footer: {
-            text: "Este comprobante fue creado en un computador y es valido sin firma ni estamapa.",
+            text: "Este comprobante fue creado en un computador y es valido sin firma ni estampa.",
         },
         pageEnable: true,
         pageLabel: "Page ",
@@ -284,7 +282,10 @@
             console.log("getSolicitud")
             let prestamos = response.data.getSolicitudPrestamoByIdPrestamos.prestamos
             prestamos.forEach((prestamo) => getPrestamoInfo(prestamo))
-            // Test comprobante
+            
+            if (tipoLlamada == "ConfirmarSolicitud"){
+              updSolicitudPrestamo()
+            }
 
           }
         })
@@ -414,7 +415,7 @@
           mensajeDiv.style.display = "block";
           cargarSolicitudesPrestamo()
           mensajeDiv.innerHTML =
-              '<div class="alert alert-danger">Solicitud Confirmada</div>';
+              '<div class="alert alert-success">Solicitud Confirmada</div>';
           $('#modalConfirmacion').modal('toggle')
           setTimeout(function () {
             mensajeDiv.style.display = "none";
@@ -539,7 +540,8 @@
           }),
           success: function(response){
             console.log("Ejemplar Actualizado")
-            updSolicitudPrestamo()
+            
+
           }
         })
       
@@ -570,7 +572,8 @@
             variables : {
               updSolicitudPrestamoId2: idSolicitud,
               updSolicitudPrestamoInput2: {
-                estadoSolicitud: 1,
+                estadoSolicitud: 1, 
+                prestamos: null
               } 
             }
           }),
@@ -626,7 +629,6 @@
             }
           }),
           success: function(response){
-            console.log("getSolicitudToUpdPrestamo")
             let solicitud = response.data.getSolicitudPrestamoByIdUsuarioPrestamos
             let prestamos = response.data.getSolicitudPrestamoByIdUsuarioPrestamos.prestamos
             let usuario = response.data.getSolicitudPrestamoByIdUsuarioPrestamos.usuario
@@ -641,7 +643,6 @@
       }
 
       async function getPrestamoEjemplarToUpdPrestamo(prestamo){
-        console.log("prevgetPrestamoEjemplarToUpdPrestamo")
         let queryPrestamoEjemplar = `
         query GetPrestamoByIdEjemplar($getPrestamoByIdEjemplarId3: ID!) {
           getPrestamoByIdEjemplar(id: $getPrestamoByIdEjemplarId3) {
@@ -672,7 +673,6 @@
             }
           }),
           success: function(response){
-            console.log("postgetPrestamoEjemplarToUpdPrestamo")
             let ejemplar = response.data.getPrestamoByIdEjemplar.ejemplar
             let prestamo = response.data.getPrestamoByIdEjemplar
             updPrestamo(prestamo, ejemplar)
@@ -683,14 +683,14 @@
 
 
       function addDays(date, days) {
-        var result = new Date(date);
-        result.setDate(result.getDate() + days);
+        let result = new Date(date);
+        result.setDate(result.getDate() + days); 
         return result;
       }
 
       function addHours(date, hours) {
-        var result = new Date(date);
-        result.setDate(result.getHours() + hours);
+        let result = new Date(date);
+        result.setHours(result.getHours() + hours);
         return result;
       }
 
@@ -712,7 +712,7 @@
         let tipoPrestamo = prestamo.tipoPrestamo
         let tiempoExtra 
         let fechaDev 
-
+        
         if(tipoPrestamo == "Sala"){
           tiempoExtra = 4
           fechaDev = addHours(fechaPrestamo, tiempoExtra)
@@ -759,11 +759,10 @@
               tiempoExtra = 7;
               break;
           }
-
           fechaDev = addDays(fechaPrestamo, tiempoExtra)
         }
-
-
+        console.log(tiempoExtra,)
+        console.log(prestamo, fechaPrestamo, fechaDev)
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -782,7 +781,6 @@
             console.log("UpdPrestamo Completado")
           }
         })
-
       }
 
 
@@ -794,24 +792,15 @@
         parameters.contact.address = solicitud.usuario.direccion
         parameters.contact.phone = `${solicitud.usuario.telefono}`
         parameters.contact.email = solicitud.usuario.correo
-        parameters.invoice.label = `Invoice ID: ${solicitud.id}`
-        parameters.invoice.invDate = solicitud.fechaSolicitud
+        parameters.invoice.label = `${solicitud.id}`
+        let fSolicitud = new Date(solicitud.fechaSolicitud)
+        parameters.invoice.invDate = fSolicitud.toLocaleString()
 
         let tipo = solicitud.tipoSolicitud
         let prestamos = solicitud.prestamos
         contadorMaximo = prestamos.length
         prestamos.forEach((prestamo) => hacerComprobanteInter(prestamo))
         
-        
-        /*
-        for (prestamo of prestamos){
-          listaForTableInvoice.push([prestamo.id,"codigo"
-          ,"Titulo",prestamo.fechaPrestamo.toLocaleString(), prestamo.fechaDevolucion.toLocaleString(), tipo])
-        }
-        parameters.invoice.table = listaForTableInvoice
-        */
-
-
       }
 
       function hacerComprobanteInter(prestamo){
@@ -883,10 +872,11 @@
           success: function(response){
             
             let ejemplar = response.data.getEjemplarByIdDocumento
-            console.log(prestamo,ejemplar)
+            let fPres = new Date(prestamo.fechaPrestamo)
+            let fDev = new Date(prestamo.fechaDevolucion)
             let lista = [
               prestamo.id, ejemplar.codigo, ejemplar.documento.titulo,
-              prestamo.fechaPrestamo.toLocaleString(), prestamo.fechaDevolucion.toLocaleString(), prestamo.tipoPrestamo
+              fPres.toLocaleString(), fDev.toLocaleString(), prestamo.tipoPrestamo
             ]
             listaForTableInvoice.push(lista)
             contador +=1
@@ -1208,7 +1198,7 @@
         //jsPDFInvoiceTemplate.default( parameters );
 
         var pdfCreated = jsPDFInvoiceTemplate.default({ ...parameters });
-        pdfCreated.jsPDFDocObject.save(); //or .output('<outputTypeHere>');
+        //pdfCreated.jsPDFDocObject.save(); //or .output('<outputTypeHere>');
 
 
       }

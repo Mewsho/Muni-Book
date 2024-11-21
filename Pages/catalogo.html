@@ -30,6 +30,8 @@
     <script>
       let listaDocumentosAgregados = [];
       let listaCantEjemplaresAgregados = [];
+      let idSolicitudGeneral
+      let isPenalizado = false
       const objectPrestamos = {
         MapPrestamos: new Map(),
       };
@@ -46,9 +48,9 @@
           } else {
             this.MapPrestamos.set(idDocumento, [Prestamo]);
           }
-          console.log(this.MapPrestamos);
-          let list = this.MapPrestamos.get(idDocumento);
-          updSolicitudPrestamo(list);
+          console.log("Inside object",this.MapPrestamos);
+          let mapP = this.MapPrestamos;
+          updSolicitudPrestamo(mapP);
         },
       });
 
@@ -216,13 +218,13 @@
       }
 
       // form select de tipo y categoria
-
+      let tiposDocumentos = []
       let optionFormSelectTipo = ['<option value="">Selecciona Tipo</option>'];
       function optionTipo(item) {
         optionFormSelectTipo.push(
           '<option value="' + item.id + '">' + item.tipo + "</option>"
         );
-
+        tiposDocumentos.push(item.tipo)
       }
 
       let optionModalTipoCategoria = [];
@@ -246,11 +248,11 @@
 
 
       let optionFormSelectDocumento = [
-        '<option value="">Selecciona Documento</option>',
+        '<option value="">Selecciona...</option>',
       ];
       function optionDocumentos(item) {
         optionFormSelectDocumento.push(
-          '<option value="' + item.id + '">' + item.titulo + "</option>"
+          `<option value="${item.id}" tipo="${item.tipoDocumento.tipo}">${item.titulo}</option>`
         );
       }
       // Funciones para optener la lista de tipo y categoria
@@ -314,43 +316,34 @@
       }
 
       function aplicarCambiosCard() {
-        if (
-          document.cookie
-            .split(";")
-            .some((item) => item.trim().startsWith(`tipo=`))
-        ) {
-          let tipoCookie = document.cookie
-            .split("; ")
-            .find((row) => row.startsWith(`tipo=`))
-            ?.split("=")[1];
+        
+        let tipoUsuario = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith(`tipo=`))
+        ?.split("=")[1];
+        if (tipoUsuario == 2) {
+          let inputGroupList = document.getElementsByClassName("input-group");
+          for (inputGroup of inputGroupList) {
+            inputGroup.classList.add("d-none");
+          }
+        } else if (tipoUsuario == 1) {
+        } else if (tipoUsuario == 0) {
+          let collapseList = document.getElementsByClassName("collapse-card");
+          for (collapse of collapseList) {
+            let idDocumentoCollapse = collapse.id;
+            let idDocumento = idDocumentoCollapse.split("-")[0];
+            let strButton = `<button type="button" class="btn btn-success" 
+            id="${idDocumento}-addButton">
+            Agregar a Solicitud</button>
+            `;
+            collapse.insertAdjacentHTML("beforeend", strButton);
 
-          tipoCookie = parseInt(tipoCookie, 10);
-
-          if (tipoCookie == 2) {
-            let inputGroupList = document.getElementsByClassName("input-group");
-            for (inputGroup of inputGroupList) {
-              inputGroup.classList.add("d-none");
-            }
-          } else if (tipoCookie == 1) {
-          } else if (tipoCookie == 0) {
-            let collapseList = document.getElementsByClassName("collapse-card");
-            for (collapse of collapseList) {
-              let idDocumentoCollapse = collapse.id;
-              let idDocumento = idDocumentoCollapse.split("-")[0];
-              let strButton = `<button type="button" class="btn btn-success" 
-              id="${idDocumento}-addButton">
-              Agregar a Solicitud</button>
-              `;
-              collapse.insertAdjacentHTML("beforeend", strButton);
-
-              $(`#${idDocumento}-addButton`).click(function () {
-                addPrestamoToSolicitud(idDocumento);
-              });
-            }
-            crearSolicitudInicial();
-
+            $(`#${idDocumento}-addButton`).click(function () {
+              addPrestamoToSolicitud(idDocumento);
+            });
           }
         }
+        
       }
 
       function addDays(date, days) {
@@ -370,6 +363,7 @@
             objectPrestamos.MapPrestamos.get(idDocumentoDelBoton);
           prestamosAnteriores.forEach((prestamo) => eliminarPrestamo(prestamo));
           objectPrestamos.MapPrestamos.set(idDocumentoDelBoton, []);
+          updSolicitudPrestamo(objectPrestamos.MapPrestamos)
           return;
         }
         if (objectPrestamos.MapPrestamos.has(idDocumentoDelBoton)) {
@@ -488,15 +482,9 @@
       }
 
       async function crearSolicitudInicial() {
-        let hasSolicitudCookie = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith(`hasSolicitud=`))
-          ?.split("=")[1];
-        if (hasSolicitudCookie) {
-          return;
-        }
         let usuarioId = usuarioIdGeneral;
         let listaPrestamos = [];
+        
         let queryAddSolicitudPrestamo = `
         mutation AddSolicitudPrestamo($addSolicitudPrestamoInput2: SolicitudPrestamoInput) {
           addSolicitudPrestamo(input: $addSolicitudPrestamoInput2) {
@@ -507,6 +495,7 @@
           }
         }
         `;
+        
         // Los defaults de la Solicitud
         let fechaActual = Date.now();
         let tipo = "Sala";
@@ -534,32 +523,23 @@
             let expireTime = tiempo + 900000;
             ahora.setTime(expireTime);
             let solicitud = response.data.addSolicitudPrestamo;
-            document.cookie =
-              "hasSolicitud=" +
-              true +
-              ";expires=" +
-              ahora.toUTCString +
-              "; path=/; SameSite=lax; Secure";
-            document.cookie =
-              "solicitudID=" +
-              solicitud.id +
-              ";expires=" +
-              ahora.toUTCString +
-              "; path=/; SameSite=lax; Secure";
+            idSolicitudGeneral = solicitud.id
           },
         });
       }
 
-      function updSolicitudPrestamo(listaPrestamos) {
-        let idSolicitudCookie = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith(`solicitudID=`))
-          ?.split("=")[1];
-        let listaIDPrestamos = [];
-        for (prestamo of listaPrestamos) {
-          listaIDPrestamos.push(prestamo.id);
+      let listaIDPrestamos = [];
+      function testElements(valor, key, map){
+        let listaPrestamos = valor
+        for (prestamo of listaPrestamos){
+          listaIDPrestamos.push(prestamo.id)
         }
-        console.log(listaIDPrestamos);
+      }
+      function updSolicitudPrestamo(mapPrestamos) {
+        let idSolicitud = idSolicitudGeneral
+        
+        listaIDPrestamos = []
+        mapPrestamos.forEach(testElements)
         let fechaActual = Date.now();
         let tipo = "Sala";
         let estado = 0;
@@ -582,7 +562,7 @@
           data: JSON.stringify({
             query: queryupdSolicitud,
             variables: {
-              updSolicitudPrestamoId: idSolicitudCookie,
+              updSolicitudPrestamoId: idSolicitud,
               updSolicitudPrestamoInput2: {
                 tipoSolicitud: tipo,
                 estadoSolicitud: estado,
@@ -593,7 +573,7 @@
             },
           }),
           success: function (response) {
-            console.log(response);
+            console.log("UpdSolicitudCompletado");
           },
         });
       }
@@ -602,7 +582,6 @@
       let cantEjemplaresSala = 0;
       // Obtener los ejemplares y crear el inner html
       function getEjemplares(documentoId, estado, estadoTexto) {
-        console.log("Obteniendo Ejemplares");
         let queryCantEjemplares = `
         query Query($documentoId: ID!, $estado: Int) {
           getCantEjemplaresByDocumentoAndEstado(documentoId: $documentoId, estado: $estado)
@@ -621,7 +600,6 @@
             },
           }),
           success: function (response) {
-            console.log("Ejemplares obtenidos");
             let cant = response.data.getCantEjemplaresByDocumentoAndEstado;
             if (estado == 3) {
               cantEjemplaresDisponible =
@@ -783,6 +761,7 @@
         cargarCategoria();
         cargarDocumentos();
         checkCookieExistence("tipo");
+        revisarUsuarioYSolicitud()
       }
 
       // La funcion para el query con los filtros
@@ -792,9 +771,6 @@
         let aut = document.getElementById("searchBarAuthor").value;
         let tipo = document.getElementById("formSelectTipo").value;
         let categoria = document.getElementById("formSelectCategoria").value;
-
-
-        }
         if (categoria == "") {
           categoria = null;
         }
@@ -846,10 +822,14 @@
             aplicarCambiosCard();
           },
         });
-
+      }
+      
       function agregarEjemplar() {
         let codigo = document.getElementById("ModalCodigoEjemplar").value;
-        let ubicacion = document.getElementById("ModalUbicaionEjemplar").value;
+        let piso = document.getElementById("piso-input-group").value
+        let fila = document.getElementById("fila-input-group").value
+        let estante = document.getElementById("estante-input-group").value
+        let ubicacion = `Piso ${piso} Fila ${fila} Estante ${estante}`
         let idDocumento = document.getElementById(
           "ModalDocumentoEjemplar"
         ).value;
@@ -956,6 +936,110 @@
         });
 
       }
+    
+    
+      function completeInputAgregarEjemplar(){
+        let select = document.getElementById("ModalDocumentoEjemplar")
+        let indiceSeleccionado = select.selectedIndex
+        let elementoSeleccionado = select.options[indiceSeleccionado]
+        let tipoSeleccionado = elementoSeleccionado.getAttribute("tipo")
+        let indexTipo = tiposDocumentos.indexOf(tipoSeleccionado)
+        indiceSeleccionado = `${indiceSeleccionado}`
+        if (indiceSeleccionado.length == 1){
+          indiceSeleccionado = `0${indiceSeleccionado}`
+        }
+        let str = `${indexTipo+1}-${indiceSeleccionado}-`
+
+        let input = document.getElementById("ModalCodigoEjemplar")
+        input.value = str
+
+      }
+    
+    
+      async function revisarUsuarioYSolicitud(){
+        let tipoUsuario = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith(`tipo=`))
+        ?.split("=")[1];
+        let usuarioId = usuarioIdGeneral;
+        let queryGetSolicitudNoActiva = `
+        query GetSolicitudPrestamoByUsuarioId($usuarioId: ID!) {
+          getSolicitudPrestamoNoActivaByUsuarioId(usuarioID: $usuarioId) {
+            id
+            tipoSolicitud
+            estadoSolicitud
+            fechaSolicitud
+            usuario {
+              id
+              rut
+              nombres
+              apellidos
+              direccion
+              telefono
+              activo
+              codigo
+              correo
+              password
+              tipoUsuario
+              fechaSancion
+            }
+            prestamos {
+              id
+              tipoPrestamo
+              fechaPrestamo
+              fechaDevolucion
+              fechaDevolucionReal
+            }
+          }
+        }
+        `
+
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryGetSolicitudNoActiva,
+            variables: {
+              usuarioId: usuarioId,
+            },
+          }),
+          success: function (response) {
+            console.log(response)
+            let solicitud = response.data.getSolicitudPrestamoNoActivaByUsuarioId
+            if (solicitud == null){
+              if(tipoUsuario == 0){
+                crearSolicitudInicial()
+              }
+            }
+            else {
+              if(tipoUsuario == 0){
+                let usuario = solicitud.usuario
+                checkUsuarioEstado(usuario)
+                idSolicitudGeneral = solicitud.id
+              }
+            } 
+          }
+        });
+
+      }
+
+      function checkUsuarioEstado(usuario){
+
+        let actual = new Date(Date.now())
+        // Usuario no activo
+        if(!usuario.activo){
+          return
+        }
+        // Sancionado
+        if(usuario.fechaSancion != null && usuario.fechaSancion > actual){
+          isPenalizado = true
+          return
+        }
+
+      }
+
     </script>
 
     <!-- Styles como los del css pero no-->
@@ -1298,7 +1382,7 @@
           <div class="modal-body">
             <form action="">
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label"
+                <label for="ModalCodigoEjemplar" class="form-label"
                   >Codigo Ejemplar</label
                 >
                 <input
@@ -1309,21 +1393,30 @@
                 />
               </div>
               <div class="mb-3">
+                <label for="ModalDocumentoEjemplar" class="form-label"
+                  >Documento</label
+                >
                 <select
                   class="form-select"
                   id="ModalDocumentoEjemplar"
+                  onchange="completeInputAgregarEjemplar()"
                 ></select>
               </div>
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label"
+                <label for="ModalUbicaionEjemplar" class="form-label"
                   >Ubicacion</label
                 >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="ModalUbicaionEjemplar"
-                  aria-describedby="emailHelp"
-                />
+                <div class="input-group">
+                  <span class="input-group-text">Piso</span>
+                  <select class="form-select" aria-label="Default select example" id="piso-input-group">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                  <span class="input-group-text">Fila</span>
+                  <input type="text" aria-label="Last name" class="form-control" id="fila-input-group">
+                  <span class="input-group-text">Estante</span>
+                  <input type="text" aria-label="Last name" class="form-control" id="estante-input-group">
+                </div>
               </div>
             </form>
           </div>
@@ -1342,6 +1435,7 @@
             >
               Agregar
             </button>
+
           </div>
         </div>
       </div>
