@@ -846,7 +846,6 @@
             aplicarCambiosCard();
           },
         });
-      }
 
       function agregarEjemplar() {
         let codigo = document.getElementById("ModalCodigoEjemplar").value;
@@ -874,7 +873,7 @@
             query: querySignIn,
             variables: {
               input: {
-                codigo: parseInt(codigo, 10),
+                codigo: codigo, 
                 documento: idDocumento,
                 estado: 3,
                 estadoTexto: "Disponible",
