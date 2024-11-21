@@ -102,9 +102,17 @@
       function AddDocumento() {
         let ModalAnioSalida = document.getElementById("ModalAnioSalida").value;
         let ModalAutor = document.getElementById("ModalAutor").value;
-        let ModalCategoriaDocumento = document.getElementById(
-          "ModalCategoriaDocumento"
-        ).value;
+        let ModalCategoriaDocumento =
+          document.getElementById("TipCategoriaModal");
+        let CategoriasHijos = [];
+        for (child of ModalCategoriaDocumento.children) {
+          for (child2 of child.children) {
+            if (child2.checked) {
+              CategoriasHijos.push(child2.value);
+            }
+          }
+        }
+
         let ModalCodigo = document.getElementById("ModalCodigo").value;
         let ModalEdicion = document.getElementById("ModalEdicion").value;
         let ModalEditorial = document.getElementById("ModalEditorial").value;
@@ -133,11 +141,11 @@
             query: queryAddDocumento,
             variables: {
               input: {
-                anioSalida: ModalAnioSalida,
+                anioSalida: parseInt(ModalAnioSalida, 10),
                 autor: ModalAutor,
-                categoriaDocumento: ModalCategoriaDocumento,
+                categoriaDocumento: CategoriasHijos,
                 codigo: ModalCodigo,
-                edicion: ModalEdicion,
+                edicion: parseInt(ModalEdicion, 10),
                 editorial: ModalEditorial,
                 tipoDocumento: tipo,
                 titulo: ModalTitulo,
@@ -212,12 +220,11 @@
       }
 
       let optionModalTipoCategoria = [];
-
       function optionModalCategoria(item) {
         optionModalTipoCategoria.push(
           `<label class="dropdown-item">
-                        <input type="checkbox" value="Cámara y Fotografía" class="me-2" />
-                        Cámara y Fotografía
+                        <input type="checkbox" value="${item.id}" class="me-2"/>
+                        ${item.categoria}
                       </label>`
         );
       }
