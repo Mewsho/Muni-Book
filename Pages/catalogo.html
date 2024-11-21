@@ -161,22 +161,22 @@
           }),
           success: function (response) {
             let mensajeDiv = document.getElementById("mensajeAddDocumento");
-            mensajeDiv.style.display = 'block'
+            mensajeDiv.style.display = "block";
             mensajeDiv.innerHTML =
-                '<div class="alert alert-success">Documento Agregado con éxito.</div>';
-            
+              '<div class="alert alert-success">Documento Agregado con éxito.</div>';
+
             setTimeout(function () {
-              mensajeDiv.style.display = "none"; 
+              mensajeDiv.style.display = "none";
             }, 2000);
           },
           error: function (error) {
             let mensajeDiv = document.getElementById("mensajeAddDocumento");
-            mensajeDiv.style.display = 'block'
+            mensajeDiv.style.display = "block";
             mensajeDiv.innerHTML =
-                '<div class="alert alert-danger">No ha sido posible agregar el documento, rellene los campos faltantes.</div>';
-            
+              '<div class="alert alert-danger">No ha sido posible agregar el documento, rellene los campos faltantes.</div>';
+
             setTimeout(function () {
-              mensajeDiv.style.display = "none"; 
+              mensajeDiv.style.display = "none";
             }, 2000);
           },
         });
@@ -892,18 +892,17 @@
           success: function (response) {
             console.log("Response:", response);
             let mensajeDiv = document.getElementById("mensajeAddEjemplar");
-            mensajeDiv.style.display = 'block'
-            if (idDocumento == ""){
+            mensajeDiv.style.display = "block";
+            if (idDocumento == "") {
               mensajeDiv.innerHTML =
                 '<div class="alert alert-danger">No ha sido posible agregar el ejemplar.</div>';
-            }
-            else{
+            } else {
               mensajeDiv.innerHTML =
                 '<div class="alert alert-success">Ejemplar Agregado con éxito.</div>';
             }
-            
+
             setTimeout(function () {
-              mensajeDiv.style.display = "none"; 
+              mensajeDiv.style.display = "none";
             }, 2000);
           },
           error: function (error) {
@@ -991,14 +990,14 @@
         margin-bottom: -1%;
       }
       h1 {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         font-size: 2rem;
         font-weight: 500;
         font-size: 400%;
       }
 
       .letra-main {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
       }
 
       .features-section {
@@ -1006,14 +1005,14 @@
       }
       .display-4 {
         font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
       }
       .navbar {
         color: white;
       }
       .nav-link {
         align-items: center;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         align-content: center;
         text-align: end;
         margin-top: 2%;
@@ -1030,7 +1029,7 @@
       }
 
       body {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -1617,4 +1616,3 @@
     </footer>
   </body>
 </html>
-
