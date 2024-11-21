@@ -54,7 +54,8 @@
       .hero-subtitle {
         text-align: center;
         color: #666;
-        margin-bottom: 30px;
+        margin-bottom: 3px;
+        font-size: 250%;
       }
 
       .search-bar {
@@ -92,6 +93,8 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         max-width: 1200px;
         margin: auto;
+        margin-top: 1%;
+        margin-bottom: 5%;
       }
 
       .table th,
@@ -152,20 +155,26 @@
       }
     </style>
     <script>
-      
-      function LoadListaSolicitudes(SolicitudObject){
+      function LoadListaSolicitudes(SolicitudObject) {
         let fechaPrestamo = new Date(SolicitudObject.fechaSolicitud);
-        let fechaDevolucion = new Date(SolicitudObject.prestamos[0].fechaDevolucion);
+        let fechaDevolucion = new Date(
+          SolicitudObject.prestamos[0].fechaDevolucion
+        );
         let fechaActual = Date.now();
 
-        if (SolicitudObject.estadoSolicitud == 1 && fechaActual<fechaDevolucion){
+        if (
+          SolicitudObject.estadoSolicitud == 1 &&
+          fechaActual < fechaDevolucion
+        ) {
           let strSolicitudesPrestamo = `
               <table class="table table-bordered">
                 <thead class="table-dark">
                 </thead>
                 <tbody>
                   <tr>
-                    <td>${SolicitudObject.usuario.nombres} ${SolicitudObject.usuario.apellidos}</td>
+                    <td>${SolicitudObject.usuario.nombres} ${
+            SolicitudObject.usuario.apellidos
+          }</td>
                     <td>${SolicitudObject.prestamos.length}</td>
                     <td>${fechaPrestamo.toLocaleString()}</td>
                     <td>${fechaDevolucion.toLocaleString()}</td>
@@ -177,40 +186,56 @@
                   </tr>
                 </tbody>
               </table>
-          `
+          `;
 
           let listaSolicitudes = document.getElementById("listaSolicitudes");
-          listaSolicitudes.insertAdjacentHTML("beforeend", strSolicitudesPrestamo);
+          listaSolicitudes.insertAdjacentHTML(
+            "beforeend",
+            strSolicitudesPrestamo
+          );
         }
 
-        if (SolicitudObject.estadoSolicitud == 1 && fechaActual>fechaDevolucion){
+        if (
+          SolicitudObject.estadoSolicitud == 1 &&
+          fechaActual > fechaDevolucion
+        ) {
           let strSolicitudesPrestamo = `
               <table class="table table-bordered">
                 <thead class="table-dark">
                 </thead>
                 <tbody>
                   <tr>
-                    <td>${SolicitudObject.usuario.nombres} ${SolicitudObject.usuario.apellidos}</td>
+                    <td>${SolicitudObject.usuario.nombres} ${
+            SolicitudObject.usuario.apellidos
+          }</td>
                     <td>${SolicitudObject.prestamos.length}</td>
                     <td>${fechaPrestamo.toLocaleString()}</td>
                     <td>${fechaDevolucion.toLocaleString()}</td>
                     <td>${SolicitudObject.tipoSolicitud}</td>
                     <!-- Tipo de Préstamo -->
                     <td class="btn-actions">
-                      <button nombres="${SolicitudObject.usuario.nombres}" apellidos="${SolicitudObject.usuario.apellidos}" correo="${SolicitudObject.usuario.correo}" class="btn btn-danger btn-sm correo" >Enviar Correo</button>
+                      <button nombres="${
+                        SolicitudObject.usuario.nombres
+                      }" apellidos="${
+            SolicitudObject.usuario.apellidos
+          }" correo="${
+            SolicitudObject.usuario.correo
+          }" class="btn btn-danger btn-sm correo" >Enviar Correo</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
-          `
+          `;
 
           let listaSolicitudes = document.getElementById("listaSolicitudes");
-          listaSolicitudes.insertAdjacentHTML("beforeend", strSolicitudesPrestamo);
-          
+          listaSolicitudes.insertAdjacentHTML(
+            "beforeend",
+            strSolicitudesPrestamo
+          );
         }
       }
 
-      function GetListaDeSolicitudes(){
+      function GetListaDeSolicitudes() {
         let queryGetArraySolicitudesPrestamos = `
           query GetSolicitudPrestamosUsuarioPrestamos {
             getSolicitudPrestamosUsuarioPrestamos {
@@ -229,7 +254,7 @@
               estadoSolicitud
             }
           }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -238,26 +263,25 @@
           data: JSON.stringify({
             query: queryGetArraySolicitudesPrestamos,
           }),
-          success: function(response){
-            let Array = response.data.getSolicitudPrestamosUsuarioPrestamos
+          success: function (response) {
+            let Array = response.data.getSolicitudPrestamosUsuarioPrestamos;
             Array.forEach((element) => LoadListaSolicitudes(element));
-            sendCorreo()
-
-          }
-        })
+            sendCorreo();
+          },
+        });
       }
 
-      function sendCorreo(){
-        $(".correo").click(function(){
-            let correo = $(this).attr("correo")
-            let nombres = $(this).attr("nombres")
-            let apellidos = $(this).attr("apellidos")
-            let nombreCompleto = nombres + " " + apellidos
-            let queryGetArraySolicitudesPrestamos = `
+      function sendCorreo() {
+        $(".correo").click(function () {
+          let correo = $(this).attr("correo");
+          let nombres = $(this).attr("nombres");
+          let apellidos = $(this).attr("apellidos");
+          let nombreCompleto = nombres + " " + apellidos;
+          let queryGetArraySolicitudesPrestamos = `
             query Query($correo: String, $nombres: String) {
               sendEmailRecordatorio(correo: $correo, nombres: $nombres)
             }
-          `
+          `;
           $.ajax({
             type: "POST",
             url: "http://localhost:8092/graphql",
@@ -267,16 +291,15 @@
               query: queryGetArraySolicitudesPrestamos,
               variables: {
                 correo: correo,
-                nombres: nombreCompleto
-              }
+                nombres: nombreCompleto,
+              },
             }),
-            success: function(response){
-              console.log("hola")
-            }
-          })
-        })
+            success: function (response) {
+              console.log("hola");
+            },
+          });
+        });
       }
-
     </script>
   </head>
   <body onload="GetListaDeSolicitudes()">
@@ -318,7 +341,9 @@
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="..//User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
+                ><i class="fa-solid fa-cart-shopping"></i
+              ></a>
             </li>
           </ul>
         </div>
@@ -328,13 +353,12 @@
     <!-- Main Title and Subtitle -->
     <div class="container">
       <h1 class="hero-title">Muni Book</h1>
-      <p class="hero-subtitle">bibliotecario1</p>
+      <p class="hero-subtitle">Lista de Solicitudes de Préstamos</p>
     </div>
 
     <!-- list Section -->
     <div class="container mt-5">
       <div class="list-container" style="border: 3px solid #000">
-        <h2 class="text-center mb-4">Lista de Solicitudes de Préstamos</h2>
         <table class="table table-bordered">
           <thead class="table-dark">
             <tr>

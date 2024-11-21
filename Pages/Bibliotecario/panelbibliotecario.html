@@ -275,13 +275,13 @@
     </script>
 
     <style>
+      /* Asi se comenta en Css*/
       h1 {
         font-family: "Times New Roman", Times, serif;
-        font-size: 300%;
       }
 
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Times New Roman", Times, serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
         display: flex;
         flex-direction: column;
@@ -308,33 +308,13 @@
         margin-bottom: 30px;
       }
 
+      .filter-buttons {
+        margin-bottom: 30px;
+      }
+
       .filter-buttons .btn {
         margin-right: 10px;
         margin-bottom: 10px;
-      }
-      .list-container {
-        background-color: #f8f9fa;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        max-width: 1200px;
-        margin: auto;
-      }
-      footer {
-        background-color: #000;
-        color: #fff;
-        padding: 20px 0;
-      }
-
-      .footer-link {
-        color: inherit;
-        text-decoration: none;
-        cursor: pointer;
-      }
-
-      .footer-link:hover {
-        text-decoration: underline;
-        color: inherit;
       }
 
       .hero-section {
@@ -355,16 +335,37 @@
         text-align: end;
         color: #efeae4;
       }
+
+      .panel-container {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: auto;
+        margin-top: 1%;
+        margin-bottom: 5%;
+      }
+
+      footer {
+        background-color: #000;
+        color: #fff;
+        padding: 20px 0;
+      }
+      .footer-link {
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .footer-link:hover {
+        text-decoration: underline;
+        color: inherit;
+      }
       .navbar-toggler-icon {
         background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
       }
       .navbar-toggler {
         border-color: white; /* Cambia el borde del toggler a blanco */
-      }
-
-      /* Estilo para ocultar el mensaje inicialmente */
-      #mensaje {
-        display: none; /* Oculta el mensaje por defecto */
       }
     </style>
   </head>
@@ -423,12 +424,15 @@
     </div>
 
     <!-- Filter Buttons -->
-    <div class="container text-center">
-      <div class="list-container" style="border: 3px solid #000">
+    <div class="container mt-5">
+      <div
+        class="panel-container"
+        style="border: 3px solid #000; height: 182px"
+      >
         <div class="mb-3">
           <button
             type="button"
-            class="btn btn-outline-secondary btn-lg w-100"
+            class="btn btn-secondary btn-lg w-100"
             data-bs-toggle="modal"
             data-bs-target="#modalDevolucion"
           >
@@ -438,7 +442,7 @@
         <div class="mb-3">
           <a
             href="SolicitudesPrestamos.html"
-            class="btn btn-outline-secondary btn-lg w-100"
+            class="btn btn-secondary btn-lg w-100"
           >
             Revisar solicitudes de préstamo
           </a>

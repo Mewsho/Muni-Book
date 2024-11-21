@@ -26,7 +26,6 @@
       /* Asi se comenta en Css*/
       h1 {
         font-family: "Times New Roman", Times, serif;
-        font-size: 1000%;
       }
 
       body {
@@ -34,6 +33,7 @@
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
         display: flex;
         flex-direction: column;
+        background-color: #c5c3b8;
       }
 
       .container {
@@ -43,15 +43,17 @@
       .hero-title {
         margin-top: 150px;
         text-align: center;
+        font-size: 1000%;
       }
 
       .hero-subtitle {
         text-align: center;
         color: #666;
         margin-bottom: 3px;
+        font-size: 250%;
       }
-      body {
-        background-color: #c5c3b8;
+      button .filter-buttons {
+        margin-bottom: 30px;
       }
 
       .filter-buttons {
@@ -160,7 +162,9 @@
             </li>
             <li class="nav-item"></li>
             <li class="nav-item">
-              <a class="nav-link" href="..//User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
+                ><i class="fa-solid fa-cart-shopping"></i
+              ></a>
             </li>
           </ul>
         </div>
@@ -176,12 +180,14 @@
     <!-- Filter Buttons -->
 
     <div class="container mt-5">
-      <div class="panel-container" style="border: 3px solid #000">
-        <h2 class="text-center mb-4">Panel Administrador</h2>
+      <div
+        class="panel-container"
+        style="border: 3px solid #000; height: 182px"
+      >
         <div class="mb-3">
           <a
             href="PrestamosVencidos.html"
-            class="btn btn-outline-secondary btn-lg w-100"
+            class="btn btn-secondary btn-lg w-100"
           >
             Revisar Préstamos Vencidos
           </a>
@@ -189,7 +195,7 @@
         <div>
           <a
             href="RegistrarUsuario.html"
-            class="btn btn-outline-secondary btn-lg w-100"
+            class="btn btn-secondary btn-lg w-100"
           >
             Registrar Ficha de Usuario
           </a>
@@ -198,7 +204,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
+    <footer class="bg-dark text-light py-4 mt-4">
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
