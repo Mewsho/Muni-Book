@@ -714,7 +714,7 @@
           tiempoExtra = 4
           fechaDev = addHours(fechaPrestamo, tiempoExtra)
         }
-        else if (tipoPrestamo == "Domicilio"){
+        else if (tipoPrestamo == "Domicilio" || tipoPrestamo == "Reserva"){
           switch (tipoDocumentoCodigo){
             case "1": // Tecnico
               tiempoExtra = 7;
