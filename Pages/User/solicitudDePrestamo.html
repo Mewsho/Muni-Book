@@ -198,8 +198,13 @@
             valor = button.value;
           }
         }
+        
         fechaPrestamo = new Date();
 
+        if (valor == "Reserva"){
+          let fecha = document.getElementById("fechaPrestamo").value
+          fechaPrestamo = new Date(fecha)
+        }
 
         let listaAuxiliar = [];
 
@@ -243,6 +248,7 @@
                 index
               )
             );
+            showCompletedMessage();
           },
         });
       }
@@ -406,6 +412,19 @@
           },
         });
       }
+
+
+
+      async function showCompletedMessage(){
+        const mensajeDiv = document.getElementById("mensajeTabla");
+        mensajeDiv.style.display = "block";
+        mensajeDiv.innerHTML =
+            '<div class="alert alert-success">Solicitud Actualizada</div>';
+        setTimeout(function () {
+          mensajeDiv.style.display = "none";
+        }, 3000);
+      }
+
     </script>
   </head>
   <body onload="ObtenerSolicitudPrestamos()">
@@ -527,6 +546,7 @@
           </div>
           <button
             class="btn btn-secondary w-100 mt-3" onclick="ObtenerEleccion()">Confirmar solicitud</button>
+            <div id="mensajeTabla" class="mt-3" style="display: none"></div>
         </div>
       </div>
     </div>
