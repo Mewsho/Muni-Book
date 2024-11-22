@@ -168,27 +168,23 @@
     console.log(document.cookie);
 
     function aplicarVersionUsuario(){
-        let elemento = document.getElementById("NavbarAdmin");
-        elemento.classList.add("d-none");
-        let elemento1 = document.getElementById("navbarBibliotecario");
-        elemento1.classList.add("d-none");
+        let elemento = document.getElementById("carritoCompras");
+        elemento.classList.remove("d-none");
     }
 
     function aplicarVersionBibliotecario() {
-        let elemento = document.getElementById("NavbarAdmin");
-        elemento.classList.add("d-none");
+        let elemento = document.getElementById("navbarBibliotecario");
+        elemento.classList.remove("d-none");
     }
 
     function aplicarVersionNotUsuario() {
-        let elemento = document.getElementById("NavbarAdmin");
-        elemento.classList.add("d-none");
-        let elemento1 = document.getElementById("navbarBibliotecario");
-        elemento1.classList.add("d-none");
+        let elemento = document.getElementById("carritoCompras");
+        elemento.classList.remove("d-none");
     }
 
     function aplicarVersionAdministrador() {
-      let elemento1 = document.getElementById("navbarBibliotecario");
-      elemento1.classList.add("d-none");
+      let elemento1 = document.getElementById("NavbarAdmin");
+      elemento1.classList.remove("d-none");
     }
 
     function loginButton() {
@@ -256,13 +252,13 @@
             */
         }
 
-        let elemento = document.getElementById("botonLogin");
-        elemento.classList.add("d-none");
+        let elemento = document.getElementById("botonLogout");
+        elemento.classList.remove("d-none");
 
       } else {
         aplicarVersionNotUsuario();
-        let elemento = document.getElementById("botonLogout");
-        elemento.classList.add("d-none");
+        let elemento = document.getElementById("botonLogin");
+        elemento.classList.remove("d-none");
         console.log("NotUsuario");
       }
     }
@@ -302,19 +298,24 @@
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#contact">Contacto</a>
+              <a class="nav-link" href="ContactoMas.html">Contacto</a>
             </li>
             <!-- "d.none" para oculta como "nav-item d-none"-->
             <li class="nav-item">
-              <a class="nav-link" href="/Pages/Admin/PanelAdmin.html" id="NavbarAdmin">Admin</a>
+              <a class="nav-link d-none" href="/Pages/Admin/PanelAdmin.html" id="NavbarAdmin">Admin</a>
             </li>
 
             <li class="nav-item">
               <a
-                class="nav-link"
+                class="nav-link d-none"
                 href="/Pages/Bibliotecario/panelbibliotecario.html" id="navbarBibliotecario"
                 >Bibliotecario</a
               >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
+                ><i class="fa-solid fa-cart-shopping d-none" id="carritoCompras"></i
+              ></a>
             </li>
           </ul>
         </div>
@@ -331,8 +332,8 @@
 
         <p class="textobajotitulo">Librería Municipal</p>
         <div class="mt-4">
-          <a onclick="loginButton()" class="btn btn-dark" id="botonLogin">Acceder</a>
-          <a onclick="logoutButton()" class="btn btn-dark" id="botonLogout">Cerrar Sesion</a>
+          <a onclick="loginButton()" class="btn btn-dark d-none" id="botonLogin">Acceder</a>
+          <a onclick="logoutButton()" class="btn btn-dark d-none" id="botonLogout">Cerrar Sesion</a>
         </div>
       </div>
     </section>
@@ -484,12 +485,10 @@
             <h5>Recursos</h5>
             <ul class="list-unstyled">
               <li>
-                <a class="footer-link" href="ContactoMas.html"
-                  >Sobre nosotros</a
-                >
+                <a class="footer-link" href="ContactoMas.html">Sobre nosotros</a>
               </li>
               <li>
-                <a class="footer-link" href="#">Contactanos</a>
+                <a class="footer-link" href="ContactoMas.html">Contactanos</a>
               </li>
               <li>
                 <a class="footer-link" href="#">Atencion al cliente</a>

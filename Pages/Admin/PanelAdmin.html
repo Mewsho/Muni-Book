@@ -10,12 +10,19 @@
       rel="stylesheet"
     />
     <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
       integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
@@ -26,7 +33,7 @@
       /* Letra H1 */
       h1 {
         font-family: "Noto Sans", sans-serif;
-        font-size: 900%;
+        font-size: 300%;
       }
       /* Cuerpo del html */
       body {
@@ -45,6 +52,9 @@
       .container {
         flex-grow: 1; /* Se expande para ocupar el espacio disponible */
       }
+      i{
+        font-size: 3vh;
+      }
       /* Titulo de Munibook */
       .hero-title {
         margin-top: 100px;
@@ -61,15 +71,24 @@
       button .filter-buttons {
         margin-bottom: 30px;
       }
-      /* Links del navbar */
+      /* Propiedades de el navbar en si */
+      .navbar {
+        background-color: #a98f6f;
+        color: white;
+      }
+      /* Propiedades de los botones dentro de nav bar */
       .nav-link {
         align-items: center;
         font-family: "Noto Sans", sans-serif;
-        align-content: center;
+        font-weight: 500;
+        font-size: 1.7vh;
         text-align: end;
         color: #efeae4;
       }
-
+      /* Clase del icono de la pagina */
+      .navbar-brand {
+        margin: 0px;
+      }
       .navbar-toggler-icon {
         background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
       }
@@ -85,7 +104,7 @@
       .filter-buttons {
         margin-bottom: 30px;
       }
-      
+
       .filter-buttons .btn {
         margin-right: 10px;
         margin-bottom: 10px;
@@ -157,20 +176,12 @@
               <a class="nav-link" href="../catalogo.html">Catálogo</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#solutions">Soluciones</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#community">Comunidad</a>
+              <a class="nav-link" href="#solutions">Servicios</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
             <li class="nav-item"></li>
-            <li class="nav-item">
-              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
-                ><i class="fa-solid fa-cart-shopping"></i
-              ></a>
-            </li>
           </ul>
         </div>
       </div>

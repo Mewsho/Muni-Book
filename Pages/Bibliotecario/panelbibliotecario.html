@@ -29,6 +29,14 @@
       referrerpolicy="no-referrer"
     />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
+    <!-- Importar Google fonst -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
       // Se llama cuando se presiona el boton de devolucion
@@ -275,12 +283,12 @@
     </script>
 
     <style>
-      /* Asi se comenta en Css*/
+      /* Letra H1 */
       h1 {
         font-family: "Noto Sans", sans-serif;
         font-size: 300%;
       }
-
+      /* Cuerpo del html */
       body {
         font-family: "Noto Sans", sans-serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
@@ -288,17 +296,27 @@
         flex-direction: column;
         background-color: #c5c3b8;
       }
-
+      /* Modificador para el titulo de la pagina Munibook gigante */
+      .display-4 {
+        font-size: 1000%;
+        font-family: "Noto Sans", sans-serif;
+      }
+      /* Modificador del container */
       .container {
         flex-grow: 1; /* Se expande para ocupar el espacio disponible */
       }
 
+      i{
+        font-size: 3vh;
+      }
+
+      /* Titulo de Munibook */
       .hero-title {
-        margin-top: 150px;
+        margin-top: 100px;
         text-align: center;
         font-size: 1000%;
       }
-
+      /* Sub texto del titulo */
       .hero-subtitle {
         text-align: center;
         color: #666;
@@ -307,6 +325,35 @@
       }
       button .filter-buttons {
         margin-bottom: 30px;
+      }
+      /* Propiedades de el navbar en si */
+      .navbar {
+        background-color: #a98f6f;
+        color: white;
+      }
+      /* Propiedades de los botones dentro de nav bar */
+      .nav-link {
+        align-items: center;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 500;
+        font-size: 1.7vh;
+        text-align: end;
+        color: #efeae4;
+      }
+      /* Clase del icono de la pagina */
+      .navbar-brand {
+        margin: 0px;
+      }
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+      }
+      .navbar-toggler {
+        border-color: white; /* Cambia el borde del toggler a blanco */
+      }
+
+      .hero-section {
+        background-color: #f8f9fa;
+        padding: 4rem 0;
       }
 
       .filter-buttons {
@@ -317,7 +364,11 @@
         margin-right: 10px;
         margin-bottom: 10px;
       }
-      
+
+      .features-section {
+        padding: 4rem 0;
+      }
+
       .panel-container {
         background-color: #f8f9fa;
         padding: 2rem;
@@ -342,33 +393,6 @@
       .footer-link:hover {
         text-decoration: underline;
         color: inherit;
-      }
-
-
-      .hero-section {
-        background-color: #f8f9fa;
-        padding: 4rem 0;
-      }
-      .features-section {
-        padding: 4rem 0;
-      }
-      .display-4 {
-        font-size: 1000%;
-        font-family: "Noto Sans", sans-serif;
-      }
-      .nav-link {
-        align-items: center;
-        font-family: "Noto Sans", sans-serif;
-        align-content: center;
-        text-align: end;
-        color: #efeae4;
-      }
-
-      .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
-      }
-      .navbar-toggler {
-        border-color: white; /* Cambia el borde del toggler a blanco */
       }
     </style>
   </head>
@@ -402,18 +426,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="..//catalogo.html">Catalogo</a>
+              <a class="nav-link" href="..//catalogo.html">Catálogo</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
-                ><i class="fa-solid fa-cart-shopping"></i
-              ></a>
             </li>
           </ul>
         </div>
