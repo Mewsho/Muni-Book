@@ -14,6 +14,7 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <!-- Emoticones iconos -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -22,6 +23,10 @@
       referrerpolicy="no-referrer"
     />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
+    <!-- Importar Google fonst -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <title>MuniBook</title>
 
@@ -35,20 +40,26 @@
       /* Letra que sale en servicios */
       p {
         font-weight: 500;
-        font-size: 1.2rem;
+        font-size: 2vh;
       }
       /* Titulo grande de servicios abajo cerca del footer */
       h2 {
-        font-family: "Times New Roman", Times, serif;
-        font-weight: 600;
+        font-family: "Noto Sans", sans-serif;
+        font-size: 4vh; 
+        font-weight: 800;
       }
-      /* Letra para subtitulos en area servicios */
+      /* Letra para subtitulos en area servicios y Subtitulos de footer*/
       h5 {
-        font-size: 1.9rem;
+        font-size: 2.5vh;
+      }
+      /* Texto h5 Custom para zona servicios */
+      .services {
+        font-size: 3vh;
+        font-weight: 600;
       }
       /* Tamano emoticones antes de el subtitulo area servicio */
       i{
-        font-size: 1.4rem
+        font-size: 3vh;
       }
       /* Zona donde esta el texto Munibook en grande */
       .hero-section {
@@ -57,17 +68,18 @@
       } 
       /* Literal texto debajo del titulo munibook */
       .textobajotitulo {
-        font-size: 1.5rem;
-        font-family: "Times New Roman", Times, serif;
+        font-size: 3vmax;
+        font-family: "Noto Sans", sans-serif;
       }
       /* Zona donde estan los servicios abajo cerca del footer*/
       .features-section {
-        padding: 4rem 0;
+        padding: 3rem 0;
       }
       /* Clase para el titulo */
       .display-4 {
-        font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
+        font-size: 15vh;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 600;
       }
       /* Propiedades de el navbar en si */
       .navbar {
@@ -77,9 +89,9 @@
       /* Propiedades de los botones dentro de nav bar */
       .nav-link {
         align-items: center;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         font-weight: 500;
-        font-size: 1.2rem;
+        font-size: 1.7vh;
         text-align: end;
         color: #efeae4;
       }
@@ -99,20 +111,18 @@
       body {
         background-color: #c5c3b8;
       }
-      /* Clase para las fotos */
-      .col-md-6 {
-        margin-top: 12px;
-      }
+
       /* CLase para las imagenes */
       .col-md-6 img {
         width: 100%;
+        margin-top: 1rem;
         height: 400px; /* Altura fija para todas las imágenes */
         object-fit: cover; /* Mantiene la proporción y cubre el espacio asignado */
         object-position: center; /* Centra la imagen */
       }
       /* Propiedades del button dark */
       .btn-dark {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
       }
       /* Carrousel que sale cuando hay vista movil*/
       .carrousel-img {
@@ -130,7 +140,7 @@
       .bg-custom2 {
         background-color: #908d7e;
       }
-      /* Texto para? */
+      /* Texto para el todo lo del footer */
       .text-custom {
         color: #efeae4; /* El color del texto que deseas */
       }
@@ -426,17 +436,17 @@
       </div>
     </section>
 
-    <!-- Seccion de servicios una vaina loca que ....-->
+    <!-- Seccion de servicios ....-->
     <section id="servicios" class="features-section bg-custom2">
       <div class="container">
-        <h2 class="text-center mb-5">Servicios</h2>
+        <h2 class="text-center mb-4">Servicios</h2>
         <div class="row justify-content-center">
           <div
             class="col-md-6 mb-4 d-flex flex-column align-items-center text-center"
           >
             <div class="d-flex align-items-center mb-3">
               <i class="fa-sharp fa-solid fa-book"></i>
-              <h5 class="ms-2 mb-0">Servicios</h5>
+              <h5 class="ms-2 mb-0 services">Servicios</h5>
             </div>
             <p>Prestamo de libros</p>
           </div>
@@ -445,7 +455,7 @@
           >
             <div class="d-flex align-items-center mb-3">
               <i class="fa-solid fa-question"></i>
-              <h5 class="ms-2 mb-0">Preguntas Frecuentes</h5>
+              <h5 class="ms-2 mb-0 services">Preguntas Frecuentes</h5>
             </div>
             <p>¿Cuántos libros puedo llevarme?</p>
           </div>

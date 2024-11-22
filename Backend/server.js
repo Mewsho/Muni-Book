@@ -224,7 +224,7 @@ const typeDefs = gql`
         sendEmail(correo: String, codigoVerificador: Int, nombres: String): Boolean
         sendEmailRecordatorio(correo: String, nombres: String): Boolean
         getNEjemplaresDisponiblesByDocumentId(documentoId: ID, cantEjemplares: Int): [Ejemplar]
-        getSolicitudPrestamoByUsuarioId(usuarioID: ID!): SolicitudPrestamo
+        getSolicitudPrestamoNoActivaByUsuarioId(usuarioID: ID!): SolicitudPrestamo
         getPrestamoByEjemplarId(ejemplarID: ID!): Prestamo
         getSolicitudPrestamoUsuarioByPrestamoId(prestamoID: ID!): SolicitudPrestamo
     }
@@ -494,7 +494,6 @@ const resolvers = {
             // en especifico utiliza un sistema llamado regular expression que es mas brijido 
             // lo que tengo puesto es una implementacion simple que talvez funciona xd
         async getDocumentosByTituloAndAutorAndTipoAndCategoria(obj, {tipoId, categoriaId, titulo, autor}){
-            
             if (titulo == null){
                 titulo = ""
             }
@@ -626,8 +625,8 @@ const resolvers = {
             return Ejemplares
         },
           
-        async getSolicitudPrestamoByUsuarioId(obj, {usuarioID}){
-            let solicitudPrestamo = await SolicitudPrestamo.findOne({usuario: usuarioID}).populate('prestamos');
+        async getSolicitudPrestamoNoActivaByUsuarioId(obj, {usuarioID}){
+            let solicitudPrestamo = await SolicitudPrestamo.findOne({usuario: usuarioID, estadoSolicitud: 0}).populate('prestamos').populate('usuario');
             return solicitudPrestamo;
         },
 
@@ -1017,7 +1016,7 @@ const resolvers = {
             }
             let usuarioBus = await Usuario.findOne({_id: input.usuario});
             let inputSolicitud
-            if(ListaFinalPrestamos.length == 0 && usuarioBus == null){
+            if(input.prestamos == null && usuarioBus == null){
                 inputSolicitud = {
                     fechaSolicitud: input.fechaSolicitud, 
                     tipoSolicitud: input.tipoSolicitud,
@@ -1031,7 +1030,7 @@ const resolvers = {
                     estadoSolicitud: input.estadoSolicitud
                 }
             }
-            else if(ListaFinalPrestamos.length == 0){
+            else if(input.prestamos == null){
                 inputSolicitud = {
                     usuario: usuarioBus._id, fechaSolicitud: input.fechaSolicitud, 
                     tipoSolicitud: input.tipoSolicitud,

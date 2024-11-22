@@ -27,34 +27,35 @@
     <style>
 
       h2 {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
+        font-size: 4vh; 
         font-weight: 600;
-
+      }
+      /* Letra para subtitulos en area servicios */
+      h5 {
+        font-size: 2.5vh;
+        font-family: "Noto Sans", sans-serif;
       }
       p {
         font-weight: 500;
+        font-size: 2vh;
       }
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
       }
-      .features-section {
-        padding: 4rem 0;
-      }
       .display-4 {
-        font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
+        font-size: 15vh;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 600;
       }
       .nav-link {
         align-items: center;
-        font-family: "Times New Roman", Times, serif;
-        align-content: center;
-        text-align: end;
-        /* margin-top: 3%; */
-        color: #efeae4;
+        font-family: "Noto Sans", sans-serif;
         font-weight: 500;
-        font-size: 1.2rem;
-
+        font-size: 1.7vh;
+        text-align: end;
+        color: #efeae4;
       }
       .navbar {
         background-color: #a98f6f;
@@ -69,7 +70,7 @@
       
 
       body {
-        font-family: "Times New Roman", Times, serif; 
+        font-family: "Noto Sans", sans-serif; 
         padding: 0;
         display: flex;
         flex-direction: column;
@@ -87,7 +88,7 @@
       }
       header h1 {
         font-size: 2.5em;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         margin: 0;
         color: #333;
       }
@@ -109,13 +110,14 @@
       }
       .login-container {
         text-align: center;
+        margin: 3rem 3rem;
       }
       .login-container h2 {
-        font-size: 2.5em;
+        font-size: 7vh;
         color: #333;
       }
       .login-container p {
-        font-size: 1.2em;
+        font-size: 1vh;
         color: #777;
       }
       .login-container .input-group {
@@ -126,9 +128,14 @@
         width: 100%;
         padding: 10px;
         margin: 10px 0;
-        font-size: 1em;
-        border-radius: 5px;
-        border: 1px solid #ccc;
+        font-size: 2vh;
+        border-radius: 1px;
+        border: 2px solid #444444;
+        font-family: "Noto Sans", sans-serif;
+      }
+      .login-container label {
+        font-size: 3vh;
+        font-family: "Noto Sans", sans-serif;
       }
       .navbar-brand{
         margin: 0px;
@@ -283,12 +290,12 @@
 
     <main>
       <div class="login-container">
-        <h2>Inicia Sesión</h2>
+        <h2>Inicio Sesión</h2>
 
         <!-- Input Fields -->
         <div class="input-group">
-          <label for="email">Ingresa tu mail</label>
-          <input type="email" id="email" placeholder="Ingresa tu correo" />
+          <label for="email">Ingresa tu correo</label>
+          <input type="email" class="form-text" id="email" placeholder="Ingresa tu correo" />
         </div>
         <div class="input-group">
           <label for="password">Contraseña</label>

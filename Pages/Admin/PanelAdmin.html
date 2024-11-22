@@ -25,11 +25,12 @@
     <style>
       /* Letra H1 */
       h1 {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
+        font-size: 900%;
       }
       /* Cuerpo del html */
       body {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
         display: flex;
         flex-direction: column;
@@ -38,7 +39,7 @@
       /* Modificador para el titulo de la pagina Munibook gigante */
       .display-4 {
         font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
       }
       /* Modificador del container */
       .container {
@@ -46,7 +47,7 @@
       }
       /* Titulo de Munibook */
       .hero-title {
-        margin-top: 150px;
+        margin-top: 100px;
         text-align: center;
         font-size: 1000%;
       }
@@ -60,21 +61,22 @@
       button .filter-buttons {
         margin-bottom: 30px;
       }
-
+      /* Links del navbar */
       .nav-link {
         align-items: center;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         align-content: center;
         text-align: end;
         color: #efeae4;
       }
+
       .navbar-toggler-icon {
         background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
       }
       .navbar-toggler {
         border-color: white; /* Cambia el borde del toggler a blanco */
       }
-      
+
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
@@ -221,17 +223,27 @@
             <h5>Explorar</h5>
             <ul class="list-unstyled">
               <li>
-                <a class="footer-link" href="catalogo.html"> Catalogo </a>
+                <a class="footer-link" href="/Pages/catalogo.html">
+                  Catalogo
+                </a>
               </li>
-              <a onclick="loginButton()">Inicia Sesion</a>
+              <a class="footer-link" onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
-              <li>Sobre nosotros</li>
-              <li>Contactanos</li>
-              <li>Atencion al cliente</li>
+              <li>
+                <a class="footer-link" href="/Pages/ContactoMas.html"
+                  >Sobre nosotros</a
+                >
+              </li>
+              <li>
+                <a class="footer-link" href="#">Contactanos</a>
+              </li>
+              <li>
+                <a class="footer-link" href="#">Atencion al cliente</a>
+              </li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">

@@ -24,7 +24,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
       body {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -34,12 +34,12 @@
         flex-grow: 1;
       }
       .cart-section {
-        margin-top: 30px;
+        margin-top: 3%;
+        margin-bottom: 5%;
         border: 1px solid #ddd;
         padding: 20px;
         border-radius: 10px;
         background-color: #f9f9f9;
-        margin-bottom: 40px;
       }
       /* Botón de confirmación */
       .confirm-btn {
@@ -93,12 +93,12 @@
 
       .display-4 {
         font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
       }
 
       .nav-link {
         align-items: center;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         align-content: center;
         text-align: end;
       }
@@ -342,17 +342,35 @@
         let idDeUsuario = cookieValue;
 
         let querySolicitudPrestamos = `
-          query GetSolicitudPrestamoByUsuarioId($usuarioId: ID!) {
-            getSolicitudPrestamoByUsuarioId(usuarioID: $usuarioId) {
+          query GetSolicitudPrestamoNoActivaByUsuarioId($usuarioId: ID!) {
+          getSolicitudPrestamoNoActivaByUsuarioId(usuarioID: $usuarioId) {
+            id
+            tipoSolicitud
+            estadoSolicitud
+            fechaSolicitud
+            usuario {
               id
-              tipoSolicitud
-              estadoSolicitud
-              fechaSolicitud
-              prestamos {
-                id
-              }
+              rut
+              nombres
+              apellidos
+              direccion
+              telefono
+              activo
+              codigo
+              correo
+              password
+              tipoUsuario
+              fechaSancion
+            }
+            prestamos {
+              id
+              tipoPrestamo
+              fechaPrestamo
+              fechaDevolucion
+              fechaDevolucionReal
             }
           }
+        }
         `;
         $.ajax({
           type: "POST",
@@ -367,9 +385,9 @@
           }),
           success: function (response) {
             let arrayPrestamos =
-              response.data.getSolicitudPrestamoByUsuarioId.prestamos;
+              response.data.getSolicitudPrestamoNoActivaByUsuarioId.prestamos;
             let solicitudPrestamoActualId =
-              response.data.getSolicitudPrestamoByUsuarioId.id;
+              response.data.getSolicitudPrestamoNoActivaByUsuarioId.id;
             let cantidadTotalLibros = (document.getElementById(
               "cantidadLibros"
             ).value = arrayPrestamos.length);
@@ -580,18 +598,26 @@
             <h5>Explorar</h5>
             <ul class="list-unstyled">
               <li>
-                <a class="footer-link" href="catalogo.html"> Catalogo </a>
+                <a class="footer-link" href="/Pages/catalogo.html">
+                  Catalogo
+                </a>
               </li>
-
-              <a onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
-              <li>Sobre nosotros</li>
-              <li>Contactanos</li>
-              <li>Atencion al cliente</li>
+              <li>
+                <a class="footer-link" href="/Pages/ContactoMas.html">
+                  Sobre nosotros
+                </a>
+              </li>
+              <li>
+                <a class="footer-link" href="#">Contactanos</a>
+              </li>
+              <li>
+                <a class="footer-link" href="#">Atencion al cliente</a>
+              </li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">

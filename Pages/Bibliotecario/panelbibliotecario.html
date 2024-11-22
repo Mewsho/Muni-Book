@@ -277,11 +277,12 @@
     <style>
       /* Asi se comenta en Css*/
       h1 {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
+        font-size: 300%;
       }
 
       body {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
         display: flex;
         flex-direction: column;
@@ -316,26 +317,7 @@
         margin-right: 10px;
         margin-bottom: 10px;
       }
-
-      .hero-section {
-        background-color: #f8f9fa;
-        padding: 4rem 0;
-      }
-      .features-section {
-        padding: 4rem 0;
-      }
-      .display-4 {
-        font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
-      }
-      .nav-link {
-        align-items: center;
-        font-family: "Times New Roman", Times, serif;
-        align-content: center;
-        text-align: end;
-        color: #efeae4;
-      }
-
+      
       .panel-container {
         background-color: #f8f9fa;
         padding: 2rem;
@@ -361,6 +343,27 @@
         text-decoration: underline;
         color: inherit;
       }
+
+
+      .hero-section {
+        background-color: #f8f9fa;
+        padding: 4rem 0;
+      }
+      .features-section {
+        padding: 4rem 0;
+      }
+      .display-4 {
+        font-size: 1000%;
+        font-family: "Noto Sans", sans-serif;
+      }
+      .nav-link {
+        align-items: center;
+        font-family: "Noto Sans", sans-serif;
+        align-content: center;
+        text-align: end;
+        color: #efeae4;
+      }
+
       .navbar-toggler-icon {
         background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
       }
@@ -509,7 +512,9 @@
             <h5>Explorar</h5>
             <ul class="list-unstyled">
               <li>
-                <a class="footer-link" href="catalogo.html"> Catalogo </a>
+                <a class="footer-link" href="/Pages/catalogo.html">
+                  Catalogo
+                </a>
               </li>
               <a class="footer-link" onclick="loginButton()">Inicia Sesion</a>
             </ul>
@@ -518,7 +523,7 @@
             <h5>Recursos</h5>
             <ul class="list-unstyled">
               <li>
-                <a class="footer-link" href="ContactoMas.html"
+                <a class="footer-link" href="/Pages/ContactoMas.html"
                   >Sobre nosotros</a
                 >
               </li>

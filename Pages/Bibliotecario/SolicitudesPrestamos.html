@@ -29,18 +29,16 @@
     <script>
 
 
-      // Falta Hacer el comprobande de la devolucion
-
-      
-
+      let direcc = `https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo-shadow.png`
       let parameters = {
         outputType: "save",
         returnJsPDFDocObject: true,
         fileName: "Invoice 2022",
         orientationLandscape: true,
         compress: true,
+        
         logo: {
-            src: "https://raw.githubusercontent.com/edisonneza/jspdf-invoice-template/demo/images/logo.png",
+            src: direcc,
             width: 53.33, //aspect ratio = width/height
             height: 26.66,
             margin: {
@@ -123,11 +121,11 @@
         additionalRows: [{
                 }],
             
-            invDescLabel: "Invoice Note",
-            invDesc: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary.",
+            invDescLabel: "Nota de Préstamo",
+            invDesc: "Comprobante de Solicitud de Préstamo, atrasos en la devolución de los ejemplares implicaran sanciones en la cuenta registrada en este comprobante.",
         },
         footer: {
-            text: "Este comprobante fue creado en un computador y es valido sin firma ni estamapa.",
+            text: "Este comprobante fue creado en un computador y es valido sin firma ni estampa.",
         },
         pageEnable: true,
         pageLabel: "Page ",
@@ -190,6 +188,7 @@
             })
             $(".rechazarButton").click(function(){
               let idSolicitud = $(this).attr("solicitud")
+              rechazarSolicitud(idSolicitud)
             })
           }
         })
@@ -209,8 +208,6 @@
         }
         let strSolicitud = `
         <tr>
-          <!-- id -->
-          <td>${idSolicitud}</td>
           <!-- usuario -->
           <td>${nombreUsuario}</td>
           <!-- fechaSolicitud -->
@@ -284,7 +281,10 @@
             console.log("getSolicitud")
             let prestamos = response.data.getSolicitudPrestamoByIdPrestamos.prestamos
             prestamos.forEach((prestamo) => getPrestamoInfo(prestamo))
-            // Test comprobante
+            
+            if (tipoLlamada == "ConfirmarSolicitud"){
+              updSolicitudPrestamo()
+            }
 
           }
         })
@@ -368,7 +368,6 @@
               const modalBody = document.getElementById("modalTableBody");
               let strModalRow = `
               <tr>
-                <td>${ejemplar.id}</td>
                 <td>${ejemplar.codigo}</td>
                 <td>${titulo}</td>
                 <td>${autor}</td>
@@ -414,7 +413,7 @@
           mensajeDiv.style.display = "block";
           cargarSolicitudesPrestamo()
           mensajeDiv.innerHTML =
-              '<div class="alert alert-danger">Solicitud Confirmada</div>';
+              '<div class="alert alert-success">Solicitud Confirmada</div>';
           $('#modalConfirmacion').modal('toggle')
           setTimeout(function () {
             mensajeDiv.style.display = "none";
@@ -459,7 +458,7 @@
             elemento.innerHTML = '<label class="form-label">Codigo Ejemplar(es)</label>'
             for (let i = 0; i< cantPrestamos; i++){
               let strInput =`
-              <input type="text" class="form-control mb-2 input-codigo" id="codigo${i}">
+              <input type="text" placeholder="Ingresa el codigo" class="form-control mb-2 input-codigo" id="codigo${i}">
               `
               elemento.insertAdjacentHTML("beforeend",strInput)
             }
@@ -539,7 +538,8 @@
           }),
           success: function(response){
             console.log("Ejemplar Actualizado")
-            updSolicitudPrestamo()
+            
+
           }
         })
       
@@ -570,7 +570,8 @@
             variables : {
               updSolicitudPrestamoId2: idSolicitud,
               updSolicitudPrestamoInput2: {
-                estadoSolicitud: 1,
+                estadoSolicitud: 1, 
+                prestamos: null
               } 
             }
           }),
@@ -626,7 +627,6 @@
             }
           }),
           success: function(response){
-            console.log("getSolicitudToUpdPrestamo")
             let solicitud = response.data.getSolicitudPrestamoByIdUsuarioPrestamos
             let prestamos = response.data.getSolicitudPrestamoByIdUsuarioPrestamos.prestamos
             let usuario = response.data.getSolicitudPrestamoByIdUsuarioPrestamos.usuario
@@ -641,7 +641,6 @@
       }
 
       async function getPrestamoEjemplarToUpdPrestamo(prestamo){
-        console.log("prevgetPrestamoEjemplarToUpdPrestamo")
         let queryPrestamoEjemplar = `
         query GetPrestamoByIdEjemplar($getPrestamoByIdEjemplarId3: ID!) {
           getPrestamoByIdEjemplar(id: $getPrestamoByIdEjemplarId3) {
@@ -672,7 +671,6 @@
             }
           }),
           success: function(response){
-            console.log("postgetPrestamoEjemplarToUpdPrestamo")
             let ejemplar = response.data.getPrestamoByIdEjemplar.ejemplar
             let prestamo = response.data.getPrestamoByIdEjemplar
             updPrestamo(prestamo, ejemplar)
@@ -683,14 +681,14 @@
 
 
       function addDays(date, days) {
-        var result = new Date(date);
-        result.setDate(result.getDate() + days);
+        let result = new Date(date);
+        result.setDate(result.getDate() + days); 
         return result;
       }
 
       function addHours(date, hours) {
-        var result = new Date(date);
-        result.setDate(result.getHours() + hours);
+        let result = new Date(date);
+        result.setHours(result.getHours() + hours);
         return result;
       }
 
@@ -712,7 +710,7 @@
         let tipoPrestamo = prestamo.tipoPrestamo
         let tiempoExtra 
         let fechaDev 
-
+        
         if(tipoPrestamo == "Sala"){
           tiempoExtra = 4
           fechaDev = addHours(fechaPrestamo, tiempoExtra)
@@ -759,11 +757,10 @@
               tiempoExtra = 7;
               break;
           }
-
           fechaDev = addDays(fechaPrestamo, tiempoExtra)
         }
-
-
+        console.log(tiempoExtra,)
+        console.log(prestamo, fechaPrestamo, fechaDev)
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -782,7 +779,6 @@
             console.log("UpdPrestamo Completado")
           }
         })
-
       }
 
 
@@ -794,24 +790,15 @@
         parameters.contact.address = solicitud.usuario.direccion
         parameters.contact.phone = `${solicitud.usuario.telefono}`
         parameters.contact.email = solicitud.usuario.correo
-        parameters.invoice.label = `Invoice ID: ${solicitud.id}`
-        parameters.invoice.invDate = solicitud.fechaSolicitud
+        parameters.invoice.label = `${solicitud.id}`
+        let fSolicitud = new Date(solicitud.fechaSolicitud)
+        parameters.invoice.invDate = fSolicitud.toLocaleString()
 
         let tipo = solicitud.tipoSolicitud
         let prestamos = solicitud.prestamos
         contadorMaximo = prestamos.length
         prestamos.forEach((prestamo) => hacerComprobanteInter(prestamo))
         
-        
-        /*
-        for (prestamo of prestamos){
-          listaForTableInvoice.push([prestamo.id,"codigo"
-          ,"Titulo",prestamo.fechaPrestamo.toLocaleString(), prestamo.fechaDevolucion.toLocaleString(), tipo])
-        }
-        parameters.invoice.table = listaForTableInvoice
-        */
-
-
       }
 
       function hacerComprobanteInter(prestamo){
@@ -883,10 +870,11 @@
           success: function(response){
             
             let ejemplar = response.data.getEjemplarByIdDocumento
-            console.log(prestamo,ejemplar)
+            let fPres = new Date(prestamo.fechaPrestamo)
+            let fDev = new Date(prestamo.fechaDevolucion)
             let lista = [
               prestamo.id, ejemplar.codigo, ejemplar.documento.titulo,
-              prestamo.fechaPrestamo.toLocaleString(), prestamo.fechaDevolucion.toLocaleString(), prestamo.tipoPrestamo
+              fPres.toLocaleString(), fDev.toLocaleString(), prestamo.tipoPrestamo
             ]
             listaForTableInvoice.push(lista)
             contador +=1
@@ -898,15 +886,128 @@
         })
       }
 
-    </script>
-    <style>
-      h1 {
-        font-family: "Times New Roman", Times, serif;
+
+      async function rechazarSolicitud(idSolicitud){
+
+
+        let queryGetSolicitudPrestamos = `
+        query GetSolicitudPrestamoByIdPrestamos($getSolicitudPrestamoByIdPrestamosId: ID!) {
+          getSolicitudPrestamoByIdPrestamos(id: $getSolicitudPrestamoByIdPrestamosId) {
+            id
+            tipoSolicitud
+            estadoSolicitud
+            fechaSolicitud
+            prestamos {
+              id
+              tipoPrestamo
+              fechaPrestamo
+              fechaDevolucion
+              fechaDevolucionReal
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryGetSolicitudPrestamos,
+            variables : {
+              getSolicitudPrestamoByIdPrestamosId: idSolicitud
+            }
+          }),
+          success: function(response){
+            let solicitud = response.data.getSolicitudPrestamoByIdPrestamos
+            let prestamos = solicitud.prestamos
+            prestamos.forEach((prestamo) => deletePrestamos(prestamo))
+            deleteSolicitud(solicitud.id)
+          }
+        })
+        
+      }
+
+      async function deleteSolicitud(idSolicitud){
+        let queryDelSolicitud = `
+        mutation DelSolicitudPrestamo($delSolicitudPrestamoId: ID!) {
+          delSolicitudPrestamo(id: $delSolicitudPrestamoId) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryDelSolicitud,
+            variables : {
+              delSolicitudPrestamoId: idSolicitud
+            }
+          }),
+          success: function(response){
+            showDeleteCompletedMessage()
+          }
+        })
+      }
+
+      async function deletePrestamos(prestamo){
+        let queryDelPrestamo = `
+        mutation DelPrestamo($delPrestamoId: ID!) {
+          delPrestamo(id: $delPrestamoId) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryDelPrestamo,
+            variables : {
+              delPrestamoId: prestamo.id
+            }
+          }),
+          success: function(response){
+            console.log("Prestamo Eliminado")
+          }
+        })
+      }
+
+      async function showDeleteCompletedMessage(){
+        const mensajeDiv = document.getElementById("mensajeTabla");
+        mensajeDiv.style.display = "block";
+        cargarSolicitudesPrestamo()
+        mensajeDiv.innerHTML =
+            '<div class="alert alert-danger">Solicitud Rechazada</div>';
+        setTimeout(function () {
+          mensajeDiv.style.display = "none";
+        }, 3000);
       }
 
 
+    </script>
+    <style>
+      h1 {
+        font-family: "Noto Sans", sans-serif;
+        font-size: 300%;
+      }
+      h2 {
+        font-family: "Noto Sans", sans-serif;
+      }
+
       body {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
         display: flex;
         flex-direction: column;
@@ -977,12 +1078,12 @@
 
       .display-4 {
         font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
       }
 
       .nav-link {
         align-items: center;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         align-content: center;
         text-align: end;
         color: #efeae4;
@@ -1065,7 +1166,6 @@
         <table class="table table-bordered">
           <thead class="table-dark">
             <tr>
-              <th>ID Solicitud</th>
               <th>Nombre de Usuario</th>
               <th>Fecha Solicitada</th>
               <th>Tipo Solicitud</th>
@@ -1079,9 +1179,6 @@
           </tbody>
         </table>
         <div id="mensajeTabla" class="mt-3" style="display: none"></div>
-      </div>
-      <div>
-        <button type="button" class="btn btn-success" onclick="test()">TEST</button>
       </div>
     </div>
 
@@ -1098,7 +1195,7 @@
             <form>
               <div class="mb-3">
                 <label for="usuarioRutModal" class="form-label">RUT</label>
-                <input type="text" class="form-control" id="usuarioRutModal" aria-describedby="rutHelp">
+                <input type="text" class="form-control rutText" placeholder="Ingrese el rut" id="usuarioRutModal" aria-describedby="rutHelp">
               </div>
               <div class="mb-3" id="modalConfirmacionEjemplares">
                 <label class="form-label">Codigo Ejemplar(es)</label>
@@ -1113,58 +1210,7 @@
         </div>
       </div>
     </div>
-
-
-    <div>
-        <!-- Footer -->
-      <footer class="bg-dark text-light py-4">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-3 mb-3">
-              <h5>Muni Book</h5>
-              <ul class="list-unstyled">
-                <li>Tu libreria de confianza</li>
-                <li>Siguenos en redes!</li>
-              </ul>
-            </div>
-            <div class="col-md-3 mb-3">
-              <h5>Explorar</h5>
-              <ul class="list-unstyled">
-                <li><a href="catalogo.html"> Catalogo </a></li>
-                <li><a onclick="loginButton()">Inicia Sesion</a></li>
-              </ul>
-            </div>
-            <div class="col-md-3 mb-3">
-              <h5>Recursos</h5>
-              <ul class="list-unstyled">
-                <li>Sobre nosotros</li>
-                <li>Contactanos</li>
-                <li>Atencion al cliente</li>
-              </ul>
-            </div>
-            <div class="col-md-3 mb-3">
-              <h5>Siguenos</h5>
-              <div class="d-flex">
-                <a href="#" class="text-light me-2">
-                  <i class="fa-brands fa-instagram"></i>
-                </a>
-                <a href="#" class="text-light me-2">
-                  <i class="fa-brands fa-facebook"></i>
-                </a>
-                <a href="#" class="text-light me-2">
-                  <i class="fa-brands fa-x-twitter"></i>
-                </a>
-                <a href="#" class="text-light">
-                  <i class="fa-brands fa-youtube"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
     
-
         <!-- Modal de más información -->
     <div
       class="modal fade"
@@ -1190,7 +1236,6 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th>ID</th>
                   <th>Codigo</th>
                   <th>Nombre del Libro</th>
                   <th>Autor</th>
@@ -1200,15 +1245,6 @@
               <tbody id="modalTableBody">
 
               </tbody>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cerrar
-            </button>
           </div>
         </div>
       </div>
@@ -1271,8 +1307,6 @@
         </div>
       </div>
     </footer>
-<<<<<<< Updated upstream
-
 
     <script>
       
@@ -1283,12 +1317,22 @@
         //jsPDFInvoiceTemplate.default( parameters );
 
         var pdfCreated = jsPDFInvoiceTemplate.default({ ...parameters });
-        pdfCreated.jsPDFDocObject.save(); //or .output('<outputTypeHere>');
+        //pdfCreated.jsPDFDocObject.save(); //or .output('<outputTypeHere>');
 
 
       }
     </script>
-=======
->>>>>>> Stashed changes
+    <script>
+      $('.rutText').on('input', function() {
+        var input = $(this).val().replace(/[^0-9k]/gi, ''); // Remove non-numeric and non-k characters
+        if (input.length>9) {
+          input = input.slice(0,9); // Limit to 10 characters
+        }
+        var rut = input.slice(0, -1); // All digits except last
+        var dv = input.slice(-1).toUpperCase(); // Last digit or K
+        var formattedRut = rut + (dv ? '-' + dv : ''); // Add '-' only if there's a dv
+        $(this).val(formattedRut);
+      });
+    </script>
   </body>
 </html>
