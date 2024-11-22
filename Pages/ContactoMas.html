@@ -21,6 +21,10 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,6 +43,10 @@
 
       p {
         font-weight: 500;
+        font-size: 2vh;
+        font-family: "Noto Sans", sans-serif;
+        
+        letter-spacing: 1px;
       }
 
       i{
@@ -47,7 +55,6 @@
 
       h2 {
         font-family: "Noto Sans", sans-serif;
-        font-weight: 600;
       }
       .hero-section {
         background-color: #908d7e;
@@ -63,17 +70,37 @@
         padding: 4rem 0;
       }
       .display-4 {
-        font-size: 4em;
+        font-size: 6em;
         font-family: "Noto Sans", sans-serif;
+        font-weight: 500;
+
+        
       }
+      /* Propiedades de el navbar en si */
+      .navbar {
+        background-color: #a98f6f;
+        color: white;
+      }
+      /* Propiedades de los botones dentro de nav bar */
       .nav-link {
         align-items: center;
         font-family: "Noto Sans", sans-serif;
         font-weight: 500;
-        font-size: 1.2rem;
+        font-size: 1.7vh;
         text-align: end;
         color: #efeae4;
-
+      }
+      /* Clase del icono de la pagina */
+      .navbar-brand {
+        margin: 0px;
+      }
+      /* Icono para desplegar el nav bar */
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+      }
+      /* propiedades del toggler */
+      .navbar-toggler {
+        border-color: white; /* Cambia el borde del toggler a blanco */
       }
       
       .col-md-6 {
@@ -108,15 +135,21 @@
       .text-left {
         text-align: left;
       }
+      .text-custom {
+        color: #efeae4; /* El color del texto que deseas */
+        font-family: "Noto Sans", sans-serif;
+      }
+
 
       /* Styles del footer */
       .footer-text{
-
         color:white;
       }
       .footer {
         text-align: left;
+        font-family: "Noto Sans", sans-serif;
         background-color: #5d172d;
+
       }
       /* para link en footer*/
       .footer-link {
@@ -128,6 +161,8 @@
       .footer-link:hover {
         text-decoration: underline;
         color: inherit;
+        font-family: "Noto Sans", sans-serif;
+
       }
       .navbar {
         background-color: #a98f6f;
@@ -223,7 +258,7 @@
 
     </script>
   </head>
-
+ 
   <!-- El cuelpo del diablo -->
 
   <body onload="checkCookieExistence('tipo')">
@@ -255,12 +290,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="catalogo.html">Catalogo</a>
+              <a class="nav-link" href="catalogo.html">Catálogo</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
             <li class="nav-item">
+
               <a class="nav-link" href="ContactoMas.html">Contacto</a>
             </li>
             <li class="nav-item">
@@ -269,6 +305,7 @@
 
             <li class="nav-item">
               <a
+
                 class="nav-link d-none"
                 href="/Pages/Bibliotecario/panelbibliotecario.html" id="navbarBibliotecario"
                 >Bibliotecario</a
@@ -291,12 +328,9 @@
         <h1 class="display-4 text-center">Sobre Nosotros</h1>
         <p class="textobajotitulo text-center">Más de 12 años junto a ti</p>
     
-        <h3 class="mt-4">La historia de la Biblioteca Municipal de Santiago de Chile</h3>
+        <h2 class="mt-4">La historia de la Biblioteca Municipal de Santiago de Chile</h2>
     
         <p class="mt-3">
-          La historia de la Biblioteca Municipal de Santiago de Chile es digna de un buen cuento de sobremesa.
-        </p>
-        <p>
           Cuenta la leyenda que allá por los años ‘40, un bibliotecario llamado don Manuel, más conocido como "el Manu", era el alma de esa casona antigua y algo polvorienta donde funcionaba la biblioteca. El Manu era un caballero de bigote grueso, gafas redondas y siempre llevaba un chaleco de lana, a pesar de que en verano se cocinaba a fuego lento entre los libros.
         </p>
         <p>
