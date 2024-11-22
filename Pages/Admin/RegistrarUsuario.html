@@ -31,8 +31,7 @@
     <script>
       function signIn() {
         let nom = document.getElementById("nombres").value;
-        let apell = document.getElementById("apellidos").value;
-        let pass = document.getElementById("password").value;
+        let apell = document.getElementById("Apellidos").value;
         let rut = document.getElementById("rut").value;
         let corr = document.getElementById("email").value;
         let dir = document.getElementById("direccion").value;
@@ -59,7 +58,7 @@
             query: querySignIn,
             variables: {
               input: {
-                rut: parseInt(rut, 10),
+                rut: rut,
                 nombres: nom,
                 apellidos: apell,
                 direccion: dir,
@@ -67,7 +66,7 @@
                 activo: act,
                 codigo: randomCode,
                 correo: corr,
-                password: pass,
+                password: "abc1234",
                 tipoUsuario: tipoUsuario,
               },
             },
@@ -296,19 +295,6 @@
               class="form-control"
               id="Apellidos"
               placeholder="Ingrese los apellidos del usuario"
-              required
-            />
-          </div>
-        </div>
-        <!--contrasena-->
-        <div class="col-md-6">
-          <label for="password" class="form-label">Contraseña</label>
-          <div class="input-group">
-            <input
-              type="password"
-              class="form-control"
-              id="password"
-              placeholder="Ingrese la contraseña del usuario"
               required
             />
           </div>
