@@ -41,6 +41,10 @@
         font-weight: 500;
       }
 
+      i{
+        font-size: 3vh;
+      }
+
       h2 {
         font-family: "Noto Sans", sans-serif;
         font-weight: 600;
@@ -125,13 +129,99 @@
         text-decoration: underline;
         color: inherit;
       }
+      .navbar {
+        background-color: #a98f6f;
+        color: white;
+      }
+      /* Propiedades de los botones dentro de nav bar */
+      .nav-link {
+        align-items: center;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 500;
+        font-size: 1.7vh;
+        text-align: end;
+        color: #efeae4;
+      }
+      /* Clase del icono de la pagina */
+      .navbar-brand {
+        margin: 0px;
+      }
+      /* Icono para desplegar el nav bar */
       .navbar-toggler-icon {
         background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
       }
+      /* propiedades del toggler */
       .navbar-toggler {
         border-color: white; /* Cambia el borde del toggler a blanco */
       }
     </style>
+    <script>
+      // Revisa la exitencia de la cookie, obteniendo el tipo y aplicando los cambios respectivos
+    function checkCookieExistence(name) {
+      if (
+        document.cookie
+          .split(";")
+          .some((item) => item.trim().startsWith(`${name}=`))
+      ) {
+        let tipoCookie = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith(`tipo=`))
+          ?.split("=")[1];
+
+        switch (parseInt(tipoCookie, 10)) {
+          case 0:
+            aplicarVersionUsuario();
+            console.log("Usuario");
+            break;
+          case 1:
+            aplicarVersionBibliotecario();
+            console.log("Bibliotecario");
+            break;
+          case 2:
+            aplicarVersionAdministrador();
+            console.log("Administrador");
+            break;
+          /*  
+          default:
+            aplicarVersionNotUsuario()
+            console.log(tipoCookie)
+            console.log("NotUsuario")
+            */
+        }
+
+        let elemento = document.getElementById("botonLogout");
+        elemento.classList.remove("d-none");
+
+      } else {
+        aplicarVersionNotUsuario();
+        let elemento = document.getElementById("botonLogin");
+        elemento.classList.remove("d-none");
+        console.log("NotUsuario");
+      }
+
+      }
+
+      function aplicarVersionUsuario(){
+          let elemento = document.getElementById("carritoCompras");
+          elemento.classList.remove("d-none");
+      }
+
+      function aplicarVersionBibliotecario() {
+          let elemento = document.getElementById("navbarBibliotecario");
+          elemento.classList.remove("d-none");
+      }
+
+      function aplicarVersionNotUsuario() {
+          let elemento = document.getElementById("carritoCompras");
+          elemento.classList.remove("d-none");
+      }
+
+      function aplicarVersionAdministrador() {
+        let elemento1 = document.getElementById("NavbarAdmin");
+        elemento1.classList.remove("d-none");
+      }
+
+    </script>
   </head>
  
   <!-- El cuelpo del diablo -->
@@ -170,24 +260,24 @@
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
             </li>
-
-            <!-- "d.none" para oculta como "nav-item d-none"-->
             <li class="nav-item">
-              <a class="nav-link" href="/Pages/Admin/PanelAdmin.html">admin</a>
+              <a class="nav-link" href="ContactoMas.html">Contacto</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-none" href="/Pages/Admin/PanelAdmin.html" id="NavbarAdmin">Admin</a>
             </li>
 
             <li class="nav-item">
               <a
-                class="nav-link"
-                href="/Pages/Bibliotecario/panelbibliotecario.html"
-                >bibliotecario</a
+                class="nav-link d-none"
+                href="/Pages/Bibliotecario/panelbibliotecario.html" id="navbarBibliotecario"
+                >Bibliotecario</a
               >
             </li>
-
             <li class="nav-item">
-              <a class="nav-link" href="/Pages/User/panelusuario.html"
-                >usuario</a
-              >
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
+                ><i class="fa-solid fa-cart-shopping d-none" id="carritoCompras"></i
+              ></a>
             </li>
           </ul>
         </div>
