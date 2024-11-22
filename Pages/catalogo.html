@@ -19,6 +19,7 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
       rel="stylesheet"
     />
+    <!-- Importar Google fonst -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -186,9 +187,25 @@
         });
       }
 
-      async function aplicarVersionNotUsuario() {}
+      function aplicarVersionUsuario(){
+        let elemento = document.getElementById("carritoCompras");
+        elemento.classList.remove("d-none");
+      }
 
-      async function aplicarVersionAdministrador() {}
+      function aplicarVersionBibliotecario() {
+          let elemento = document.getElementById("navbarBibliotecario");
+          elemento.classList.remove("d-none");
+      }
+
+      function aplicarVersionNotUsuario() {
+        let elemento = document.getElementById("carritoCompras");
+        elemento.classList.remove("d-none");
+      }
+
+      function aplicarVersionAdministrador() {
+          let elemento1 = document.getElementById("NavbarAdmin");
+          elemento1.classList.remove("d-none");
+      }
 
       function checkCookieExistence(name) {
         console.log(document.cookie);
@@ -785,11 +802,6 @@
           },
         });
       }
-
-      
-
-
-
       // Llamar todas las cosas
       function cargarTipoCategoriasDocumentosAndCookie() {
         cargarTipo();
@@ -1090,6 +1102,9 @@
 
     </script>
     <style>
+
+    i{font-size: 3vh;}
+
       .enlarge-modal {
         min-width: 1600px;
         width: 900px;
@@ -1260,15 +1275,20 @@
             </li>
             <!-- "d.none" para oculta como "nav-item d-none"-->
             <li class="nav-item">
-              <a class="nav-link" href="/Pages/Admin/PanelAdmin.html" id="NavbarAdmin">Admin</a>
+              <a class="nav-link d-none" href="/Pages/Admin/PanelAdmin.html" id="NavbarAdmin">Admin</a>
             </li>
 
             <li class="nav-item">
               <a
-                class="nav-link"
+                class="nav-link d-none"
                 href="/Pages/Bibliotecario/panelbibliotecario.html" id="navbarBibliotecario"
                 >Bibliotecario</a
               >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
+                ><i class="fa-solid fa-cart-shopping d-none" id="carritoCompras"></i
+              ></a>
             </li>
           </ul>
         </div>
