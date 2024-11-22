@@ -22,12 +22,16 @@
       referrerpolicy="no-referrer"
     />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <title>MuniBook</title>
 
     <!-- Styles como los del css pero no-->
 
     <style>
+       /*  Letra para el titulo Munibook */
       h1 {
         font-family: "Noto Sans", sans-serif;
         font-weight: 600;
@@ -48,9 +52,9 @@
 
       body{
         background-color: #c5c3b8;
-        font-family: 'Times New Roman', Times, serif;
-
+        font-family: "Noto Sans", sans-serif;
       }
+
       .features-section {
         padding: 4rem 0;
       }
@@ -101,17 +105,22 @@
         text-align: left;
       }
 
+      /* Styles del footer */
+      .footer-text{
 
+        color:white;
+      }
       .footer {
         text-align: left;
+        background-color: #5d172d;
       }
-
+      /* para link en footer*/
       .footer-link {
         color: inherit;
         text-decoration: none;
         cursor: pointer;
       }
-      
+      /* y esta cambia el cursor */
       .footer-link:hover {
         text-decoration: underline;
         color: inherit;
@@ -344,39 +353,45 @@
 
     <!-- Footer begins here remember to keep your house tidy an you too-->
 
-    <footer class="bg-dark text-light py-4">
+    <footer class="bg-dark text-custom py-4">
       <div class="container">
         <div class="row">
-          <div class="col-md-3 mb-3">
+          <div class="col-md-3 mb-3 footer-text">
             <h5>Muni Book</h5>
             <ul class="list-unstyled">
               <li>Tu libreria de confianza</li>
               <li>Siguenos en redes!</li>
             </ul>
           </div>
-          <div class="col-md-3 mb-3">
+          <div class="col-md-3 mb-3 footer-text">
             <h5>Explorar</h5>
             <ul class="list-unstyled">
-              <li><a class="footer-link" href="catalogo.html"> Catalogo </a></li>
+              <li>
+                <a class="footer-link" href="catalogo.html"> Catalogo </a>
+              </li>
               <a class="footer-link" onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
-          <div class="col-md-3 mb-3">
+          <div class="col-md-3 mb-3 footer-text">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
               <li>
-                <a class="footer-link" href="ContactoMas.html"> Sobre nosotros </a>
+                <a class="footer-link" href="ContactoMas.html"
+                  >Sobre nosotros</a
+                >
               </li>
-              <li><a class="footer-link" href="#">Contactanos</a>
+              <li>
+                <a class="footer-link" href="ContactoMas.html">Contactanos</a>
               </li>
-              <li><a class="footer-link" href="#">Atencion al cliente</a>
+              <li>
+                <a class="footer-link" href="#">Atencion al cliente</a>
               </li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Siguenos</h5>
             <div class="d-flex">
-              <a href="https://www.instagram.com/muniecentral/" class="text-light me-2">
+              <a href="#" class="text-light me-2">
                 <i class="fa-brands fa-instagram"></i>
               </a>
               <a href="#" class="text-light me-2">
