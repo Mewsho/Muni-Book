@@ -1053,6 +1053,10 @@
         gap: 10px;
       }
 
+      i{
+        font-size: 3vh;
+      }
+
       #mensaje {
         display: none;
         justify-content: center; /* Centra el contenido del div */
@@ -1182,6 +1186,63 @@
       </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="bg-dark text-custom py-4 mt-4">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <h5>Muni Book</h5>
+            <ul class="list-unstyled">
+              <li>Tu libreria de confianza</li>
+              <li>Siguenos en redes!</li>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-3">
+            <h5>Explorar</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a class="footer-link" href="catalogo.html"> Catalogo </a>
+              </li>
+              <a class="footer-link" onclick="loginButton()">Inicia Sesion</a>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-3">
+            <h5>Recursos</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a class="footer-link" href="ContactoMas.html"
+                  >Sobre nosotros</a
+                >
+              </li>
+              <li>
+                <a class="footer-link" href="#">Contactanos</a>
+              </li>
+              <li>
+                <a class="footer-link" href="#">Atencion al cliente</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-3">
+            <h5>Siguenos</h5>
+            <div class="d-flex">
+              <a href="#" class="text-light me-2">
+                <i class="fa-brands fa-instagram"></i>
+              </a>
+              <a href="#" class="text-light me-2">
+                <i class="fa-brands fa-facebook"></i>
+              </a>
+              <a href="#" class="text-light me-2">
+                <i class="fa-brands fa-x-twitter"></i>
+              </a>
+              <a href="#" class="text-light">
+                <i class="fa-brands fa-youtube"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
 
     <!-- Modal de Confirmacion -->
     <div class="modal fade" id="modalConfirmacion" solicitud="" rut="" tabindex="-1"> 
@@ -1249,65 +1310,6 @@
         </div>
       </div>
     </div>
-
-
-    <!-- Footer -->
-    <footer class="bg-dark text-custom py-4 mt-4">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-3 mb-3">
-            <h5>Muni Book</h5>
-            <ul class="list-unstyled">
-              <li>Tu libreria de confianza</li>
-              <li>Siguenos en redes!</li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-3">
-            <h5>Explorar</h5>
-            <ul class="list-unstyled">
-              <li>
-                <a class="footer-link" href="catalogo.html"> Catalogo </a>
-              </li>
-              <a class="footer-link" onclick="loginButton()">Inicia Sesion</a>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-3">
-            <h5>Recursos</h5>
-            <ul class="list-unstyled">
-              <li>
-                <a class="footer-link" href="ContactoMas.html"
-                  >Sobre nosotros</a
-                >
-              </li>
-              <li>
-                <a class="footer-link" href="#">Contactanos</a>
-              </li>
-              <li>
-                <a class="footer-link" href="#">Atencion al cliente</a>
-              </li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-3">
-            <h5>Siguenos</h5>
-            <div class="d-flex">
-              <a href="#" class="text-light me-2">
-                <i class="fa-brands fa-instagram"></i>
-              </a>
-              <a href="#" class="text-light me-2">
-                <i class="fa-brands fa-facebook"></i>
-              </a>
-              <a href="#" class="text-light me-2">
-                <i class="fa-brands fa-x-twitter"></i>
-              </a>
-              <a href="#" class="text-light">
-                <i class="fa-brands fa-youtube"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-
     <script>
       
       async function test(){
