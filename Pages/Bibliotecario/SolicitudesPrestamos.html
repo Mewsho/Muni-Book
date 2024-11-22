@@ -188,6 +188,7 @@
             })
             $(".rechazarButton").click(function(){
               let idSolicitud = $(this).attr("solicitud")
+              rechazarSolicitud(idSolicitud)
             })
           }
         })
@@ -884,6 +885,116 @@
           }
         })
       }
+
+
+      async function rechazarSolicitud(idSolicitud){
+
+
+        let queryGetSolicitudPrestamos = `
+        query GetSolicitudPrestamoByIdPrestamos($getSolicitudPrestamoByIdPrestamosId: ID!) {
+          getSolicitudPrestamoByIdPrestamos(id: $getSolicitudPrestamoByIdPrestamosId) {
+            id
+            tipoSolicitud
+            estadoSolicitud
+            fechaSolicitud
+            prestamos {
+              id
+              tipoPrestamo
+              fechaPrestamo
+              fechaDevolucion
+              fechaDevolucionReal
+            }
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryGetSolicitudPrestamos,
+            variables : {
+              getSolicitudPrestamoByIdPrestamosId: idSolicitud
+            }
+          }),
+          success: function(response){
+            let solicitud = response.data.getSolicitudPrestamoByIdPrestamos
+            let prestamos = solicitud.prestamos
+            prestamos.forEach((prestamo) => deletePrestamos(prestamo))
+            deleteSolicitud(solicitud.id)
+          }
+        })
+        
+      }
+
+      async function deleteSolicitud(idSolicitud){
+        let queryDelSolicitud = `
+        mutation DelSolicitudPrestamo($delSolicitudPrestamoId: ID!) {
+          delSolicitudPrestamo(id: $delSolicitudPrestamoId) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryDelSolicitud,
+            variables : {
+              delSolicitudPrestamoId: idSolicitud
+            }
+          }),
+          success: function(response){
+            showDeleteCompletedMessage()
+          }
+        })
+      }
+
+      async function deletePrestamos(prestamo){
+        let queryDelPrestamo = `
+        mutation DelPrestamo($delPrestamoId: ID!) {
+          delPrestamo(id: $delPrestamoId) {
+            statusCode
+            body
+            errorCode
+            descriptionError
+          }
+        }
+        `
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8092/graphql",
+          contentType: "application/json",
+          timeout: 15000,
+          data: JSON.stringify({
+            query: queryDelPrestamo,
+            variables : {
+              delPrestamoId: prestamo.id
+            }
+          }),
+          success: function(response){
+            console.log("Prestamo Eliminado")
+          }
+        })
+      }
+
+      async function showDeleteCompletedMessage(){
+        const mensajeDiv = document.getElementById("mensajeTabla");
+        mensajeDiv.style.display = "block";
+        cargarSolicitudesPrestamo()
+        mensajeDiv.innerHTML =
+            '<div class="alert alert-danger">Solicitud Rechazada</div>';
+        setTimeout(function () {
+          mensajeDiv.style.display = "none";
+        }, 3000);
+      }
+
 
     </script>
     <style>
