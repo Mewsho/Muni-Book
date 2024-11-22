@@ -33,7 +33,7 @@
       let parameters = {
         outputType: "save",
         returnJsPDFDocObject: true,
-        fileName: "Invoice 2022",
+        fileName: "SolicitudPrestamo",
         orientationLandscape: true,
         compress: true,
         
@@ -787,6 +787,7 @@
       function hacerComprobanteInicio(solicitud){
         contador = 0
         parameters.contact.name = solicitud.usuario.nombres + " " + solicitud.usuario.apellidos
+        parameters.fileName = `Solicitud ${solicitud.usuario.rut}`
         parameters.contact.address = solicitud.usuario.direccion
         parameters.contact.phone = `${solicitud.usuario.telefono}`
         parameters.contact.email = solicitud.usuario.correo
