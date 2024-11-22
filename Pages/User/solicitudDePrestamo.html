@@ -341,17 +341,35 @@
         let idDeUsuario = cookieValue;
 
         let querySolicitudPrestamos = `
-          query GetSolicitudPrestamoByUsuarioId($usuarioId: ID!) {
-            getSolicitudPrestamoByUsuarioId(usuarioID: $usuarioId) {
+          query GetSolicitudPrestamoNoActivaByUsuarioId($usuarioId: ID!) {
+          getSolicitudPrestamoNoActivaByUsuarioId(usuarioID: $usuarioId) {
+            id
+            tipoSolicitud
+            estadoSolicitud
+            fechaSolicitud
+            usuario {
               id
-              tipoSolicitud
-              estadoSolicitud
-              fechaSolicitud
-              prestamos {
-                id
-              }
+              rut
+              nombres
+              apellidos
+              direccion
+              telefono
+              activo
+              codigo
+              correo
+              password
+              tipoUsuario
+              fechaSancion
+            }
+            prestamos {
+              id
+              tipoPrestamo
+              fechaPrestamo
+              fechaDevolucion
+              fechaDevolucionReal
             }
           }
+        }
         `;
         $.ajax({
           type: "POST",
@@ -366,9 +384,9 @@
           }),
           success: function (response) {
             let arrayPrestamos =
-              response.data.getSolicitudPrestamoByUsuarioId.prestamos;
+              response.data.getSolicitudPrestamoNoActivaByUsuarioId.prestamos;
             let solicitudPrestamoActualId =
-              response.data.getSolicitudPrestamoByUsuarioId.id;
+              response.data.getSolicitudPrestamoNoActivaByUsuarioId.id;
             let cantidadTotalLibros = (document.getElementById(
               "cantidadLibros"
             ).value = arrayPrestamos.length);

@@ -457,7 +457,7 @@
             elemento.innerHTML = '<label class="form-label">Codigo Ejemplar(es)</label>'
             for (let i = 0; i< cantPrestamos; i++){
               let strInput =`
-              <input type="text" class="form-control mb-2 input-codigo" id="codigo${i}">
+              <input type="text" placeholder="Ingresa el codigo" class="form-control mb-2 input-codigo" id="codigo${i}">
               `
               elemento.insertAdjacentHTML("beforeend",strInput)
             }
@@ -1085,7 +1085,7 @@
             <form>
               <div class="mb-3">
                 <label for="usuarioRutModal" class="form-label">RUT</label>
-                <input type="text" class="form-control" id="usuarioRutModal" aria-describedby="rutHelp">
+                <input type="text" class="form-control rutText" placeholder="Ingrese el rut" id="usuarioRutModal" aria-describedby="rutHelp">
               </div>
               <div class="mb-3" id="modalConfirmacionEjemplares">
                 <label class="form-label">Codigo Ejemplar(es)</label>
@@ -1211,6 +1211,18 @@
 
 
       }
+    </script>
+    <script>
+      $('.rutText').on('input', function() {
+        var input = $(this).val().replace(/[^0-9k]/gi, ''); // Remove non-numeric and non-k characters
+        if (input.length>9) {
+          input = input.slice(0,9); // Limit to 10 characters
+        }
+        var rut = input.slice(0, -1); // All digits except last
+        var dv = input.slice(-1).toUpperCase(); // Last digit or K
+        var formattedRut = rut + (dv ? '-' + dv : ''); // Add '-' only if there's a dv
+        $(this).val(formattedRut);
+      });
     </script>
   </body>
 </html>
