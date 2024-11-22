@@ -328,6 +328,7 @@
         });
       }
 
+
       function aplicarCambiosCard() {     
         let tipoUsuario = document.cookie
         .split("; ")
@@ -808,7 +809,6 @@
         if (tipo == ""){
           tipo = null
         }
-
         let queryDocumentos = `
         query GetDocumentosByTituloAndAutorAndTipoAndCategoria($titulo: String, $autor: String, $tipoId: ID, $categoriaId: ID) {
           getDocumentosByTituloAndAutorAndTipoAndCategoria(titulo: $titulo, autor: $autor, tipoId: $tipoId, categoriaId: $categoriaId) {
@@ -853,8 +853,7 @@
             listCardDocumentos.join("");
           console.log("card agregadas");
           aplicarCambiosCard();
-        },
-      
+        },    
       });
     }
       function agregarEjemplar() {
@@ -981,6 +980,7 @@
             console.error("chao:");
           },
         });
+
       }
     
     
@@ -1068,7 +1068,6 @@
             } 
           }
         });
-
       }
 
       function checkUsuarioEstado(usuario){
@@ -1261,6 +1260,7 @@
         </div>
       </div>
     </nav>
+
     <div class="hero-section">
       <div class="container col-md-8 color-container">
         <h1 class="text-center">Catálogo de Productos</h1>
