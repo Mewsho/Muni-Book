@@ -73,10 +73,26 @@
           }),
           success: function (response) {
             console.log("Response:", response);
+            let mensajeDiv = document.getElementById("mensajeRegistrarUsuario");
+            mensajeDiv.style.display = 'block'
+            mensajeDiv.innerHTML =
+                '<div class="alert alert-success">Usuario Agregado con éxito.</div>';
+            
+            setTimeout(function () {
+              mensajeDiv.style.display = "none"; 
+            }, 2000);
+
             sendMail(nom, corr, randomCode);
           },
           error: function (error) {
-            console.error("Error:", error);
+            let mensajeDiv = document.getElementById("mensajeRegistrarUsuario");
+            mensajeDiv.style.display = 'block'
+            mensajeDiv.innerHTML =
+                '<div class="alert alert-danger">No ha sido posible agregar al usuario.</div>';
+            
+            setTimeout(function () {
+              mensajeDiv.style.display = "none"; 
+            }, 2000);
           },
         });
       }
@@ -355,6 +371,7 @@
             />
           </div>
         </div>
+        <div id="mensajeRegistrarUsuario"></div>
         <!--boton guardar-->
         <div class="col-md-12 text-end">
           <button
