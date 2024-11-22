@@ -147,7 +147,6 @@
         idActual,
         valor,
         fechaPrestamo,
-        fechaDevolucion,
         index
       ) {
         let listaAuxiliar1 = [];
@@ -179,9 +178,6 @@
               updPrestamoId: idActual,
               input: {
                 fechaPrestamo: fechaPrestamo,
-
-                fechaDevolucion: fechaDevolucion,
-
                 tipoPrestamo: valor,
                 ejemplar: listaAuxiliar1[index],
               },
@@ -202,35 +198,14 @@
             valor = button.value;
           }
         }
+        fechaPrestamo = new Date();
 
-        if (valor == "sala") {
-          fechaPrestamo = new Date();
-          fechaDevolucion = new Date();
-          fechaDevolucion.setHours(fechaDevolucion.getHours() + 3);
-        }
-
-        if (valor == "domicilio") {
-          fechaPrestamo = new Date();
-          fechaDevolucion = new Date();
-          fechaDevolucion.setDate(fechaDevolucion.getDate() + 14);
-        }
-
-        if (valor == "reserve") {
-          fechaPrestamo = new Date(
-            document.getElementById("fechaPrestamo").value
-          );
-          fechaDevolucion = new Date(
-            document.getElementById("fechaDevolucion").value
-          );
-        }
 
         let listaAuxiliar = [];
 
         for (variable of PrestamosGlobal) {
           listaAuxiliar.push(variable.id);
         }
-
-        console.log(IdEjemplaresGlobales);
 
         let queryActualizarSolicitudPrestamo = `
           mutation UpdSolicitudPrestamo($updSolicitudPrestamoId: ID!, $input: SolicitudPrestamoInput) {
@@ -265,7 +240,6 @@
                 id_prestamo,
                 valor,
                 fechaPrestamo,
-                fechaDevolucion,
                 index
               )
             );

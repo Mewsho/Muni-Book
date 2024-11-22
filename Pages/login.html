@@ -178,6 +178,8 @@
         color: inherit;
       }
 
+      
+
     </style>
     <script>
 
@@ -217,17 +219,26 @@
         let corr = document.getElementById('email').value
         let pass = document.getElementById('password').value
 
+
+        
+        if(corr == "" && pass == ""){
+          showNonCompleteMessage("Correo y contraseña")
+          return
+        }
         if(corr == ""){
-          showErrorMessage("Correo")
+          showNonCompleteMessage("Correo")
+          return
+        }
+        if (!corr.includes("@") || !corr.includes(".")){
+          showNonMailMessage()
           return
         }
         if(pass == ""){
-          showErrorMessage("Contraseña")
+          showNonCompleteMessage("Contraseña")
           return  
         }
+        
 
-        console.log(corr, pass)
-        console.log
         let queryLogin = `
           query GetUsuarioByCorreoAndCheckPassword($correo: String!, $password: String!) {
             getUsuarioByCorreoAndCheckPassword(correo: $correo, password: $password) {
@@ -258,8 +269,15 @@
             }
           }),
           success: function(response){
+            
+            if (response.data.getUsuarioByCorreoAndCheckPassword == null){
+              showUserNotFound()
+            }
             let tipo = response.data.getUsuarioByCorreoAndCheckPassword.tipoUsuario
-            let activo = response.data.getUsuarioByCorreoAndCheckPassword.activo
+            let activo = response.data.getUsuarioByCorreoAndCheckPassword.activo       
+            if (!activo){
+              showUserNotActivated()
+            }   
             let id = response.data.getUsuarioByCorreoAndCheckPassword.id
             let nombres = response.data.getUsuarioByCorreoAndCheckPassword.nombres
             respuestaLogin(activo,tipo, id, nombres)
@@ -269,11 +287,41 @@
       }
 
       
-      async function showErrorMessage(problema){
+      async function showNonCompleteMessage(problema){
         const mensajeDiv = document.getElementById("mensajeTabla");
         mensajeDiv.style.display = "block";
         mensajeDiv.innerHTML =
             `<div class="alert alert-danger">${problema} faltante</div>`
+        setTimeout(function () {
+          mensajeDiv.style.display = "none";
+        }, 3000);
+      }
+
+      async function showNonMailMessage(){
+        const mensajeDiv = document.getElementById("mensajeTabla");
+        mensajeDiv.style.display = "block";
+        mensajeDiv.innerHTML =
+            `<div class="alert alert-danger">Ingrese un correo válido</div>`
+        setTimeout(function () {
+          mensajeDiv.style.display = "none";
+        }, 3000);
+      }
+
+      async function showUserNotFound(){
+        const mensajeDiv = document.getElementById("mensajeTabla");
+        mensajeDiv.style.display = "block";
+        mensajeDiv.innerHTML =
+            `<div class="alert alert-danger">Credenciales Incorrectas</div>`
+        setTimeout(function () {
+          mensajeDiv.style.display = "none";
+        }, 3000);
+      }
+
+      async function showUserNotActivated(){
+        const mensajeDiv = document.getElementById("mensajeTabla");
+        mensajeDiv.style.display = "block";
+        mensajeDiv.innerHTML =
+            `<div class="alert alert-danger">Usuario no activado</div>`
         setTimeout(function () {
           mensajeDiv.style.display = "none";
         }, 3000);
@@ -343,8 +391,8 @@
           <label for="password">Contraseña</label>
           <input type="password" id="password" placeholder="Contraseña"/>
         </div>
-        <button type="submit" class="btn btn-dark btn-lg login-btn" onclick="login()">Iniciar Sesíon</button>
-        <div id="mensajeTabla" class="container mt-3" style="display: none"></div>
+        <button type="submit" class="btn btn-dark btn-lg login-btn mb-4" onclick="login()">Iniciar Sesíon</button>
+        <div id="mensajeTabla" class="container" style="display: none"></div>
       </div>
       
     </main>

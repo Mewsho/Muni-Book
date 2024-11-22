@@ -874,15 +874,7 @@ const resolvers = {
                     codigo: input.codigo
                 }
             }
-            let check = await checkEjemplares(input)
-            if (!check[0]){
-                return {
-                    statusCode: "400",
-                    body: null,
-                    errorCode: "0",
-                    descriptionError: `${check[1]} no valido`
-                }
-            }
+
             let ejemplar = await Ejemplar.findByIdAndUpdate(id, 
                 inputEjemplar
             )
@@ -1186,16 +1178,6 @@ async function checkDocumentos(input){
     return [true,""]
 }
 
-async function checkEjemplares(input) {
-    let ListEstados = ["Disponible","En sala", "Reserva", "No disponible"];
-    if (input.estado < 0 || input.estado > 5){
-        return [false, "Estado"];
-    };
-    if (!ListEstados.includes(input.estadoTexto)){
-        return [false, "EstadoTexto"]
-    };
-    return [true,""]
-}
 
 
 
