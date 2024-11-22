@@ -344,7 +344,7 @@
           for (collapse of collapseList) {
             let idDocumentoCollapse = collapse.id;
             let idDocumento = idDocumentoCollapse.split("-")[0];
-            let strButton = `<button type="button" class="btn btn-secondary mx-2" 
+            let strButton = `<button type="button" class="btn btn-secondary mx-2 alignVertical" 
             id="${idDocumento}-addButton">
             Agregar</button>
             `;
@@ -616,7 +616,7 @@
                 response.data.getCantEjemplaresByDocumentoAndEstado;
               let strInputGroup = `
               <button class="btn btn-outline-secondary btn-number-${documentoId}" type="button" id="${documentoId}-button-minus" documentId="${documentoId}" data-type="minus">-</button>
-              <input type="text" class="form-control input-number" value="0" min="0" max="${cantEjemplaresDisponible}" id="${documentoId}-input">
+              <input readonly="readonly" type="text" class="form-control input-number" value="0" min="0" max="${cantEjemplaresDisponible}" id="${documentoId}-input">
               <button class="btn btn-outline-secondary btn-number-${documentoId}" type="button" id="${documentoId}-button-plus" documentId="${documentoId}" data-type="plus">+</button>
               `;
               document.getElementById(`${documentoId}-inputGroup`).innerHTML =
@@ -684,7 +684,7 @@
           item.tipoDocumento.id
         }>
               <div class="card-body" id=${item.id}>
-                <h4 class="card-title truncate-text">${item.titulo}</h4>
+                <h4 class="card-title truncate-text fw-bold">${item.titulo}</h4>
                 <p class="card-text" id="card-text" autor="${
                   item.autor
                 }" tipoDocumento="${item.tipoDocumento.tipo}">${item.autor}, ${
@@ -1099,6 +1099,13 @@
         background-color: #908d7e;
         margin-bottom: -1%;
       }
+
+      .alignVertical {
+        position:relative;
+        height: 50%;
+        transform:translateY(+10%);
+      }
+
       h1 {
         font-family: "Times New Roman", Times, serif;
         font-size: 2rem;
