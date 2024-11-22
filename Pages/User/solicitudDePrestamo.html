@@ -16,6 +16,13 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+<<<<<<< HEAD
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+=======
+    <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
+>>>>>>> 3478d4fce7c7db6cfbca16e538373366db04ac11
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -71,17 +78,6 @@
         padding: 20px 0;
       }
 
-      .footer-link {
-        color: inherit;
-        text-decoration: none;
-        cursor: pointer;
-      }
-
-      .footer-link:hover {
-        text-decoration: underline;
-        color: inherit;
-      }
-
       .hero-section {
         background-color: #f8f9fa;
         padding: 4rem 0;
@@ -96,12 +92,50 @@
         font-family: "Noto Sans", sans-serif;
       }
 
+      /* Propiedades de el navbar en si */
+      .navbar {
+        background-color: #a98f6f;
+        color: white;
+      }
+      /* Propiedades de los botones dentro de nav bar */
       .nav-link {
         align-items: center;
         font-family: "Noto Sans", sans-serif;
-        align-content: center;
+        font-weight: 500;
+        font-size: 1.7vh;
         text-align: end;
+        color: #efeae4;
       }
+
+      /* Clase del icono de la pagina */
+      .navbar-brand {
+        margin: 0px;
+      }
+      /* Icono para desplegar el nav bar */
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+      }
+      /* propiedades del toggler */
+      .navbar-toggler {
+        border-color: white; /* Cambia el borde del toggler a blanco */
+      }
+
+      /* Styles del footer */
+      .footer {
+        text-align: left;
+      }
+      /* para link en footer*/
+      .footer-link {
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      /* y esta cambia el cursor */
+      .footer-link:hover {
+        text-decoration: underline;
+        color: inherit;
+      }
+
     </style>
     <script>
       let PrestamosGlobal = [];
@@ -431,7 +465,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="..//catalogo.html">Catalogo</a>
+              <a class="nav-link" href="catalogo.html">Catalogo</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#servicios">Servicios</a>
@@ -439,15 +473,11 @@
             <li class="nav-item">
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
-                ><i class="fa-solid fa-cart-shopping"></i
-              ></a>
-            </li>
           </ul>
         </div>
       </div>
-    </nav>
+    </div>
+  </nav>
 
     <!-- Shopping Cart Section -->
     <div class="container cart-section" style="border: 3px solid #000">
@@ -518,22 +548,11 @@
 
           <!-- fecha prestamo -->
           <div class="mb-3" id="fechaPrestamoContainer" style="display: none">
-            <label for="fechaPrestamo" class="form-label"
-              >Fecha de Prestamo</label
-            >
-            <input
-              type="datetime-local"
-              class="form-control"
-              id="fechaPrestamo"
-              onchange="calcularFechaDevolucion()"
-            />
+            <label for="fechaPrestamo" class="form-label">Fecha de Prestamo</label>
+            <input type="datetime-local"class="form-control"id="fechaPrestamo"onchange="calcularFechaDevolucion()"/>
           </div>
           <button
-            class="btn btn-success w-100 mt-3"
-            onclick="ObtenerEleccion()"
-          >
-            Confirmar solicitud
-          </button>
+            class="btn btn-secondary w-100 mt-3" onclick="ObtenerEleccion()">Confirmar solicitud</button>
         </div>
       </div>
     </div>
@@ -584,7 +603,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
+    <footer class="bg-dark text-custom py-4">
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
@@ -598,19 +617,19 @@
             <h5>Explorar</h5>
             <ul class="list-unstyled">
               <li>
-                <a class="footer-link" href="/Pages/catalogo.html">
-                  Catalogo
-                </a>
+                <a class="footer-link" href="catalogo.html"> Catalogo </a>
               </li>
+
+              <a class="footer-link" onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
               <li>
-                <a class="footer-link" href="/Pages/ContactoMas.html">
-                  Sobre nosotros
-                </a>
+                <a class="footer-link" href="ContactoMas.html"
+                  >Sobre nosotros</a
+                >
               </li>
               <li>
                 <a class="footer-link" href="#">Contactanos</a>
