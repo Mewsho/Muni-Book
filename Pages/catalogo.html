@@ -340,13 +340,13 @@
           }
         } else if (tipoUsuario == 1) {
         } else if (tipoUsuario == 0) {
-          let collapseList = document.getElementsByClassName("collapse-card");
+          let collapseList = document.getElementsByClassName("buttonAndCant");
           for (collapse of collapseList) {
             let idDocumentoCollapse = collapse.id;
             let idDocumento = idDocumentoCollapse.split("-")[0];
-            let strButton = `<button type="button" class="btn btn-success" 
+            let strButton = `<button type="button" class="btn btn-secondary mx-2" 
             id="${idDocumento}-addButton">
-            Agregar a Solicitud</button>
+            Agregar</button>
             `;
             collapse.insertAdjacentHTML("beforeend", strButton);
 
@@ -539,7 +539,7 @@
       }
 
       let listaIDPrestamos = [];
-      function testElements(valor, key, map){
+      function mapToArrayElements(valor, key, map){
         let listaPrestamos = valor
         for (prestamo of listaPrestamos){
           listaIDPrestamos.push(prestamo.id)
@@ -549,7 +549,7 @@
         let idSolicitud = idSolicitudGeneral
         
         listaIDPrestamos = []
-        mapPrestamos.forEach(testElements)
+        mapPrestamos.forEach(mapToArrayElements)
         let fechaActual = Date.now();
         let tipo = "Sala";
         let estado = 0;
@@ -677,21 +677,21 @@
         getEjemplares(item.id, 2, "En Sala");
 
         let stringCard = `
-        <div class="col-md-4 mb-4">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 col-xxl-3 mb-4">
           <div class="card border-secondary mb-3" id=${
             item.id
           } categoria=${listCategoriaDocumentosId} tipoDocumento=${
           item.tipoDocumento.id
         }>
               <div class="card-body" id=${item.id}>
-                <h5 class="card-title">${item.titulo}</h5>
+                <h4 class="card-title truncate-text">${item.titulo}</h4>
                 <p class="card-text" id="card-text" autor="${
                   item.autor
                 }" tipoDocumento="${item.tipoDocumento.tipo}">${item.autor}, ${
           item.anioSalida
         }, ${item.editorial}, ${item.tipoDocumento.tipo},</p>
                 <div class="d-flex justify-content-center">
-                  <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#${
+                  <button class="btn btn-outline-secondary collapse-button" type="button" data-bs-toggle="collapse" data-bs-target="#${
                     item.id
                   }-collapse">
                     Ver más información
@@ -705,9 +705,12 @@
                       item.id
                     }.Disponible">Disponible: </p>
                     <p class="card-text my-1" id="${item.id}.En Sala">Sala: </p>
-                    <div class="input-group my-1" id="${item.id}-inputGroup">
-                      
+                    <div class="d-flex justify-content-evenly buttonAndCant">
+                      <div class="input-group my-1" id="${item.id}-inputGroup">
+                                            
+                      </div>
                     </div>
+                    
                   </div>
                 </div>
               </div>
@@ -761,9 +764,28 @@
             response.data.getNDocumentos.forEach(optionDocumentos);
             document.getElementById("ModalDocumentoEjemplar").innerHTML =
               optionFormSelectDocumento.join("");
+
+
+            $('.collapse-card').on('shown.bs.collapse', function () {
+                let cardBody = $(this).parent()
+                let title = cardBody.children("h4")
+                title.removeClass("truncate-text")
+            });   
+            $('.collapse-card').on('hidden.bs.collapse', function () {
+                let cardBody = $(this).parent()
+                let title = cardBody.children("h4")
+                
+                title.addClass("truncate-text")
+            });
+
           },
         });
       }
+
+      
+
+
+
       // Llamar todas las cosas
       function cargarTipoCategoriasDocumentosAndCookie() {
         cargarTipo();
@@ -1174,6 +1196,13 @@
         max-height: 200px;
         overflow-x: hidden;
       }
+
+      .truncate-text {
+        white-space: nowrap; /* Evita el salto de línea */
+        overflow: hidden;    /* Oculta el contenido excedente */
+        text-overflow: ellipsis; /* Agrega los puntos suspensivos */
+      }
+
     </style>
   </head>
 
@@ -1231,7 +1260,6 @@
         <!-- Barra de búsqueda y filtros -->
         <div class="row g-3 mb-4">
           <div class="col-md-6 search-bar">
-            <i class="bi bi-search"></i>
             <input
               type="text"
               id="searchBarTitle"
@@ -1242,7 +1270,6 @@
             />
           </div>
           <div class="col-md-6 search-bar">
-            <i class="bi bi-search"></i>
             <input
               type="text"
               id="searchBarAuthor"
