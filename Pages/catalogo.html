@@ -30,7 +30,6 @@
 
     <title>MuniBook</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       let listaDocumentosAgregados = [];
       let listaCantEjemplaresAgregados = [];
@@ -784,10 +783,11 @@
         if (categoria == "") {
           categoria = null;
         }
-        console.log(title, aut, tipo, categoria);
+        if (tipo == ""){
+          tipo = null
+        }
 
         let queryDocumentos = `
-
         query GetDocumentosByTituloAndAutorAndTipoAndCategoria($titulo: String, $autor: String, $tipoId: ID, $categoriaId: ID) {
           getDocumentosByTituloAndAutorAndTipoAndCategoria(titulo: $titulo, autor: $autor, tipoId: $tipoId, categoriaId: $categoriaId) {
             id
@@ -823,6 +823,7 @@
           },
         }),
         success: function (response) {
+          console.log(response)
           response.data.getDocumentosByTituloAndAutorAndTipoAndCategoria.forEach(
             cardDocumentos
           );
@@ -1135,7 +1136,7 @@
       .bg-custom {
         background-color: #efeae4;
       }
-
+      
       .dropdown-menu {
         min-width: 300px;
       }

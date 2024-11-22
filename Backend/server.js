@@ -494,7 +494,6 @@ const resolvers = {
             // en especifico utiliza un sistema llamado regular expression que es mas brijido 
             // lo que tengo puesto es una implementacion simple que talvez funciona xd
         async getDocumentosByTituloAndAutorAndTipoAndCategoria(obj, {tipoId, categoriaId, titulo, autor}){
-            
             if (titulo == null){
                 titulo = ""
             }
