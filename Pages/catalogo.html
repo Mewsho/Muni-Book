@@ -92,25 +92,6 @@
         buttonContainer.innerHTML = strButtons;
       }
 
-      async function aplicarVersionBibliotecario() {
-        let buttonContainer = document.getElementById("contaniner-bb-buttons");
-        let strButtons = `
-        <div class="d-grid gap-2 d-md-flex justify-content-md-center my-4 mx-3">
-          <button type="button" class="btn btn-dark btn-rounded cat-button" data-bs-toggle="modal"
-          data-bs-target="#Agregardoc">Agregar Documento</button>
-
-          <button type="button" class="btn btn-secondary cat-button" data-bs-toggle="modal"
-          data-bs-target="#ModalEliminarDocumento">Eliminar Documento</button>   
-          <button type="button" class="btn btn-dark cat-button" data-bs-toggle="modal"
-          data-bs-target="#ModalAgregarEjemplares">Agregar Ejemplar</button>
-          <button type="button" class="btn btn-secondary cat-button" data-bs-toggle="modal"
-
-          data-bs-target="#DelEjemplares">Eliminar Ejemplar</button>
-        </div>
-        `;
-        buttonContainer.innerHTML = strButtons;
-      }
-
       function AddDocumento() {
         let ModalAnioSalida = document.getElementById("ModalAnioSalida").value;
         let ModalAutor = document.getElementById("ModalAutor").value;
@@ -195,6 +176,22 @@
       function aplicarVersionBibliotecario() {
           let elemento = document.getElementById("navbarBibliotecario");
           elemento.classList.remove("d-none");
+          let buttonContainer = document.getElementById("contaniner-bb-buttons");
+          let strButtons = `
+          <div class="d-grid gap-2 d-md-flex justify-content-md-center my-4 mx-3">
+            <button type="button" class="btn btn-dark btn-rounded cat-button" data-bs-toggle="modal"
+            data-bs-target="#Agregardoc">Agregar Documento</button>
+
+            <button type="button" class="btn btn-secondary cat-button" data-bs-toggle="modal"
+            data-bs-target="#ModalEliminarDocumento">Eliminar Documento</button>   
+            <button type="button" class="btn btn-dark cat-button" data-bs-toggle="modal"
+            data-bs-target="#ModalAgregarEjemplares">Agregar Ejemplar</button>
+            <button type="button" class="btn btn-secondary cat-button" data-bs-toggle="modal"
+
+            data-bs-target="#DelEjemplares">Eliminar Ejemplar</button>
+          </div>
+          `;
+          buttonContainer.innerHTML = strButtons;
       }
 
       function aplicarVersionNotUsuario() {
@@ -1241,6 +1238,25 @@
         white-space: nowrap; /* Evita el salto de línea */
         overflow: hidden;    /* Oculta el contenido excedente */
         text-overflow: ellipsis; /* Agrega los puntos suspensivos */
+      }
+
+       *::-webkit-scrollbar {
+        width: 8px; /* Ancho del scrollbar */
+        height: 8px; /* Alto del scrollbar (para scroll horizontal) */
+      }
+
+      *::-webkit-scrollbar-thumb {
+        background: #888; /* Color del scrollbar */
+        border-radius: 4px; /* Bordes redondeados */
+      }
+
+      *::-webkit-scrollbar-thumb:hover {
+        background: #555; /* Color cuando pasa el mouse */
+      }
+
+      *::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Color del fondo */
+        border-radius: 4px;
       }
 
     </style>

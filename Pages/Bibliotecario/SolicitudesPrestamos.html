@@ -1100,11 +1100,50 @@
         text-decoration: underline;
         color: inherit;
       }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      td, th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+        overflow: hidden; /* Oculta el texto que se desborda */
+        text-overflow: ellipsis; /* Agrega los puntos suspensivos */
+      }
+
+      td {
+        max-width: 150px; /* Define un ancho máximo para las celdas */
+      }
       .navbar-toggler-icon {
         background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
       }
       .navbar-toggler {
         border-color: white; /* Cambia el borde del toggler a blanco */
+      }
+
+      /* Aplica estilos globales a todos los scrollbars */
+
+      *::-webkit-scrollbar {
+        width: 8px; /* Ancho del scrollbar */
+        height: 8px; /* Alto del scrollbar (para scroll horizontal) */
+      }
+
+      *::-webkit-scrollbar-thumb {
+        background: #888; /* Color del scrollbar */
+        border-radius: 4px; /* Bordes redondeados */
+      }
+
+      *::-webkit-scrollbar-thumb:hover {
+        background: #555; /* Color cuando pasa el mouse */
+      }
+
+      *::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Color del fondo */
+        border-radius: 4px;
       }
     </style>
   </head>
@@ -1162,7 +1201,7 @@
 
     <!-- list Section -->
     <div class="container mt-5">
-      <div class="panel-container" style="border: 3px solid #000">
+      <div class="panel-container" style="border: 3px solid #000; overflow: auto;">
         <!-- Lista de solicitudes en formato de tabla -->
         <table class="table table-bordered">
           <thead class="table-dark">
