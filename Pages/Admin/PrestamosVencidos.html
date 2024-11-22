@@ -38,6 +38,7 @@
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
         display: flex;
         flex-direction: column;
+        background-color: #c5c3b8;
       }
 
       .container {
@@ -45,8 +46,9 @@
       }
 
       .hero-title {
-        margin-top: 30px;
+        margin-top: 150px;
         text-align: center;
+        font-size: 1000%;
       }
 
       .hero-subtitle {
@@ -140,24 +142,36 @@
         font-family: "Times New Roman", Times, serif;
         align-content: center;
         text-align: end;
+        color: #efeae4;
+      }
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+      }
+      .navbar-toggler {
+        border-color: white; /* Cambia el borde del toggler a blanco */
       }
     </style>
     <script>
-      
-      function LoadListaSolicitudes(SolicitudObject){
+      function LoadListaSolicitudes(SolicitudObject) {
         let fechaPrestamo = new Date(SolicitudObject.fechaSolicitud);
-        let fechaDevolucion = new Date(SolicitudObject.prestamos[0].fechaDevolucion);
+        let fechaDevolucion = new Date(
+          SolicitudObject.prestamos[0].fechaDevolucion
+        );
         let fechaActual = Date.now();
 
-        if (SolicitudObject.estadoSolicitud == 1 && fechaActual<fechaDevolucion){
+        if (
+          SolicitudObject.estadoSolicitud == 1 &&
+          fechaActual < fechaDevolucion
+        ) {
           let strSolicitudesPrestamo = `
               <table class="table table-bordered">
                 <thead class="table-dark">
                 </thead>
                 <tbody>
                   <tr>
-                    <td>${SolicitudObject.id}</td>
-                    <td>${SolicitudObject.usuario.nombres} ${SolicitudObject.usuario.apellidos}</td>
+                    <td>${SolicitudObject.usuario.nombres} ${
+            SolicitudObject.usuario.apellidos
+          }</td>
                     <td>${SolicitudObject.prestamos.length}</td>
                     <td>${fechaPrestamo.toLocaleString()}</td>
                     <td>${fechaDevolucion.toLocaleString()}</td>
@@ -169,41 +183,56 @@
                   </tr>
                 </tbody>
               </table>
-          `
+          `;
 
           let listaSolicitudes = document.getElementById("listaSolicitudes");
-          listaSolicitudes.insertAdjacentHTML("beforeend", strSolicitudesPrestamo);
+          listaSolicitudes.insertAdjacentHTML(
+            "beforeend",
+            strSolicitudesPrestamo
+          );
         }
 
-        if (SolicitudObject.estadoSolicitud == 1 && fechaActual>fechaDevolucion){
+        if (
+          SolicitudObject.estadoSolicitud == 1 &&
+          fechaActual > fechaDevolucion
+        ) {
           let strSolicitudesPrestamo = `
               <table class="table table-bordered">
                 <thead class="table-dark">
                 </thead>
                 <tbody>
                   <tr>
-                    <td>${SolicitudObject.id}</td>
-                    <td>${SolicitudObject.usuario.nombres} ${SolicitudObject.usuario.apellidos}</td>
+                    <td>${SolicitudObject.usuario.nombres} ${
+            SolicitudObject.usuario.apellidos
+          }</td>
                     <td>${SolicitudObject.prestamos.length}</td>
                     <td>${fechaPrestamo.toLocaleString()}</td>
                     <td>${fechaDevolucion.toLocaleString()}</td>
                     <td>${SolicitudObject.tipoSolicitud}</td>
                     <!-- Tipo de Préstamo -->
                     <td class="btn-actions">
-                      <button nombres="${SolicitudObject.usuario.nombres}" apellidos="${SolicitudObject.usuario.apellidos}" correo="${SolicitudObject.usuario.correo}" class="btn btn-danger btn-sm correo" >Enviar Correo</button>
+                      <button nombres="${
+                        SolicitudObject.usuario.nombres
+                      }" apellidos="${
+            SolicitudObject.usuario.apellidos
+          }" correo="${
+            SolicitudObject.usuario.correo
+          }" class="btn btn-danger btn-sm correo" >Enviar Correo</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
-          `
+          `;
 
           let listaSolicitudes = document.getElementById("listaSolicitudes");
-          listaSolicitudes.insertAdjacentHTML("beforeend", strSolicitudesPrestamo);
-          
+          listaSolicitudes.insertAdjacentHTML(
+            "beforeend",
+            strSolicitudesPrestamo
+          );
         }
       }
 
-      function GetListaDeSolicitudes(){
+      function GetListaDeSolicitudes() {
         let queryGetArraySolicitudesPrestamos = `
           query GetSolicitudPrestamosUsuarioPrestamos {
             getSolicitudPrestamosUsuarioPrestamos {
@@ -222,7 +251,7 @@
               estadoSolicitud
             }
           }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -231,26 +260,25 @@
           data: JSON.stringify({
             query: queryGetArraySolicitudesPrestamos,
           }),
-          success: function(response){
-            let Array = response.data.getSolicitudPrestamosUsuarioPrestamos
+          success: function (response) {
+            let Array = response.data.getSolicitudPrestamosUsuarioPrestamos;
             Array.forEach((element) => LoadListaSolicitudes(element));
-            sendCorreo()
-
-          }
-        })
+            sendCorreo();
+          },
+        });
       }
 
-      function sendCorreo(){
-        $(".correo").click(function(){
-            let correo = $(this).attr("correo")
-            let nombres = $(this).attr("nombres")
-            let apellidos = $(this).attr("apellidos")
-            let nombreCompleto = nombres + " " + apellidos
-            let queryGetArraySolicitudesPrestamos = `
+      function sendCorreo() {
+        $(".correo").click(function () {
+          let correo = $(this).attr("correo");
+          let nombres = $(this).attr("nombres");
+          let apellidos = $(this).attr("apellidos");
+          let nombreCompleto = nombres + " " + apellidos;
+          let queryGetArraySolicitudesPrestamos = `
             query Query($correo: String, $nombres: String) {
               sendEmailRecordatorio(correo: $correo, nombres: $nombres)
             }
-          `
+          `;
           $.ajax({
             type: "POST",
             url: "http://localhost:8092/graphql",
@@ -260,33 +288,33 @@
               query: queryGetArraySolicitudesPrestamos,
               variables: {
                 correo: correo,
-                nombres: nombreCompleto
-              }
+                nombres: nombreCompleto,
+              },
             }),
-            success: function(response){
-              console.log("hola")
-            }
-          })
-        })
+            success: function (response) {
+              console.log("hola");
+            },
+          });
+        });
       }
-
     </script>
   </head>
   <body onload="GetListaDeSolicitudes()">
     <!-- Header Section -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-light">
       <div class="container">
         <a class="navbar-brand" href="/Pages/index.html">
           <svg
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            fill="white"
+            class="bi bi-book"
+            viewBox="0 0 16 16"
           >
-            <rect width="24" height="24" fill="white" />
-            <path d="M4 4H20V20H4V4Z" stroke="black" stroke-width="2" />
-            <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
+            <path
+              d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"
+            />
           </svg>
         </a>
         <!-- Botones del navbar-->
@@ -310,7 +338,9 @@
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="..//User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
+                ><i class="fa-solid fa-cart-shopping"></i
+              ></a>
             </li>
           </ul>
         </div>
@@ -325,12 +355,11 @@
 
     <!-- list Section -->
     <div class="container mt-5">
-      <div class="list-container">
+      <div class="list-container" style="border: 3px solid #000">
         <h2 class="text-center mb-4">Lista de Solicitudes de Préstamos</h2>
         <table class="table table-bordered">
           <thead class="table-dark">
             <tr>
-              <th>ID Solicitud</th>
               <th>Nombre de Usuario</th>
               <th>Cantidad de Prestamos</th>
               <th>Fecha Solicitada</th>
@@ -347,7 +376,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
+    <footer class="bg-dark text-light py-4 mt-4">
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
@@ -361,17 +390,27 @@
             <h5>Explorar</h5>
             <ul class="list-unstyled">
               <li>
-                <a class="footer-link" href="catalogo.html"> Catalogo </a>
+                <a class="footer-link" href="/Pages/catalogo.html">
+                  Catalogo
+                </a>
               </li>
-              <a onclick="loginButton()">Inicia Sesion</a>
+              <a class="footer-link" onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
-              <li>Sobre nosotros</li>
-              <li>Contactanos</li>
-              <li>Atencion al cliente</li>
+              <li>
+                <a class="footer-link" href="/Pages/ContactoMas.html"
+                  >Sobre nosotros</a
+                >
+              </li>
+              <li>
+                <a class="footer-link" href="#">Contactanos</a>
+              </li>
+              <li>
+                <a class="footer-link" href="#">Atencion al cliente</a>
+              </li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">

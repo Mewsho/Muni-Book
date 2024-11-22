@@ -14,6 +14,7 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <!-- Emoticones iconos -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -22,90 +23,128 @@
       referrerpolicy="no-referrer"
     />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
+    <!-- Importar Google fonst -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <title>MuniBook</title>
 
     <!-- Styles como los del css pero no-->
 
     <style>
+      /*  Letra para el titulo Munibook */
       h1 {
         letter-spacing: -0.2rem;
       }
-
+      /* Letra que sale en servicios */
       p {
         font-weight: 500;
+        font-size: 1.2rem;
       }
-
+      /* Titulo grande de servicios abajo cerca del footer */
       h2 {
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         font-weight: 600;
       }
+      /* Letra para subtitulos en area servicios */
+      h5 {
+        font-size: 1.3rem;
+      }
+      /* Texto h5 Custom para zona servicios */
+      .services {
+      font-size: 2.0rem;
+      }
+      /* Tamano emoticones antes de el subtitulo area servicio */
+      i{
+        font-size: 1.4rem
+      }
+      /* Zona donde esta el texto Munibook en grande */
       .hero-section {
         background-color: #908d7e;
         padding: 4rem 0;
+      } 
+      /* Literal texto debajo del titulo munibook */
+      .textobajotitulo {
+        font-size: 1.5rem;
+        font-family: "Noto Sans", sans-serif;
       }
+      /* Zona donde estan los servicios abajo cerca del footer*/
       .features-section {
         padding: 4rem 0;
       }
+      /* Clase para el titulo */
       .display-4 {
         font-size: 1000%;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 600;
       }
-
+      /* Propiedades de el navbar en si */
       .navbar {
         background-color: #a98f6f;
         color: white;
       }
+      /* Propiedades de los botones dentro de nav bar */
       .nav-link {
         align-items: center;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Noto Sans", sans-serif;
         font-weight: 500;
         font-size: 1.2rem;
         text-align: end;
         color: #efeae4;
       }
-      body {
-        background-color: #c5c3b8;
-      }
-      .col-md-6 {
-        margin-top: 12px;
-      }
+      /* Clase del icono de la pagina */
       .navbar-brand {
         margin: 0px;
       }
-      .btn-dark {
-        font-family: "Times New Roman", Times, serif;
+      /* Icono para desplegar el nav bar */
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
       }
-
+      /* propiedades del toggler */
+      .navbar-toggler {
+        border-color: white; /* Cambia el borde del toggler a blanco */
+      }
+      /* Cuerpo del ashetemeele tambien fondo color de fondo o imagen de fondo*/
+      body {
+        background-color: #c5c3b8;
+      }
+      /* Clase para las fotos */
+      .col-md-6 {
+        margin-top: 12px;
+      }
+      /* CLase para las imagenes */
       .col-md-6 img {
         width: 100%;
         height: 400px; /* Altura fija para todas las imágenes */
         object-fit: cover; /* Mantiene la proporción y cubre el espacio asignado */
         object-position: center; /* Centra la imagen */
       }
-      .bg-custom2 {
-        background-color: #908d7e;
+      /* Propiedades del button dark */
+      .btn-dark {
+        font-family: "Noto Sans", sans-serif;
       }
-
+      /* Carrousel que sale cuando hay vista movil*/
       .carrousel-img {
         width: 100%;
-
         height: 400px; /* Altura fija para todas las imágenes */
         object-fit: cover; /* Mantiene la proporción y cubre el espacio asignado */
         object-position: center;
         border-radius: 5%;
       }
-      .textobajotitulo {
-        font-size: 1.5rem;
-        font-family: "Times New Roman", Times, serif;
-      }
+      /* Color de fondo 1 */
       .bg-custom {
         background-color: #bfa586; /* El color de fondo que deseas */
       }
+      /* Color fondo 2 */
+      .bg-custom2 {
+        background-color: #908d7e;
+      }
+      /* Texto para? */
       .text-custom {
         color: #efeae4; /* El color del texto que deseas */
       }
-
+      /* Styles del footer */
       .footer {
         text-align: left;
         background-color: #5d172d;
@@ -121,12 +160,7 @@
         text-decoration: underline;
         color: inherit;
       }
-      .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
-      }
-      .navbar-toggler {
-        border-color: white; /* Cambia el borde del toggler a blanco */
-      }
+
     </style>
   </head>
 
@@ -412,7 +446,7 @@
           >
             <div class="d-flex align-items-center mb-3">
               <i class="fa-sharp fa-solid fa-book"></i>
-              <h5 class="ms-2 mb-0">Servicios</h5>
+              <h5 class="ms-2 mb-0 services">Servicios</h5>
             </div>
             <p>Prestamo de libros</p>
           </div>
@@ -421,7 +455,7 @@
           >
             <div class="d-flex align-items-center mb-3">
               <i class="fa-solid fa-question"></i>
-              <h5 class="ms-2 mb-0">Preguntas Frecuentes</h5>
+              <h5 class="ms-2 mb-0 services">Preguntas Frecuentes</h5>
             </div>
             <p>¿Cuántos libros puedo llevarme?</p>
           </div>

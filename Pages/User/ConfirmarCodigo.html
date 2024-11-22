@@ -8,10 +8,156 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <style>
       body {
         font-family: "Times New Roman", "Times New Roman", Times, serif;
+        background-color: #c5c3b8;
       }
+      .hero-title {
+        margin-top: 150px;
+        text-align: center;
+        font-size: 1000%;
+      }
+
+      .hero-subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 3px;
+        font-size: 250%;
+      }
+      h2 {
+        font-family: "Times New Roman", Times, serif;
+        font-weight: 600;
+
+      }
+      p {
+        font-weight: 500;
+      }
+      .hero-section {
+        background-color: #f8f9fa;
+        padding: 4rem 0;
+      }
+      .features-section {
+        padding: 4rem 0;
+      }
+      .display-4 {
+        font-size: 1000%;
+        font-family: "Times New Roman", Times, serif;
+      }
+      .nav-link {
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        align-content: center;
+        text-align: end;
+        /* margin-top: 3%; */
+        color: #efeae4;
+        font-weight: 500;
+        font-size: 1.2rem;
+
+      }
+      .navbar {
+        background-color: #a98f6f;
+        color: white;
+      }
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+      }
+      .navbar-toggler {
+        border-color: white; /* Cambia el borde del toggler a blanco */
+      }
+      
+
+      body {
+        font-family: "Times New Roman", Times, serif; 
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        box-sizing: border-box;
+        background-color: #c5c3b8;
+
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #f8f8f8;
+      }
+      header h1 {
+        font-size: 2.5em;
+        font-family: "Times New Roman", Times, serif;
+        margin: 0;
+        color: #333;
+      }
+      header .admin-btn {
+        padding: 10px 20px;
+        background-color: #333;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 0.9em;
+      }
+      .card-body{
+        height: 300px;
+      }
+      main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+        background-color: #c5c3b8;
+      }
+      .login-container {
+        text-align: center;
+      }
+      .login-container h2 {
+        font-size: 2.5em;
+        color: #333;
+      }
+      .login-container p {
+        font-size: 1.2em;
+        color: #777;
+      }
+      .login-container .input-group {
+        margin: 20px 0;
+        text-align: left;
+      }
+      .login-container input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 1em;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      .navbar-brand{
+        margin: 0px;
+      }
+      label{
+        font-family: 'Times New Roman', Times, serif;
+      }
+      .text-custom {
+        color: #efeae4; /* El color del texto que deseas */
+      }
+
+      .footer {
+        text-align: left;
+      }
+
+      .footer-link {
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      
+      .footer-link:hover {
+        text-decoration: underline;
+        color: inherit;
+      }
+      
     </style>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -24,7 +170,10 @@
       function validateCode() {
         let inputCodigo = document.getElementById("codigo").value;
         inputCodigo = parseInt(inputCodigo, 10);
-        if (userData.codigo == inputCodigo) {
+        let pass1 = document.getElementById("password").value
+        let pass2 = document.getElementById("confirmPassword").value
+        console.log(pass1)
+        if (userData.codigo == inputCodigo && pass1 == pass2) {
           let queryFind = `
                 mutation Mutation($updUsuarioId: ID!, $input: UsuarioInput) {
                     updUsuario(id: $updUsuarioId, input: $input) {
@@ -53,7 +202,7 @@
                   activo: true,
                   codigo: 0,
                   correo: userData.correo,
-                  password: userData.password,
+                  password: pass1,
                   tipoUsuario: userData.tipoUsuario,
                 },
               },
@@ -113,10 +262,14 @@
       }
     </script>
   </head>
+      <!-- Main Title and Subtitle -->
+      <div class="container">
+        <h1 class="hero-title">Muni Book</h1>
+      </div>
   <body>
     <div class="container mt-5">
-      <div class="card mx-auto" style="max-width: 500px">
-        <div class="card-body">
+      <div class="card mx-auto" style="max-width: 850px">
+        <div class="card-body" style="border: 3px solid #000">
           <h1 class="text-center mb-4">Confirmar Código</h1>
           <form id="registrationForm">
             <div class="mb-3">
@@ -142,6 +295,8 @@
         </div>
       </div>
     </div>
+
+
     
 
     <!-- Modal para código de verificación -->
@@ -219,6 +374,7 @@
         </div>
       </div>
     </div>
+    
 
 <!-- Scripts y estilos necesarios -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -256,7 +412,7 @@
     mensajeDiv.style.display = "block";
 
     if (password === confirmPassword && password !== "") {
-      // Mostrar mensaje de confirmación
+      validateCode()
       mensajeDiv.innerHTML =
         '<div class="alert alert-success">Las contraseñas coinciden. Cuenta creada con éxito.</div>';
     } else {
@@ -279,5 +435,7 @@
 />
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
   </body>
+  
 </html>

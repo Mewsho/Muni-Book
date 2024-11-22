@@ -21,14 +21,20 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="icon" href="/Assets/Icon/book-svgrepo-com.svg" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
-
       // Se llama cuando se presiona el boton de devolucion
-      async function ingresarDevolucion(){
-        let modalInput = document.getElementById("codigoLibro")
-        let id = modalInput.value
+      async function ingresarDevolucion() {
+        let modalInput = document.getElementById("codigoLibro");
+        let id = modalInput.value;
         let queryUpdEjemplar = `
         mutation ScheduleUpdEjemplar($scheduleUpdEjemplarId: ID!, $scheduleUpdEjemplarInput2: EjemplarInput, $minutos: Int) {
           ScheduleUpdEjemplar(id: $scheduleUpdEjemplarId, input: $scheduleUpdEjemplarInput2, minutos: $minutos) {
@@ -38,7 +44,7 @@
             descriptionError
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -50,43 +56,42 @@
               scheduleUpdEjemplarId: id,
               scheduleUpdEjemplarInput2: {
                 estado: 3,
-                estadoTexto: "Disponible"
+                estadoTexto: "Disponible",
               },
-              minutos: 1
-            }
+              minutos: 1,
+            },
           }),
-          success: function(response){
-            console.log(response)
-            let respuesta = response.data.updEjemplar
-            if (respuesta == null){
-              console.log("error")
-              mostrarError()
+          success: function (response) {
+            console.log(response);
+            let respuesta = response.data.updEjemplar;
+            if (respuesta == null) {
+              console.log("error");
+              mostrarError();
+            } else {
+              devolucionExitosa(id);
             }
-            else {
-              devolucionExitosa(id)
-            }
-          }
-        })
+          },
+        });
       }
 
-      async function mostrarError(){
+      async function mostrarError() {
         var mensajeDiv = document.getElementById("mensaje");
         mensajeDiv.style.display = "block";
         mensajeDiv.innerHTML =
-        '<div class="alert alert-danger">Por favor, ingrese un código de libro válido.</div>';
+          '<div class="alert alert-danger">Por favor, ingrese un código de libro válido.</div>';
         setTimeout(function () {
           mensajeDiv.style.display = "none"; // Oculta el mensaje
           document.getElementById("codigoLibro").value = ""; // Limpia el campo de entrada
         }, 3000); // 5000 milisegundos = 5 segundos
       }
 
-      async function devolucionExitosa(idEjemplar){
+      async function devolucionExitosa(idEjemplar) {
         var mensajeDiv = document.getElementById("mensaje");
         mensajeDiv.style.display = "block";
         mensajeDiv.innerHTML =
-        '<div class="alert alert-success">Devolución registrada con éxito para el código: ' +
-        idEjemplar +
-        ".</div>";
+          '<div class="alert alert-success">Devolución registrada con éxito para el código: ' +
+          idEjemplar +
+          ".</div>";
         setTimeout(function () {
           mensajeDiv.style.display = "none"; // Oculta el mensaje
           document.getElementById("codigoLibro").value = ""; // Limpia el campo de entrada
@@ -106,7 +111,7 @@
             fechaDevolucionReal
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -115,35 +120,32 @@
           data: JSON.stringify({
             query: queryGetPrestamo,
             variables: {
-              ejemplarId: idEjemplar
-            }
+              ejemplarId: idEjemplar,
+            },
           }),
-          success: function(response){
-            console.log("prestamo", response)
-            let prestamo = response.data.getPrestamoByEjemplarId
-            if (prestamo == null){
-              console.log("Prestamo no existe")
+          success: function (response) {
+            console.log("prestamo", response);
+            let prestamo = response.data.getPrestamoByEjemplarId;
+            if (prestamo == null) {
+              console.log("Prestamo no existe");
+            } else {
+              updPrestamo(prestamo);
             }
-            else{
-              updPrestamo(prestamo)
-            }
-          }
-        })
+          },
+        });
       }
 
-      async function updPrestamo(prestamo){
-
-        let fechaActual = Date.now()
-        fechaActual = new Date(fechaActual)
+      async function updPrestamo(prestamo) {
+        let fechaActual = Date.now();
+        fechaActual = new Date(fechaActual);
 
         // Calcular sancion
-        let fDevolucion = prestamo.fechaDevolucion
-        fDevolucion = new Date(fDevolucion)
-        console.log(fDevolucion)
-        if (fDevolucion < fechaActual){
-          aplicarSancion(prestamo.id)
+        let fDevolucion = prestamo.fechaDevolucion;
+        fDevolucion = new Date(fDevolucion);
+        console.log(fDevolucion);
+        if (fDevolucion < fechaActual) {
+          aplicarSancion(prestamo.id);
         }
-
 
         let queryUpdPrestamo = `
         mutation UpdPrestamo($updPrestamoId: ID!, $updPrestamoInput2: PrestamoInput) {
@@ -154,7 +156,7 @@
             descriptionError
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -165,22 +167,21 @@
             variables: {
               updPrestamoId: prestamo.id,
               updPrestamoInput2: {
-                fechaDevolucionReal: fechaActual
-              }
-            }
+                fechaDevolucionReal: fechaActual,
+              },
+            },
           }),
-          success: function(response){
-            console.log("Fecha devolucion prestamo cambiada")
-          }
-        })
+          success: function (response) {
+            console.log("Fecha devolucion prestamo cambiada");
+          },
+        });
       }
 
-
-      async function aplicarSancion(idPrestamo){
-        getSolicitudPrestamoByPrestamoId(idPrestamo)
+      async function aplicarSancion(idPrestamo) {
+        getSolicitudPrestamoByPrestamoId(idPrestamo);
       }
 
-      async function getSolicitudPrestamoUsuarioByPrestamoId(idPrestamo){
+      async function getSolicitudPrestamoUsuarioByPrestamoId(idPrestamo) {
         // Mi objetivo es obtener el usuario
         // Y luego meterle una sancion
         let querySolicitud = `
@@ -213,7 +214,7 @@
             }
           }
         }
-        `
+        `;
         $.ajax({
           type: "POST",
           url: "http://localhost:8092/graphql",
@@ -223,23 +224,23 @@
             query: querySolicitud,
             variables: {
               prestamoId: idPrestamo,
-            }
+            },
           }),
-          success: function(response){
-            let usuario = response.data.getSolicitudPrestamoUsuarioByPrestamoId.usuario
-            updUsuarioSancion(usuario)
-          }
-        })
+          success: function (response) {
+            let usuario =
+              response.data.getSolicitudPrestamoUsuarioByPrestamoId.usuario;
+            updUsuarioSancion(usuario);
+          },
+        });
       }
 
-      async function updUsuarioSancion(user){
-
-        const actual = new Date()
+      async function updUsuarioSancion(user) {
+        const actual = new Date();
         // Agregar 3 dias
         const sancion = new Date(
           new Date(actual).setDate(actual.getDate() + 3)
-        )
-        let stringSancion = sancion.toLocaleString()
+        );
+        let stringSancion = sancion.toLocaleString();
 
         let queryUpdSancion = `
         mutation UpdUsuario($updUsuarioId: ID!) {
@@ -250,7 +251,7 @@
             descriptionError
           }
         }
-        `
+        `;
 
         $.ajax({
           type: "POST",
@@ -262,17 +263,15 @@
             variables: {
               updUsuarioId: user.id,
               updUsuarioInput2: {
-                fechaSancion: stringSancion
-              }
-            }
+                fechaSancion: stringSancion,
+              },
+            },
           }),
-          success: function(response){
-            console.log("Sancion aplicada")
-          }
-        })
-
+          success: function (response) {
+            console.log("Sancion aplicada");
+          },
+        });
       }
-
     </script>
 
     <style>
@@ -286,6 +285,7 @@
         min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
         display: flex;
         flex-direction: column;
+        background-color: #c5c3b8;
       }
 
       .container {
@@ -295,12 +295,14 @@
       .hero-title {
         margin-top: 150px;
         text-align: center;
+        font-size: 1000%;
       }
 
       .hero-subtitle {
         text-align: center;
         color: #666;
         margin-bottom: 3px;
+        font-size: 250%;
       }
 
       .filter-buttons {
@@ -311,7 +313,14 @@
         margin-right: 10px;
         margin-bottom: 10px;
       }
-
+      .list-container {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: auto;
+      }
       footer {
         background-color: #000;
         color: #fff;
@@ -345,6 +354,13 @@
         font-family: "Times New Roman", Times, serif;
         align-content: center;
         text-align: end;
+        color: #efeae4;
+      }
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+      }
+      .navbar-toggler {
+        border-color: white; /* Cambia el borde del toggler a blanco */
       }
 
       /* Estilo para ocultar el mensaje inicialmente */
@@ -355,19 +371,20 @@
   </head>
   <body>
     <!-- Header Section -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-light">
       <div class="container">
         <a class="navbar-brand" href="..//index.html">
           <svg
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            fill="white"
+            class="bi bi-book"
+            viewBox="0 0 16 16"
           >
-            <rect width="24" height="24" fill="white" />
-            <path d="M4 4H20V20H4V4Z" stroke="black" stroke-width="2" />
-            <path d="M8 8H16V16H8V8Z" stroke="black" stroke-width="2" />
+            <path
+              d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"
+            />
           </svg>
         </a>
         <!-- Botones del navbar-->
@@ -391,7 +408,9 @@
               <a class="nav-link" href="#contact">Contacto</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="..//User/solicitudDePrestamo.html"><i class="fa-solid fa-cart-shopping"></i></a>
+              <a class="nav-link" href="..//User/solicitudDePrestamo.html"
+                ><i class="fa-solid fa-cart-shopping"></i
+              ></a>
             </li>
           </ul>
         </div>
@@ -400,29 +419,31 @@
 
     <!-- Main Title and Subtitle -->
     <div class="container">
-      <h1 class="hero-title">Panel Bibliotecario</h1>
+      <h1 class="hero-title">Muni Book</h1>
       <p class="hero-subtitle">Funciones Bibliotecario</p>
     </div>
 
     <!-- Filter Buttons -->
     <div class="container text-center">
-      <div class="mb-3">
-        <button
-          type="button"
-          class="btn btn-outline-secondary btn-lg w-100"
-          data-bs-toggle="modal"
-          data-bs-target="#modalDevolucion"
-        >
-          Ingresar Devolución
-        </button>
-      </div>
-      <div class="mb-3">
-        <a
-          href="SolicitudesPrestamos.html"
-          class="btn btn-outline-secondary btn-lg w-100"
-        >
-          Revisar solicitudes de préstamo
-        </a>
+      <div class="list-container" style="border: 3px solid #000">
+        <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-lg w-100"
+            data-bs-toggle="modal"
+            data-bs-target="#modalDevolucion"
+          >
+            Ingresar Devolución
+          </button>
+        </div>
+        <div class="mb-3">
+          <a
+            href="SolicitudesPrestamos.html"
+            class="btn btn-outline-secondary btn-lg w-100"
+          >
+            Revisar solicitudes de préstamo
+          </a>
+        </div>
       </div>
     </div>
 
@@ -457,7 +478,11 @@
                 placeholder="Ingrese el código"
               />
             </div>
-            <button id="btnRegistrar" class="btn btn-primary mt-3" onclick="ingresarDevolucion()">
+            <button
+              id="btnRegistrar"
+              class="btn btn-primary mt-3"
+              onclick="ingresarDevolucion()"
+            >
               Registrar Devolución
             </button>
             <div id="mensaje" class="mt-3"></div>
@@ -466,9 +491,8 @@
       </div>
     </div>
 
-
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
+    <footer class="bg-dark text-custom py-4 mt-4">
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
@@ -482,17 +506,27 @@
             <h5>Explorar</h5>
             <ul class="list-unstyled">
               <li>
-                <a class="footer-link" href="catalogo.html"> Catalogo </a>
+                <a class="footer-link" href="/Pages/catalogo.html">
+                  Catalogo
+                </a>
               </li>
-              <a onclick="loginButton()">Inicia Sesion</a>
+              <a class="footer-link" onclick="loginButton()">Inicia Sesion</a>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
             <h5>Recursos</h5>
             <ul class="list-unstyled">
-              <li>Sobre nosotros</li>
-              <li>Contactanos</li>
-              <li>Atencion al cliente</li>
+              <li>
+                <a class="footer-link" href="/Pages/ContactoMas.html"
+                  >Sobre nosotros</a
+                >
+              </li>
+              <li>
+                <a class="footer-link" href="#">Contactanos</a>
+              </li>
+              <li>
+                <a class="footer-link" href="#">Atencion al cliente</a>
+              </li>
             </ul>
           </div>
           <div class="col-md-3 mb-3">
