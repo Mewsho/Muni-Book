@@ -205,6 +205,10 @@
         if (estado == 1){
           return
         }
+        if (solicitud.prestamos.length == 0){
+          return
+        }
+        
         let strSolicitud = `
         <tr>
           <!-- usuario -->
@@ -1061,6 +1065,35 @@
         text-align: center; /* Alinea el texto al centro */
         margin-top: 20px; /* Margen superior */
       }
+      .form-label {
+        font-size: 2vh;
+      }
+      .modal-content {
+        border: 5px solid #908d7e;
+      }
+      .modal-header {
+        background-color: #908d7e;
+        color: black;
+        border-radius: 0;
+        border: 0;
+
+      }
+      .modal-title {
+        font-weight: 400;
+        font-size: 2.5vh;
+      }
+      .modal-body {
+        background-color:  #c5c3b8; /* Color personalizado */
+        border: 0;
+
+      }
+      .modal-footer {
+        background-color: #908d7e; /* Color personalizado */
+        color: black;
+        border-radius: 0;
+        border: 0;
+
+      }
 
       footer {
         background-color: #000;
@@ -1088,6 +1121,9 @@
         align-content: center;
         text-align: end;
         color: #efeae4;
+      }
+      .form-label {
+        font-size: 2vh;
       }
       /* para link en footer*/
       .footer-link {
@@ -1282,12 +1318,12 @@
     <!-- Modal de Confirmacion -->
     <div class="modal fade" id="modalConfirmacion" solicitud="" rut="" tabindex="-1"> 
       <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
+        <div class="modal-content modal-confirmar-content">
+          <div class="modal-header modal-confirmar-header">
             <h5 class="modal-title">Confirmar Solicitud?</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body modal-confirmar-body">
             <form>
               <div class="mb-3">
                 <label for="usuarioRutModal" class="form-label">RUT</label>
@@ -1299,9 +1335,9 @@
             </form>
             <div id="mensajeModal" class="container mt-3" style="display: none"></div>
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer modal-confirmar-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-success" onclick="confirmarSolicitud()">Confirmar</button>         
+            <button type="button" class="btn btn-dark" onclick="confirmarSolicitud()">Confirmar</button>         
           </div>
         </div>
       </div>
@@ -1316,7 +1352,7 @@
       aria-hidden="true"
     >
       <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content ">
           <div class="modal-header">
             <h5 class="modal-title" id="infoModalLabel">
               Información de Préstamos
@@ -1328,7 +1364,7 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body overflow-auto">
             <table class="table table-bordered">
               <thead>
                 <tr>
