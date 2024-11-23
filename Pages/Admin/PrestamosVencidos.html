@@ -162,9 +162,25 @@
         border-color: white; /* Cambia el borde del toggler a blanco */
       }
 
-            /* Aplica estilos globales a todos los scrollbars */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
 
-            *::-webkit-scrollbar {
+      td, th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+        overflow: hidden; /* Oculta el texto que se desborda */
+        text-overflow: ellipsis; /* Agrega los puntos suspensivos */
+      }
+
+      td {
+        max-width: 150px; /* Define un ancho máximo para las celdas */
+      }
+
+       *::-webkit-scrollbar {
         width: 8px; /* Ancho del scrollbar */
         height: 8px; /* Alto del scrollbar (para scroll horizontal) */
       }
@@ -383,7 +399,7 @@
 
     <!-- list Section -->
     <div class="container mt-5">
-      <div class="list-container" style="border: 3px solid #000">
+      <div class="list-container" style="border: 3px solid #000; overflow: auto;">
         <table class="table table-bordered">
           <thead class="table-dark">
             <tr>
