@@ -786,22 +786,25 @@
             document.getElementById("ModalDocumentoEjemplar").innerHTML =
               optionFormSelectDocumento.join("");
 
-
-            $('.collapse-card').on('shown.bs.collapse', function () {
-                let cardBody = $(this).parent()
-                let title = cardBody.children("h4")
-                title.removeClass("truncate-text")
-            });   
-            $('.collapse-card').on('hidden.bs.collapse', function () {
-                let cardBody = $(this).parent()
-                let title = cardBody.children("h4")
-                
-                title.addClass("truncate-text")
-            });
-
+            setCollapseTruncateText()
           },
         });
       }
+
+      async function setCollapseTruncateText(){
+        $('.collapse-card').on('shown.bs.collapse', function () {
+          let cardBody = $(this).parent()
+          let title = cardBody.children("h4")
+          title.removeClass("truncate-text")
+      });   
+      $('.collapse-card').on('hidden.bs.collapse', function () {
+          let cardBody = $(this).parent()
+          let title = cardBody.children("h4")
+
+          title.addClass("truncate-text")
+      });
+      }
+
       // Llamar todas las cosas
       function cargarTipoCategoriasDocumentosAndCookie() {
         cargarTipo();
@@ -867,6 +870,7 @@
           document.getElementById("catalogContainer").innerHTML =
             listCardDocumentos.join("");
           console.log("card agregadas");
+          setCollapseTruncateText()
           aplicarCambiosCard();
         },    
       });
