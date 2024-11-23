@@ -306,7 +306,7 @@
         flex-grow: 1; /* Se expande para ocupar el espacio disponible */
       }
 
-      i{
+      i {
         font-size: 3vh;
       }
 
@@ -379,6 +379,32 @@
         margin-top: 1%;
         margin-bottom: 5%;
       }
+      .form-label {
+        font-size: 2vh;
+      }
+      .modal-content {
+        border: 5px solid #908d7e;
+      }
+      .modal-header {
+        background-color: #908d7e;
+        color: black;
+        border-radius: 0;
+        border: 0;
+      }
+      .modal-title {
+        font-weight: 400;
+        font-size: 2.5vh;
+      }
+      .modal-body {
+        background-color: #c5c3b8; /* Color personalizado */
+        border: 0;
+      }
+      .modal-footer {
+        background-color: #908d7e; /* Color personalizado */
+        color: black;
+        border-radius: 0;
+        border: 0;
+      }
 
       footer {
         background-color: #000;
@@ -395,7 +421,7 @@
         color: inherit;
       }
 
-        /* Aplica estilos globales a todos los scrollbars */
+      /* Aplica estilos globales a todos los scrollbars */
 
       *::-webkit-scrollbar {
         width: 8px; /* Ancho del scrollbar */
@@ -415,7 +441,6 @@
         background: #f1f1f1; /* Color del fondo */
         border-radius: 4px;
       }
-
     </style>
   </head>
   <body>
@@ -506,7 +531,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="modalDevolucionLabel">
-              Dashboard Bibliotecario / Devolución
+              Ingresar Devolución
             </h5>
             <button
               type="button"
@@ -527,7 +552,7 @@
             </div>
             <button
               id="btnRegistrar"
-              class="btn btn-primary mt-3"
+              class="btn btn-dark mt-3"
               onclick="ingresarDevolucion()"
             >
               Registrar Devolución
