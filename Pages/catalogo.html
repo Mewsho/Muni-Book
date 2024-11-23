@@ -362,7 +362,7 @@
             let collapse = container.parentElement
             let idDocumentoCollapse = collapse.id;
             let idDocumento = idDocumentoCollapse.split("-")[0];
-            let strButton = `<button type="button" class="btn btn-secondary mx-2 alignVertical" 
+            let strButton = `<button type="button" class="btn btn-dark mx-2 alignVertical" 
             id="${idDocumento}-addButton">
             Agregar</button>
             `;
@@ -711,7 +711,7 @@
           item.anioSalida
         }, ${item.editorial}, ${item.tipoDocumento.tipo},</p>
                 <div class="d-flex justify-content-center">
-                  <button class="btn btn-outline-secondary collapse-button" type="button" data-bs-toggle="collapse" data-bs-target="#${
+                  <button class="btn btn-secondary collapse-button" type="button" data-bs-toggle="collapse" data-bs-target="#${
                     item.id
                   }-collapse">
                     Ver más información
@@ -1152,8 +1152,9 @@
         padding: 4rem 0;
       }
       .display-4 {
-        font-size: 1000%;
+        font-size: 12vh;
         font-family: "Noto Sans", sans-serif;
+        font-weight: 600;
       }
       .navbar {
         color: white;
@@ -1209,6 +1210,33 @@
 
       .bg-custom {
         background-color: #efeae4;
+      }
+      .form-label {
+        font-size: 2vh;
+      }
+      .modal-content {
+        border: 5px solid #908d7e;
+      }
+
+      .modal-header {
+        background-color: #908d7e;
+        color: black;
+        border-radius: 0;
+      }
+      .modal-title {
+        font-weight: 400;
+        font-size: 2.5vh;
+
+      }
+      .modal-body {
+        background-color:  #c5c3b8; /* Color personalizado */
+
+      }
+      .modal-footer {
+        background-color: #908d7e; /* Color personalizado */
+        color: black;
+        border-radius: 0;
+
       }
       
       .dropdown-menu {
@@ -1467,7 +1495,7 @@
                   <label for="multiSelect" class="form-label">Categoría</label>
                   <div class="dropdown">
                     <button
-                      class="btn btn-outline-secondary dropdown-toggle cat-button"
+                      class="btn btn-dark dropdown-toggle cat-button"
                       type="button"
                       id="multiSelectDropdown"
                       data-bs-toggle="dropdown"
@@ -1480,11 +1508,6 @@
                       aria-labelledby="multiSelectDropdown"
                       id="TipCategoriaModal"
                     ></div>
-                  </div>
-                  <div class="mt-2">
-                    <span id="selectedCategories" class="dropdown-check"
-                      >No se han seleccionado categorías.</span
-                    >
                   </div>
                 </div>
                 <!-- Tipo Documento -->
@@ -1508,7 +1531,7 @@
             </button>
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn btn-dark"
               onclick="AddDocumento()"
             >
               Agregar
@@ -1584,7 +1607,7 @@
             </button>
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn btn-dark"
               onclick="agregarEjemplar()"
             >
               Agregar
@@ -1634,7 +1657,7 @@
             <!-- Botón que muestra el segundo modal -->
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn btn-dark"
               data-bs-target="#ModalConfirmarEliminar"
               data-bs-toggle="modal"
               data-bs-dismiss="modal"
@@ -1720,7 +1743,7 @@
             <!-- Botón que muestra el segundo modal -->
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn btn-dark"
               data-bs-target="#ModalConfirmarEjemplar"
               data-bs-toggle="modal"
               data-bs-dismiss="modal"
