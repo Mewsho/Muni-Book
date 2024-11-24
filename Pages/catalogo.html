@@ -916,7 +916,7 @@
             console.log("Response:", response);
             let mensajeDiv = document.getElementById("mensajeAddEjemplar");
             mensajeDiv.style.display = 'block'
-            if (idDocumento == ""){
+            if (response.data.addEjemplar == null){
               mensajeDiv.innerHTML =
                 '<div class="alert alert-danger">No ha sido posible agregar el ejemplar.</div>';
             }

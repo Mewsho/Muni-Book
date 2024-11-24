@@ -203,9 +203,17 @@
     <script>
       function LoadListaSolicitudes(SolicitudObject) {
         let fechaPrestamo = new Date(SolicitudObject.fechaSolicitud);
+        let listaPrestamos = SolicitudObject.prestamos
         let fechaDevolucion = new Date(
           SolicitudObject.prestamos[0].fechaDevolucion
         );
+        for (prestamo of listaPrestamos){
+          let aux = new Date(prestamo.fechaDevolucion)
+          if (aux < fechaDevolucion){
+            fechaDevolucion = aux
+          }
+        }
+
         let fechaActual = Date.now();
 
         if (

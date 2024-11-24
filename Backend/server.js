@@ -828,6 +828,7 @@ const resolvers = {
 
         async addEjemplar(obj, {input}){
             let documentoBus = await Documento.findById(input.documento)
+            
             if (documentoBus == null){
                 return {
                     statusCode: "400",
@@ -836,15 +837,6 @@ const resolvers = {
                     descriptionError: "Documento no encontrado"
                 }
             }
-            let check = await checkEjemplares(input)
-            if (!check[0]){
-                return {
-                    statusCode: "400",
-                    body: null,
-                    errorCode: "0",
-                    descriptionError: `${check[1]} no valido`
-                };
-            };
             let ejemplar = new Ejemplar({
                 documento: documentoBus._id, estado: input.estado, 
                 ubicacion: input.ubicacion, estadoTexto: input.estadoTexto, codigo: input.codigo});
@@ -1159,7 +1151,7 @@ const resolvers = {
 
 async function cambiarEjemplar(id, input){
     let ejemplar = await Ejemplar.findByIdAndUpdate(id, input)
-    console.log("Actualizado")
+    console.log("Ejemplar nuevamente disponible")
 }
 
 async function checkDocumentos(input){
