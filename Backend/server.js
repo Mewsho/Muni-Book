@@ -141,7 +141,7 @@ const typeDefs = gql`
 
     type SolicitudPrestamo{
         id: ID!
-        tipoSolicitud: String # Sala, Domicilio, Reserva, 0,1,2
+        tipoSolicitud: String # Sala, Domicilio, Reserva,
         estadoSolicitud: Int # Aprobado y No Aprobado 
         fechaSolicitud: GraphQLDateTime
         usuario: Usuario
