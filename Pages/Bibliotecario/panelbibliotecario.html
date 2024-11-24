@@ -71,7 +71,7 @@
           }),
           success: function (response) {
             console.log(response);
-            let respuesta = response.data.updEjemplar;
+            let respuesta = response.data;
             if (respuesta == null) {
               console.log("error");
               mostrarError();
@@ -186,7 +186,7 @@
       }
 
       async function aplicarSancion(idPrestamo) {
-        getSolicitudPrestamoByPrestamoId(idPrestamo);
+        getSolicitudPrestamoUsuarioByPrestamoId(idPrestamo);
       }
 
       async function getSolicitudPrestamoUsuarioByPrestamoId(idPrestamo) {
@@ -249,10 +249,10 @@
           new Date(actual).setDate(actual.getDate() + 3)
         );
         let stringSancion = sancion.toLocaleString();
-
+        console.log(user, sancion)
         let queryUpdSancion = `
-        mutation UpdUsuario($updUsuarioId: ID!) {
-          updUsuario(id: $updUsuarioId) {
+        mutation UpdUsuario($updUsuarioId: ID!, $input: UsuarioInput) {
+          updUsuario(id: $updUsuarioId, input: $input) {
             statusCode
             body
             errorCode
@@ -270,7 +270,7 @@
             query: queryUpdSancion,
             variables: {
               updUsuarioId: user.id,
-              updUsuarioInput2: {
+              input: {
                 fechaSancion: stringSancion,
               },
             },

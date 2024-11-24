@@ -42,16 +42,16 @@ const typeDefs = gql`
     }
 
     input UsuarioInput{
-        rut: String!
-        nombres: String!
-        apellidos: String!
-        direccion: String!
-        telefono: Int!
-        activo: Boolean!
+        rut: String
+        nombres: String
+        apellidos: String
+        direccion: String
+        telefono: Int
+        activo: Boolean
         codigo: Int
-        correo: String!
-        password: String!
-        tipoUsuario: Int! 
+        correo: String
+        password: String
+        tipoUsuario: Int
         fechaSancion: GraphQLDateTime
     }
 
