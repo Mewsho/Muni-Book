@@ -25,5 +25,9 @@ El proyecto tiene como finalidad mejorar el sistema que posee la libreria actual
 
 ![image](https://github.com/user-attachments/assets/54d6641b-5167-479f-8455-83fbf077041f)
 
+# Munibook Panel Bibliotecario
+
+![image](https://github.com/user-attachments/assets/b75dd6d3-e8bb-45c8-91b5-9bd1fec0637b)
+
 
 
