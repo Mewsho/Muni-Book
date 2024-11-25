@@ -17,6 +17,12 @@ El proyecto tiene como finalidad mejorar el sistema que posee la libreria actual
 
 ![image](https://github.com/user-attachments/assets/3ff37fa7-f8d3-419d-aa91-0bbd3a760244)
 
+# Munibook Catalogo
+
+![image](https://github.com/user-attachments/assets/01d805b2-0639-4c85-b32c-0a617bf1b80b)
+
+# Munibook Contact
+
+![Uploading image.png…]()
 
 
-![Screenshot 2024-11-12 195510](https://github.com/user-attachments/assets/62f0febe-62cf-4917-abe9-23bb6bb4dcd7)
