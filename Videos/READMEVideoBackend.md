@@ -9,4 +9,4 @@ Presentacion del backend de la página, comenzando con el diagrama de clases dis
 
 ### Enlace alternativo al video
 
-
+https://drive.google.com/file/d/1thPGlzdpO-sP9h2Qkyppzb1_cCO9zCFq/view?usp=sharing

@@ -10,3 +10,4 @@ Presentacion del frontend de la página, mostrando cada pagina utilizada dependi
 
 ### Enlace alternativo al video
 
+https://drive.google.com/file/d/1l-cBC3cgSjYBF-9CmI_A4FYSoMs3WHo3/view?usp=sharing
