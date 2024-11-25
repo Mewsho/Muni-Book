@@ -3,7 +3,7 @@
 # Proyecto Muni Book
 -----
 # Estudiantes
-Eliam Rivas  | Vicente Poblete | Matias Godoy |  Francisco Torres | Manuel Vidal | Cesar Lopez 
+Eliam Rivas  | Vicente Poblete | Matias Godoy | Francisco Torres | Cesar Lopez 
 
 # Contexto
 Pagina para libreria municipal, con funciones modernas para administrar los prestamos, visualizar los catalogos, ver si existen ejemplares de un libro.
