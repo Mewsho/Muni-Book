@@ -3,7 +3,7 @@
 # Proyecto Muni Book
 -----
 # Estudiantes
-Eliam Rivas | Vicente Poblete | Matias Godoy |  Francisco Torres | Manuel Vidal | Cesar Lopez 
+Eliam Rivas  | Vicente Poblete | Matias Godoy |  Francisco Torres | Manuel Vidal | Cesar Lopez 
 
 # Contexto
 Pagina para libreria municipal, con funciones modernas para administrar los prestamos, visualizar los catalogos, ver si existen ejemplares de un libro.
@@ -14,7 +14,9 @@ El proyecto tiene como finalidad mejorar el sistema que posee la libreria actual
 
 
 # Munibook site
-![CapturaSitio](https://github.com/user-attachments/assets/6945d102-15ff-4747-8b4c-51a71690afda)
+
+![image](https://github.com/user-attachments/assets/3ff37fa7-f8d3-419d-aa91-0bbd3a760244)
+
 
 
 ![Screenshot 2024-11-12 195510](https://github.com/user-attachments/assets/62f0febe-62cf-4917-abe9-23bb6bb4dcd7)
